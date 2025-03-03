@@ -10,7 +10,7 @@ const EcosystemSimulation = () => {
     <XPBackground>
       <Window 
         title="Ecosystem Simulator v1.0" 
-        width="900px"
+        width="1100px"
         icon="🌲"
       >
         <div style={{ padding: '5px' }}>
@@ -20,25 +20,26 @@ const EcosystemSimulation = () => {
             marginTop: '15px', 
             backgroundColor: '#f0f0f0', 
             padding: '10px',
-
             border: '1px solid #ccc',
             borderRadius: '3px',
             fontSize: '12px',
-            lineHeight: '1.4'
+            lineHeight: '1.4',
+            maxWidth: '1050px',
+            margin: '15px auto'
           }}>
             <h3 style={{ margin: '0 0 5px 0', fontSize: '14px' }}>About This Simulation</h3>
             <p>
-              This ecosystem simulator models interactions between trees, deer, and wolves.
-              Each species follows realistic lifecycle rules:
+              This ecosystem simulator models interactions between trees, deer, and wolves in a balanced forest ecosystem.
+              Each species follows realistic lifecycle rules with complex interactions:
             </p>
             <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
-              <li>Trees grow, reproduce, and can die from age, stress, or being eaten by deer</li>
-              <li>Deer forage for young trees and can die from starvation, age, or wolf predation</li>
-              <li>Wolves hunt deer and can die from starvation or age</li>
+              <li><strong>Trees</strong> grow, reproduce, and can die from age, stress, or being consumed by deer. Young trees (seedlings) are more vulnerable.</li>
+              <li><strong>Deer</strong> forage for young trees and can die from starvation, age, or wolf predation. They reproduce faster than wolves but slower than trees.</li>
+              <li><strong>Wolves</strong> hunt deer and can die from starvation or age. They reproduce slowly but are efficient hunters.</li>
             </ul>
             <p>
-              The simulation tracks population dynamics over time, allowing you to observe how
-              changes in one species affect the others.
+              The simulation includes natural migration to prevent extinction and demonstrates ecological principles like carrying capacity,
+              predator-prey cycles, and the importance of biodiversity for ecosystem stability.
             </p>
           </div>
 
