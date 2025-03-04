@@ -3,13 +3,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SimulationManager } from '../simulation/SimulationManager';
 
 const EcosystemVisualization = () => {
-  // Simulation manager and state
-  const [simulation, setSimulation] = useState(null);
-  const [isRunning, setIsRunning] = useState(false);
+  // Simulation state
+  const [simulationManager, setSimulationManager] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [isStabilizing, setIsStabilizing] = useState(false);
-  const [stabilizationProgress, setStabilizationProgress] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
   const [currentYear, setCurrentYear] = useState(0);
-  const [simulationSpeed, setSimulationSpeed] = useState(1000); // ms between steps
+  const [stabilizationProgress, setStabilizationProgress] = useState(0);
+  const [simulationSpeed, setSimulationSpeed] = useState(500);
   
   // Stats for display
   const [stats, setStats] = useState({
@@ -18,54 +20,243 @@ const EcosystemVisualization = () => {
     wolves: { total: 0, averageAge: 0, deaths: 0 }
   });
   
-  // Historical data for graphs
+  // Population data for graphs
   const [populationData, setPopulationData] = useState([]);
   
-  // Fixed graph size
-  const maxYears = 30; // Show max 30 years on graph
-  const maxTreePopulation = 500;
-  const maxDeerPopulation = 100;
-  const maxWolfPopulation = 50;
+  // Logs system
+  const [logs, setLogs] = useState([]);
+  const [showLogs, setShowLogs] = useState(false);
   
-  // Animation refs
+  // Graph constants
+  const MAX_YEARS = 50;
+  const MAX_TREE_POPULATION = 5000;
+  const MAX_DEER_POPULATION = 100;
+  const MAX_WOLF_POPULATION = 50;
+  
+  // Refs
+  const simRef = useRef(null);
   const animationRef = useRef(null);
-  const lastRunTimeRef = useRef(Date.now());
+  const lastRunTimeRef = useRef(0);
+  const logsRef = useRef([]);
   
-  // Config settings - adjusted to be more appropriate for visualization
+  // Simulation configuration
   const config = {
-    gridSize: 900, // For a 30x30 grid
-    years: 100,
+    gridSize: 10000,
+    years: 50,
     stabilizationYears: 10,
     tree: {
-      initial: 300, 
-      arraySize: 900,
-      density: 5,
-      ageAvg: 15,
-      ageSigma: 10,
-      maturity: 5,
-      stressIndex: 6 // Using new scale (1-10)
+      initial: 5000, 
+      arraySize: 10000,
+      density: 15,
+      ageAvg: 30,
+      ageSigma: 20,
+      maturity: 10,
+      stressLevel: 3,
+      reproductionFactor: 6,
+      edibleAge: 2
     },
     deer: {
       initial: 20,
-      arraySize: 200,
+      arraySize: 500,
       maturity: 2,
-      staminaFactor: 5, // Using new scale (1-10)
-      hungerFactor: 5,  // Using new scale (1-10)
+      staminaFactor: 5,
+      hungerFactor: 3,
+      reproductionFactor: 5,
       migrationFactor: 5
     },
     wolf: {
       initial: 5,
-      arraySize: 100,
+      arraySize: 200,
       maturity: 2,
-      staminaFactor: 5, // Using new scale (1-10)
-      hungerFactor: 5,  // Using new scale (1-10)
+      staminaFactor: 5,
+      hungerFactor: 4,
+      reproductionFactor: 4,
       migrationFactor: 5
     }
   };
   
+  // Add a log entry
+  const addLog = (message, type = 'info') => {
+    const newLog = {
+      id: Date.now(),
+      timestamp: new Date().toISOString(),
+      year: currentYear,
+      type,
+      message
+    };
+    
+    logsRef.current = [...logsRef.current, newLog];
+    setLogs(logsRef.current);
+  };
+  
+  // Create a data point for population graphs
+  const createDataPoint = (year, stats) => {
+    return {
+      year,
+      trees: stats.trees.total,
+      deer: stats.deer.total,
+      wolves: stats.wolves.total,
+      treeAvgAge: stats.trees.averageAge || 0,
+      deerAvgAge: stats.deer.averageAge || 0,
+      wolfAvgAge: stats.wolves.averageAge || 0,
+      youngTrees: stats.trees.youngTrees || stats.trees.ageDistribution?.seedling || 0,
+      treeDeaths: stats.trees.totalDeaths || stats.trees.deaths || 0,
+      deerDeaths: stats.deer.deaths || 0,
+      wolfDeaths: stats.wolves.deaths || 0,
+      treeConsumedByDeer: stats.trees.consumedByDeer || 0
+    };
+  };
+  
   // Initialize the simulation
+  const initializeSimulation = async () => {
+    // Reset state
+    setIsInitialized(false);
+    setIsStabilizing(true);
+    setStabilizationProgress(0);
+    setCurrentYear(0);
+    setIsComplete(false);
+    setPopulationData([]);
+    logsRef.current = [];
+    setLogs([]);
+    
+    try {
+      // STEP 1: Create a new simulation manager
+      addLog("Creating new simulation manager...", 'system');
+      const sim = new SimulationManager(config, 'visualization');
+      setSimulationManager(sim);
+      simRef.current = sim;
+      
+      // STEP 2: Initialize the forest (includes stabilization period)
+      addLog("Starting simulation initialization and forest stabilization...", 'system');
+      
+      // Initialize forest
+      sim.initialize();
+      
+      // Simulate the stabilization progress for UI feedback
+      for (let i = 0; i <= config.stabilizationYears; i++) {
+        setStabilizationProgress(Math.floor((i / config.stabilizationYears) * 100));
+        
+        if (i % 5 === 0 || i === config.stabilizationYears) {
+          const stats = sim.getCurrentStats();
+          addLog(`Stabilization Year ${i}: Trees=${stats.trees.total} (Avg Age: ${stats.trees.averageAge.toFixed(1)})`, 'system');
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      
+      // STEP 3: Get initial stats after stabilization
+      const initialStats = sim.getCurrentStats();
+      setStats(initialStats);
+      
+      // STEP 4: Add the first data point (year 0) to the graph data
+      const initialDataPoint = createDataPoint(0, initialStats);
+      setPopulationData([initialDataPoint]);
+      
+      addLog("Initialization complete!", 'system');
+      addLog(`Initial population: ${initialStats.trees.total} trees, ${initialStats.deer.total} deer, ${initialStats.wolves.total} wolves`, 'system');
+      
+      // Mark initialization as complete
+      setIsStabilizing(false);
+      setIsInitialized(true);
+    } catch (error) {
+      console.error("Simulation initialization error:", error);
+      addLog(`Error during initialization: ${error.message}`, 'error');
+      setIsStabilizing(false);
+    }
+  };
+  
+  // Run a single year of the simulation
+  const runSimulationYear = () => {
+    if (!simRef.current || !isInitialized || isStabilizing || isComplete) {
+      return;
+    }
+    
+    try {
+      // Log year start
+      addLog(`Starting Year ${currentYear + 1}`, 'system');
+      
+      // STEP 5: Run one simulation year
+      const yearStats = simRef.current.simulateYear();
+      
+      // STEP 6: Update year counter
+      const newYear = currentYear + 1;
+      setCurrentYear(newYear);
+      
+      // STEP 7: Update stats display
+      setStats(yearStats);
+      
+      // Log detailed statistics
+      logDetailedStats(yearStats);
+      
+      // STEP 8: Create and add new data point to graph data
+      const newDataPoint = createDataPoint(newYear, yearStats);
+      setPopulationData(prevData => [...prevData, newDataPoint]);
+      
+      // Check if simulation is complete
+      if (newYear >= config.years) {
+        addLog("Simulation complete!", 'system');
+        setIsRunning(false);
+        setIsComplete(true);
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+          animationRef.current = null;
+        }
+      }
+      
+      return yearStats;
+    } catch (error) {
+      console.error("Error running simulation year:", error);
+      addLog(`Error during simulation: ${error.message}`, 'error');
+      setIsRunning(false);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    }
+  };
+  
+  // Log detailed statistics
+  const logDetailedStats = (yearStats) => {
+    // Tree stats
+    addLog(`Trees: ${yearStats.trees.total} (Avg Age: ${yearStats.trees.averageAge?.toFixed(1)})`, 'tree');
+    addLog(`  - Young: ${yearStats.trees.youngTrees || yearStats.trees.ageDistribution?.seedling || 0}`, 'tree');
+    addLog(`  - Deaths: ${yearStats.trees.totalDeaths || yearStats.trees.deaths || 0}`, 'tree');
+    addLog(`  - Eaten by deer: ${yearStats.trees.consumedByDeer || 0}`, 'tree');
+    
+    // Deer stats
+    addLog(`Deer: ${yearStats.deer.total} (Avg Age: ${yearStats.deer.averageAge?.toFixed(1)})`, 'deer');
+    addLog(`  - Migrated: ${yearStats.deer.migratedCount || 0}`, 'deer');
+    addLog(`  - Reproduced: ${yearStats.deer.reproducedCount || 0}`, 'deer');
+    addLog(`  - Deaths: Age=${yearStats.deer.ageDeaths || 0}, Starvation=${yearStats.deer.starvationDeaths || 0}, Predation=${yearStats.deer.predationDeaths || 0}`, 'deer');
+    
+    // Wolf stats
+    addLog(`Wolves: ${yearStats.wolves.total} (Avg Age: ${yearStats.wolves.averageAge?.toFixed(1)})`, 'wolf');
+    addLog(`  - Migrated: ${yearStats.wolves.migratedCount || 0}`, 'wolf');
+    addLog(`  - Reproduced: ${yearStats.wolves.reproducedCount || 0}`, 'wolf');
+    addLog(`  - Prey killed: ${yearStats.wolves.preyKilled || 0}`, 'wolf');
+    addLog(`  - Deaths: Age=${yearStats.wolves.ageDeaths || 0}, Starvation=${yearStats.wolves.starvationDeaths || 0}`, 'wolf');
+  };
+  
+  // Animation loop for continuous simulation
+  const animateSimulation = (timestamp) => {
+    if (!isRunning || !isInitialized || isStabilizing || isComplete) {
+      return;
+    }
+    
+    const elapsed = timestamp - lastRunTimeRef.current;
+    
+    if (elapsed >= simulationSpeed) {
+      runSimulationYear();
+      lastRunTimeRef.current = timestamp;
+    }
+    
+    animationRef.current = requestAnimationFrame(animateSimulation);
+  };
+  
+  // Initialize on component mount
   useEffect(() => {
     initializeSimulation();
+    
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
@@ -73,257 +264,160 @@ const EcosystemVisualization = () => {
     };
   }, []);
   
-  // Animation loop
+  // Handle animation loop when isRunning changes
   useEffect(() => {
-    if (isRunning && !isStabilizing) {
-      const runLoop = () => {
-        const now = Date.now();
-        if (now - lastRunTimeRef.current >= simulationSpeed) {
-          runSimulationYear();
-          lastRunTimeRef.current = now;
-        }
-        animationRef.current = requestAnimationFrame(runLoop);
-      };
+    if (isRunning && isInitialized && !isStabilizing && !isComplete) {
+      console.log("Starting animation loop");
+      lastRunTimeRef.current = performance.now();
+      animationRef.current = requestAnimationFrame(animateSimulation);
       
-      animationRef.current = requestAnimationFrame(runLoop);
+      addLog("Simulation running", 'system');
+    } else if (animationRef.current) {
+      console.log("Stopping animation loop");
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
       
-      return () => {
-        if (animationRef.current) {
-          cancelAnimationFrame(animationRef.current);
-        }
-      };
-    }
-  }, [isRunning, isStabilizing, simulationSpeed]);
-  
-  const initializeSimulation = async () => {
-    setIsStabilizing(true);
-    setStabilizationProgress(0);
-    setCurrentYear(0);
-    setPopulationData([]);
-    
-    // Create a new simulation manager
-    const sim = new SimulationManager(config, 'visualization');
-    setSimulation(sim);
-    
-    // Initial planting of trees
-    sim.treeManager.initialPlanting(
-      config.tree.initial,
-      config.tree.ageAvg,
-      config.tree.ageSigma
-    );
-    
-    // Initial population data point
-    updatePopulationData(-config.stabilizationYears, sim);
-    
-    // Run stabilization period (just for trees)
-    for (let i = 0; i < config.stabilizationYears; i++) {
-      setStabilizationProgress(Math.floor((i / config.stabilizationYears) * 100));
-      
-      // Grow trees
-      sim.treeManager.grow();
-      sim.treeManager.processConcurrence(config.tree.density);
-      sim.treeManager.processStressDeaths(config.tree.stressIndex);
-      sim.treeManager.reproduce(config.tree.maturity);
-      sim.treeManager.processAgeDeaths();
-      
-      updatePopulationData(-config.stabilizationYears + i + 1, sim);
-      
-      // Pause to allow UI to update
-      await new Promise(resolve => setTimeout(resolve, 50));
+      if (!isComplete && isInitialized) {
+        addLog("Simulation paused", 'system');
+      }
     }
     
-    // Initialize animals after stabilization
-    sim.deerManager.initialize(
-      config.deer.initial,
-      config.deer.arraySize,
-      config.deer.staminaFactor,
-      config.deer.hungerFactor
-    );
-    
-    sim.wolfManager.initialize(
-      config.wolf.initial,
-      config.wolf.arraySize,
-      config.wolf.staminaFactor,
-      config.wolf.hungerFactor
-    );
-    
-    // Update final population data after stabilization
-    updatePopulationData(0, sim);
-    
-    setIsStabilizing(false);
-    updateStats(sim);
-  };
-  
-  const updatePopulationData = (year, sim) => {
-    const treeStats = sim.treeManager.getDetailedStatistics();
-    
-    // During stabilization, only trees have data
-    const deerStats = year < 0 ? { total: 0, averageAge: 0 } : sim.deerManager.getDetailedStatistics();
-    const wolfStats = year < 0 ? { total: 0, averageAge: 0 } : sim.wolfManager.getDetailedStatistics();
-    
-    const newDataPoint = {
-      year,
-      trees: treeStats.total,
-      deer: deerStats.total,
-      wolves: wolfStats.total,
-      treeAvgAge: treeStats.averageAge || 0,
-      deerAvgAge: deerStats.averageAge || 0,
-      wolfAvgAge: wolfStats.averageAge || 0,
-      youngTrees: treeStats.ageDistribution?.seedling || 0,
-      treeDeaths: treeStats.totalDeaths || 0,
-      deerDeaths: (deerStats.starvationDeaths || 0) + (deerStats.ageDeaths || 0) + (deerStats.predationDeaths || 0),
-      wolfDeaths: (wolfStats.starvationDeaths || 0) + (wolfStats.ageDeaths || 0)
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
-    
-    setPopulationData(prev => [...prev, newDataPoint]);
-  };
+  }, [isRunning, isInitialized, isStabilizing, isComplete]);
   
-  const updateStats = (sim) => {
-    if (!sim) return;
-    
-    const treeStats = sim.treeManager.getDetailedStatistics();
-    const deerStats = sim.deerManager.getDetailedStatistics();
-    const wolfStats = sim.wolfManager.getDetailedStatistics();
-    
-    setStats({
-      trees: treeStats,
-      deer: deerStats,
-      wolves: wolfStats
-    });
-  };
-  
-  const runSimulationYear = () => {
-    if (!simulation || isStabilizing) return;
-    
-    try {
-      // Follow SimulationManager's exact order of operations
-      
-      // Tree lifecycle
-      simulation.treeManager.processConcurrence(config.tree.density);
-      simulation.treeManager.grow();
-      simulation.treeManager.processAgeDeaths();
-      simulation.treeManager.processStressDeaths(config.tree.stressIndex);
-      simulation.treeManager.reproduce(config.tree.maturity);
-      
-      // Deer lifecycle
-      const deerPopulation = simulation.deerManager.getPopulationCount();
-      if (deerPopulation < 10) {
-        simulation.deerManager.processMigration(config.deer.migrationFactor);
-      } else if (Math.random() < 0.2) {
-        simulation.deerManager.processMigration(config.deer.migrationFactor * 0.5);
-      }
-      
-      simulation.deerManager.reproduce(config.deer.maturity);
-      simulation.deerManager.grow(
-        config.deer.staminaFactor,
-        config.deer.hungerFactor
-      );
-      simulation.deerManager.processNaturalDeaths();
-      simulation.deerManager.processFeeding(simulation.treeManager.trees, 2, simulation.treeManager);
-      
-      // Wolf lifecycle
-      const wolfPopulation = simulation.wolfManager.getPopulationCount();
-      if (wolfPopulation < 3) {
-        simulation.wolfManager.processMigration(config.wolf.migrationFactor);
-      } else if (Math.random() < 0.1) {
-        simulation.wolfManager.processMigration(config.wolf.migrationFactor * 0.3);
-      }
-      
-      simulation.wolfManager.reproduce(config.wolf.maturity);
-      simulation.wolfManager.grow(
-        config.wolf.staminaFactor,
-        config.wolf.hungerFactor
-      );
-      simulation.wolfManager.processNaturalDeaths();
-      simulation.wolfManager.processHunting(simulation.deerManager);
-      
-      // Update year and stats
-      setCurrentYear(prev => prev + 1);
-      updateStats(simulation);
-      updatePopulationData(currentYear + 1, simulation);
-      
-    } catch (error) {
-      console.error("Simulation error:", error);
-      setIsRunning(false);
-    }
-  };
-  
+  // UI control handlers
   const handleStart = () => {
-    if (isStabilizing) return;
+    if (!isInitialized || isStabilizing || isComplete) return;
     setIsRunning(true);
   };
   
   const handleStop = () => {
     setIsRunning(false);
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
   };
   
-  const handleReset = async () => {
+  const handleReset = () => {
     handleStop();
-    await initializeSimulation();
+    initializeSimulation();
   };
   
-  const handleRunYear = () => {
-    if (isStabilizing) return;
+  const handleStep = () => {
+    if (!isInitialized || isStabilizing || isComplete) return;
+    handleStop(); // Ensure animation loop is stopped
     runSimulationYear();
   };
   
   const handleSpeedChange = (e) => {
-    setSimulationSpeed(Number(e.target.value));
+    const newSpeed = Number(e.target.value);
+    addLog(`Simulation speed changed to ${e.target.options[e.target.selectedIndex].text}`, 'system');
+    setSimulationSpeed(newSpeed);
   };
   
-  // Render tree grid - large, square and central
-  const renderTreeGrid = () => {
-    if (!simulation?.treeManager) return null;
+  const handleToggleLogs = () => {
+    setShowLogs(!showLogs);
+  };
+  
+  const handleExportLogs = () => {
+    const logData = JSON.stringify(logs, null, 2);
+    const blob = new Blob([logData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ecosystem-simulation-logs-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addLog("Logs exported", 'system');
+  };
+  
+  // Render tree density grid
+  const renderTreeDensityGrid = () => {
+    if (!simulationManager?.treeManager) return null;
     
-    const gridDimension = Math.sqrt(config.gridSize);
-    const cellSize = 12; // Larger cell size
+    // Create a density map from the 100x100 grid
+    // For visualization, we'll use a 20x20 density grid (5x5 cells aggregated)
+    const gridDimension = 100; // Original 100x100 grid
+    const densityGridSize = 20; // 20x20 visualization grid
+    const cellSize = 15; // Display cell size
+    
+    const densityGrid = Array(densityGridSize).fill().map(() => Array(densityGridSize).fill(0));
+    const maxTreesPerCell = 25; // 5x5 cells could have at most 25 trees
+    
+    // Calculate tree density
+    simulationManager.treeManager.trees.forEach((tree, index) => {
+      if (tree && tree.position !== 0) {
+        // Convert linear position to x,y in 100x100 grid
+        const x = index % gridDimension;
+        const y = Math.floor(index / gridDimension);
+        
+        // Map to density grid position
+        const densityX = Math.floor(x / (gridDimension / densityGridSize));
+        const densityY = Math.floor(y / (gridDimension / densityGridSize));
+        
+        // Increment density counter if within bounds
+        if (densityX < densityGridSize && densityY < densityGridSize) {
+          densityGrid[densityY][densityX]++;
+        }
+      }
+    });
     
     const gridStyle = {
       display: 'grid',
-      gridTemplateColumns: `repeat(${gridDimension}, ${cellSize}px)`,
+      gridTemplateColumns: `repeat(${densityGridSize}, ${cellSize}px)`,
       gap: '1px',
       margin: '0 auto',
       border: '2px solid #888',
       padding: '2px',
       backgroundColor: '#c0c0c0',
-      width: `${cellSize * gridDimension + gridDimension}px`,
-      height: `${cellSize * gridDimension + gridDimension}px`,
+      width: `${cellSize * densityGridSize + densityGridSize}px`,
+      height: `${cellSize * densityGridSize + densityGridSize}px`,
       boxShadow: 'inset 2px 2px 3px rgba(0,0,0,0.3)'
+    };
+    
+    // Color function for density
+    const getDensityColor = (density) => {
+      // Calculate density percentage
+      const percentage = Math.min(1, density / maxTreesPerCell);
+      
+      if (percentage === 0) {
+        return '#a0a0a0'; // Empty cell
+      }
+      
+      // Green shades based on density
+      if (percentage < 0.2) {
+        return '#dab88b'; // Light brown for very sparse
+      } else if (percentage < 0.4) {
+        return '#c2e088'; // Light green-yellow for sparse
+      } else if (percentage < 0.6) {
+        return '#8ed861'; // Light green for medium
+      } else if (percentage < 0.8) {
+        return '#4caf50'; // Green for dense
+      } else {
+        return '#2e7d32'; // Dark green for very dense
+      }
     };
     
     return (
       <div style={gridStyle}>
-        {simulation.treeManager.trees.map((tree, index) => {
-          const isAlive = tree && tree.position !== 0;
-          
-          // Determine cell color based on tree age
-          let backgroundColor = '#a0a0a0'; // Empty cell
-          
-          if (isAlive) {
-            if (tree.age <= 2) {
-              backgroundColor = '#90EE90'; // Light green for seedlings
-            } else if (tree.age <= 10) {
-              backgroundColor = '#32CD32'; // Lime green for young trees
-            } else if (tree.age <= 50) {
-              backgroundColor = '#228B22'; // Forest green for mature trees
-            } else {
-              backgroundColor = '#006400'; // Dark green for old trees
-            }
-          }
-          
-          const cellStyle = {
-            width: `${cellSize}px`,
-            height: `${cellSize}px`,
-            backgroundColor,
-            border: '1px outset #ddd',
-            boxSizing: 'border-box'
-          };
-          
-          return <div key={index} style={cellStyle} title={isAlive ? `Age: ${tree.age.toFixed(1)}` : 'Empty'} />;
-        })}
+        {densityGrid.flatMap((row, y) => 
+          row.map((density, x) => {
+            return (
+              <div 
+                key={`${x}-${y}`} 
+                style={{
+                  width: `${cellSize}px`,
+                  height: `${cellSize}px`,
+                  backgroundColor: getDensityColor(density),
+                  border: '1px outset #ddd',
+                  boxSizing: 'border-box'
+                }} 
+                title={`Density: ${density} trees`}
+              />
+            );
+          })
+        )}
       </div>
     );
   };
@@ -369,35 +463,30 @@ const EcosystemVisualization = () => {
     );
   };
   
-  // Render individual population graphs
+  // Render population graphs with fixed scales
   const renderPopulationGraph = (title, dataKey, color, maxPopulation, yLabel) => {
-    // Calculate visible data window (sliding window if more than maxYears)
-    const visibleData = populationData.slice(
-      Math.max(0, populationData.length - maxYears),
-      populationData.length
-    );
-    
-    // Calculate graph dimensions
+    // Graph dimensions
     const graphWidth = 360;
     const graphHeight = 150;
     const padding = { top: 20, right: 30, bottom: 30, left: 40 };
     const innerWidth = graphWidth - padding.left - padding.right;
     const innerHeight = graphHeight - padding.top - padding.bottom;
     
-    // X-axis scale (years)
-    const minYear = visibleData.length > 0 ? visibleData[0].year : 0;
-    const maxYear = visibleData.length > 0 ? visibleData[visibleData.length - 1].year : maxYears;
-    const xScale = innerWidth / Math.max(maxYears, maxYear - minYear);
-    
-    // Y-axis scale (population)
+    // Define fixed x and y scales
+    const xScale = innerWidth / MAX_YEARS;
     const yScale = innerHeight / maxPopulation;
     
-    // Generate path data
-    const points = visibleData.map((d, i) => {
-      const x = padding.left + (d.year - minYear) * xScale;
+    // Generate line points (using the fixed scales)
+    const points = populationData.map((d) => {
+      // Always use fixed scales
+      const x = padding.left + (d.year * xScale);
       const y = padding.top + innerHeight - (d[dataKey] * yScale);
       return `${x},${y}`;
     }).join(' ');
+    
+    const currentValue = populationData.length > 0 
+      ? populationData[populationData.length - 1][dataKey] 
+      : 0;
     
     return (
       <div style={{ marginBottom: '15px' }}>
@@ -451,9 +540,9 @@ const EcosystemVisualization = () => {
           
           {/* X-axis grid lines and labels */}
           {Array.from({ length: 6 }).map((_, i) => {
-            const yearInterval = Math.ceil(maxYears / 5);
+            const yearInterval = MAX_YEARS / 5;
             const x = padding.left + i * (innerWidth / 5);
-            const year = minYear + i * yearInterval;
+            const year = i * yearInterval;
             return (
               <React.Fragment key={`grid-x-${i}`}>
                 <line 
@@ -472,7 +561,7 @@ const EcosystemVisualization = () => {
                   fontSize: '10px',
                   color: '#666'
                 }}>
-                  {year}
+                  {Math.floor(year)}
                 </div>
               </React.Fragment>
             );
@@ -503,45 +592,85 @@ const EcosystemVisualization = () => {
           </div>
           
           {/* Population line */}
-          <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
-            <polyline 
-              points={points} 
-              fill="none" 
-              stroke={color} 
-              strokeWidth="2" 
-            />
-            
-            {/* Current value marker */}
-            {visibleData.length > 0 && (
-              <circle 
-                cx={padding.left + (visibleData[visibleData.length - 1].year - minYear) * xScale}
-                cy={padding.top + innerHeight - (visibleData[visibleData.length - 1][dataKey] * yScale)}
-                r="4"
-                fill="white"
-                stroke={color}
-                strokeWidth="2"
+          {populationData.length > 1 && (
+            <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
+              <polyline 
+                points={points} 
+                fill="none" 
+                stroke={color} 
+                strokeWidth="2" 
               />
-            )}
-          </svg>
+              
+              {/* Current value marker */}
+              {populationData.length > 0 && (
+                <circle 
+                  cx={padding.left + (populationData[populationData.length - 1].year * xScale)}
+                  cy={padding.top + innerHeight - (populationData[populationData.length - 1][dataKey] * yScale)}
+                  r="4"
+                  fill="white"
+                  stroke={color}
+                  strokeWidth="2"
+                />
+              )}
+            </svg>
+          )}
           
           {/* Current value text */}
-          {visibleData.length > 0 && (
-            <div style={{
-              position: 'absolute',
-              top: '5px',
-              right: '10px',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              padding: '2px 5px',
-              backgroundColor: 'rgba(255,255,255,0.7)',
-              border: `1px solid ${color}`,
-              borderRadius: '3px',
-              color: color
-            }}>
-              {visibleData[visibleData.length - 1][dataKey]}
-            </div>
-          )}
+          <div style={{
+            position: 'absolute',
+            top: '5px',
+            right: '10px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            padding: '2px 5px',
+            backgroundColor: 'rgba(255,255,255,0.7)',
+            border: `1px solid ${color}`,
+            borderRadius: '3px',
+            color: color
+          }}>
+            {currentValue}
+          </div>
         </div>
+      </div>
+    );
+  };
+  
+  // Render logs with color coding
+  const renderLogs = () => {
+    const getLogColor = (type) => {
+      switch (type) {
+        case 'error': return '#f44336';
+        case 'system': return '#2196f3';
+        case 'tree': return '#4caf50';
+        case 'deer': return '#8B4513';
+        case 'wolf': return '#555';
+        default: return '#666';
+      }
+    };
+    
+    return (
+      <div style={{
+        maxHeight: '300px',
+        overflowY: 'auto',
+        border: '2px inset #aaa',
+        backgroundColor: '#f8f8f8',
+        padding: '10px',
+        fontFamily: 'monospace',
+        fontSize: '12px',
+        lineHeight: '1.3'
+      }}>
+        {logs.map(log => (
+          <div key={log.id} style={{ 
+            marginBottom: '2px',
+            paddingBottom: '2px',
+            borderBottom: '1px solid #eee',
+            color: getLogColor(log.type)
+          }}>
+            <span style={{ fontWeight: 'bold' }}>
+              [Year {log.year}]
+            </span> {log.message}
+          </div>
+        ))}
       </div>
     );
   };
@@ -580,6 +709,25 @@ const EcosystemVisualization = () => {
         </div>
       )}
       
+      {/* Simulation complete overlay */}
+      {isComplete && (
+        <div style={{ 
+          position: 'fixed', 
+          top: '20px', 
+          left: '50%', 
+          transform: 'translateX(-50%)',
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          color: 'white',
+          zIndex: 999,
+          fontSize: '16px',
+          fontWeight: 'bold'
+        }}>
+          Simulation Complete - {config.years} Years
+        </div>
+      )}
+      
       {/* Control Panel */}
       <div style={{ 
         backgroundColor: '#e0e0e0', 
@@ -596,12 +744,12 @@ const EcosystemVisualization = () => {
         alignItems: 'center'
       }}>
         <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
-          Year: {currentYear}
+          Year: {currentYear} / {config.years}
         </div>
         
         <button 
           onClick={handleStart} 
-          disabled={isRunning || isStabilizing}
+          disabled={!isInitialized || isRunning || isStabilizing || isComplete}
           style={{ 
             backgroundColor: '#3cb371', 
             color: 'white',
@@ -610,8 +758,8 @@ const EcosystemVisualization = () => {
             borderRadius: '2px',
             fontWeight: 'bold',
             fontSize: '12px',
-            cursor: (isRunning || isStabilizing) ? 'default' : 'pointer',
-            opacity: (isRunning || isStabilizing) ? 0.7 : 1
+            cursor: (!isInitialized || isRunning || isStabilizing || isComplete) ? 'default' : 'pointer',
+            opacity: (!isInitialized || isRunning || isStabilizing || isComplete) ? 0.7 : 1
           }}
         >
           ▶ Play
@@ -619,7 +767,7 @@ const EcosystemVisualization = () => {
         
         <button 
           onClick={handleStop} 
-          disabled={!isRunning || isStabilizing}
+          disabled={!isInitialized || !isRunning || isStabilizing}
           style={{ 
             backgroundColor: '#cd5c5c', 
             color: 'white',
@@ -628,16 +776,16 @@ const EcosystemVisualization = () => {
             borderRadius: '2px',
             fontWeight: 'bold',
             fontSize: '12px',
-            cursor: (!isRunning || isStabilizing) ? 'default' : 'pointer',
-            opacity: (!isRunning || isStabilizing) ? 0.7 : 1
+            cursor: (!isInitialized || !isRunning || isStabilizing) ? 'default' : 'pointer',
+            opacity: (!isInitialized || !isRunning || isStabilizing) ? 0.7 : 1
           }}
         >
           ⏸ Pause
         </button>
         
         <button 
-          onClick={handleRunYear} 
-          disabled={isRunning || isStabilizing}
+          onClick={handleStep} 
+          disabled={!isInitialized || isRunning || isStabilizing || isComplete}
           style={{ 
             backgroundColor: '#4169e1', 
             color: 'white',
@@ -646,8 +794,8 @@ const EcosystemVisualization = () => {
             borderRadius: '2px',
             fontWeight: 'bold',
             fontSize: '12px',
-            cursor: (isRunning || isStabilizing) ? 'default' : 'pointer',
-            opacity: (isRunning || isStabilizing) ? 0.7 : 1
+            cursor: (!isInitialized || isRunning || isStabilizing || isComplete) ? 'default' : 'pointer',
+            opacity: (!isInitialized || isRunning || isStabilizing || isComplete) ? 0.7 : 1
           }}
         >
           ⏭ Step
@@ -688,6 +836,7 @@ const EcosystemVisualization = () => {
             <option value="1000">Normal</option>
             <option value="500">Fast</option>
             <option value="200">Very Fast</option>
+            <option value="50">Ultra Fast</option>
           </select>
         </div>
         
@@ -718,9 +867,9 @@ const EcosystemVisualization = () => {
             Population Dynamics
           </h2>
           
-          {renderPopulationGraph('Trees', 'trees', '#228B22', maxTreePopulation, 'Trees')}
-          {renderPopulationGraph('Deer', 'deer', '#8B4513', maxDeerPopulation, 'Deer')}
-          {renderPopulationGraph('Wolves', 'wolves', '#555', maxWolfPopulation, 'Wolves')}
+          {renderPopulationGraph('Trees', 'trees', '#228B22', MAX_TREE_POPULATION, 'Trees')}
+          {renderPopulationGraph('Deer', 'deer', '#8B4513', MAX_DEER_POPULATION, 'Deer')}
+          {renderPopulationGraph('Wolves', 'wolves', '#555', MAX_WOLF_POPULATION, 'Wolves')}
         </div>
         
         {/* Center column - Forest View */}
@@ -744,7 +893,7 @@ const EcosystemVisualization = () => {
             Forest Ecosystem
           </h2>
           
-          {renderTreeGrid()}
+          {renderTreeDensityGrid()}
           
           <div style={{ 
             marginTop: '10px', 
@@ -752,23 +901,28 @@ const EcosystemVisualization = () => {
             display: 'flex',
             justifyContent: 'center',
             gap: '5px',
-            fontSize: '11px'
+            fontSize: '11px',
+            flexWrap: 'wrap'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <div style={{ width: '10px', height: '10px', backgroundColor: '#90EE90' }}></div>
-              <span>Seedling (≤2 yrs)</span>
+              <div style={{ width: '10px', height: '10px', backgroundColor: '#dab88b' }}></div>
+              <span>Very sparse</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <div style={{ width: '10px', height: '10px', backgroundColor: '#32CD32' }}></div>
-              <span>Young (≤10 yrs)</span>
+              <div style={{ width: '10px', height: '10px', backgroundColor: '#c2e088' }}></div>
+              <span>Sparse</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <div style={{ width: '10px', height: '10px', backgroundColor: '#228B22' }}></div>
-              <span>Mature (≤50 yrs)</span>
+              <div style={{ width: '10px', height: '10px', backgroundColor: '#8ed861' }}></div>
+              <span>Medium</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <div style={{ width: '10px', height: '10px', backgroundColor: '#006400' }}></div>
-              <span>Old (50 yrs +)</span>
+              <div style={{ width: '10px', height: '10px', backgroundColor: '#4caf50' }}></div>
+              <span>Dense</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <div style={{ width: '10px', height: '10px', backgroundColor: '#2e7d32' }}></div>
+              <span>Very dense</span>
             </div>
           </div>
         </div>
@@ -809,10 +963,10 @@ const EcosystemVisualization = () => {
             "Reproduced": stats.deer.reproducedCount || 0,
             "Migrated": stats.deer.migratedCount || 0,
             "Foraging": stats.deer.averageForagingSuccess || 'N/A',
-            Deaths: (stats.deer.starvationDeaths || 0) + (stats.deer.ageDeath || 0) + (stats.deer.predationDeath || 0),
-            "By Age": stats.deer.ageDeath || 0,
+            Deaths: (stats.deer.starvationDeaths || 0) + (stats.deer.ageDeaths || 0) + (stats.deer.predationDeaths || 0),
+            "By Age": stats.deer.ageDeaths || 0,
             "By Starvation": stats.deer.starvationDeaths || 0,
-            "By Predation": stats.deer.predationDeath || 0
+            "By Predation": stats.deer.predationDeaths || 0
           }, "#8B4513", "🦌")}
           
           {renderStatCard("WOLVES", {
@@ -826,8 +980,75 @@ const EcosystemVisualization = () => {
             "By Age": stats.wolves.ageDeaths || 0,
             "By Starvation": stats.wolves.starvationDeaths || 0
           }, "#555", "🐺")}
+          
+          {/* Log control buttons */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            marginTop: '15px',
+            gap: '5px'
+          }}>
+            <button
+              onClick={handleToggleLogs}
+              style={{
+                padding: '4px 8px',
+                fontSize: '12px',
+                backgroundColor: showLogs ? '#4caf50' : '#e0e0e0',
+                color: showLogs ? 'white' : 'black',
+                border: '2px outset #ddd',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                flex: 1
+              }}
+            >
+              {showLogs ? 'Hide Logs' : 'Show Logs'}
+            </button>
+            
+            <button
+              onClick={handleExportLogs}
+              disabled={logs.length === 0}
+              style={{
+                padding: '4px 8px',
+                fontSize: '12px',
+                backgroundColor: logs.length === 0 ? '#e0e0e0' : '#2196f3',
+                color: logs.length === 0 ? '#999' : 'white',
+                border: '2px outset #ddd',
+                borderRadius: '3px',
+                cursor: logs.length === 0 ? 'default' : 'pointer',
+                opacity: logs.length === 0 ? 0.7 : 1,
+                flex: 1
+              }}
+            >
+              Export Logs
+            </button>
+          </div>
         </div>
       </div>
+      
+      {/* Logs panel (collapsible) */}
+      {showLogs && (
+        <div style={{
+          backgroundColor: '#f0f0f0',
+          padding: '10px',
+          border: '2px outset #ddd',
+          borderRadius: '3px',
+          marginTop: '20px',
+          width: '100%',
+          maxWidth: '1200px',
+          margin: '20px auto 0'
+        }}>
+          <h2 style={{ 
+            fontSize: '16px', 
+            textAlign: 'center', 
+            margin: '0 0 10px 0',
+            borderBottom: '1px solid #ccc',
+            paddingBottom: '5px'
+          }}>
+            Simulation Logs
+          </h2>
+          {renderLogs()}
+        </div>
+      )}
     </div>
   );
 };
