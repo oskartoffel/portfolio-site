@@ -1,4 +1,4 @@
-// src/components/EcosystemVisualization.jsx
+// This version uses a reliable setInterval approach to run the simulation.
 import React, { useState, useEffect, useRef } from 'react';
 import { SimulationManager } from '../simulation/SimulationManager';
 
@@ -35,9 +35,9 @@ const EcosystemVisualization = () => {
   
   // Refs
   const simRef = useRef(null);
-  const animationRef = useRef(null);
-  const lastRunTimeRef = useRef(0);
   const logsRef = useRef([]);
+  const intervalRef = useRef(null);
+  const isRunningRef = useRef(false);
   
   // Simulation configuration
   const config = {
@@ -175,20 +175,20 @@ const EcosystemVisualization = () => {
       // Log year start
       addLog(`Starting Year ${currentYear + 1}`, 'system');
       
-      // STEP 5: Run one simulation year
+      // Run one simulation year
       const yearStats = simRef.current.simulateYear();
       
-      // STEP 6: Update year counter
+      // Update year counter
       const newYear = currentYear + 1;
       setCurrentYear(newYear);
       
-      // STEP 7: Update stats display
-      setStats(yearStats);
+      // Update stats display
+      setStats({...yearStats});
       
       // Log detailed statistics
       logDetailedStats(yearStats);
       
-      // STEP 8: Create and add new data point to graph data
+      // Create and add new data point to graph data
       const newDataPoint = createDataPoint(newYear, yearStats);
       setPopulationData(prevData => [...prevData, newDataPoint]);
       
@@ -197,9 +197,11 @@ const EcosystemVisualization = () => {
         addLog("Simulation complete!", 'system');
         setIsRunning(false);
         setIsComplete(true);
-        if (animationRef.current) {
-          cancelAnimationFrame(animationRef.current);
-          animationRef.current = null;
+        
+        // Clean up interval if running
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
         }
       }
       
@@ -208,9 +210,11 @@ const EcosystemVisualization = () => {
       console.error("Error running simulation year:", error);
       addLog(`Error during simulation: ${error.message}`, 'error');
       setIsRunning(false);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
+      
+      // Clean up interval if running
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     }
   };
@@ -237,82 +241,85 @@ const EcosystemVisualization = () => {
     addLog(`  - Deaths: Age=${yearStats.wolves.ageDeaths || 0}, Starvation=${yearStats.wolves.starvationDeaths || 0}`, 'wolf');
   };
   
-  // Animation loop for continuous simulation
-  const animateSimulation = (timestamp) => {
-    if (!isRunning || !isInitialized || isStabilizing || isComplete) {
-      return;
-    }
-    
-    const elapsed = timestamp - lastRunTimeRef.current;
-    
-    if (elapsed >= simulationSpeed) {
-      runSimulationYear();
-      lastRunTimeRef.current = timestamp;
-    }
-    
-    animationRef.current = requestAnimationFrame(animateSimulation);
-  };
-  
   // Initialize on component mount
   useEffect(() => {
     initializeSimulation();
     
+    // Cleanup on unmount
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
   }, []);
   
-  // Handle animation loop when isRunning changes
-  useEffect(() => {
-    if (isRunning && isInitialized && !isStabilizing && !isComplete) {
-      console.log("Starting animation loop");
-      lastRunTimeRef.current = performance.now();
-      animationRef.current = requestAnimationFrame(animateSimulation);
-      
-      addLog("Simulation running", 'system');
-    } else if (animationRef.current) {
-      console.log("Stopping animation loop");
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-      
-      if (!isComplete && isInitialized) {
-        addLog("Simulation paused", 'system');
-      }
+  // Timer-based continuous simulation
+  const handleStart = () => {
+    if (!isInitialized || isStabilizing || isComplete || isRunningRef.current) return;
+    
+    isRunningRef.current = true;
+    setIsRunning(true);
+    
+    // Clear any existing interval just in case
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
     
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isRunning, isInitialized, isStabilizing, isComplete]);
-  
-  // UI control handlers
-  const handleStart = () => {
-    if (!isInitialized || isStabilizing || isComplete) return;
-    setIsRunning(true);
+    // Set up a simple interval that runs the simulation
+    intervalRef.current = setInterval(() => {
+      runSimulationYear();
+    }, simulationSpeed);
+    
+    addLog("Simulation running", 'system');
   };
   
+  // Stop the simulation
   const handleStop = () => {
+    isRunningRef.current = false;
     setIsRunning(false);
+    
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    
+    addLog("Simulation paused", 'system');
   };
   
+  // Step button handler
+  const handleStep = () => {
+    if (!isInitialized || isStabilizing || isComplete) return;
+    
+    // If currently running, stop first
+    if (isRunningRef.current) {
+      handleStop();
+    }
+    
+    // Run one year
+    runSimulationYear();
+  };
+  
+  // Reset button handler
   const handleReset = () => {
     handleStop();
     initializeSimulation();
   };
   
-  const handleStep = () => {
-    if (!isInitialized || isStabilizing || isComplete) return;
-    handleStop(); // Ensure animation loop is stopped
-    runSimulationYear();
-  };
+  // Update interval when speed changes
+  useEffect(() => {
+    if (isRunningRef.current && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      
+      intervalRef.current = setInterval(() => {
+        runSimulationYear();
+      }, simulationSpeed);
+      
+      addLog(`Simulation speed changed to ${simulationSpeed}ms`, 'system');
+    }
+  }, [simulationSpeed]);
   
   const handleSpeedChange = (e) => {
     const newSpeed = Number(e.target.value);
-    addLog(`Simulation speed changed to ${e.target.options[e.target.selectedIndex].text}`, 'system');
     setSimulationSpeed(newSpeed);
   };
   
@@ -463,7 +470,7 @@ const EcosystemVisualization = () => {
     );
   };
   
-  // Render population graphs with fixed scales
+  // Render population graphs with sliding window approach
   const renderPopulationGraph = (title, dataKey, color, maxPopulation, yLabel) => {
     // Graph dimensions
     const graphWidth = 360;
@@ -472,21 +479,37 @@ const EcosystemVisualization = () => {
     const innerWidth = graphWidth - padding.left - padding.right;
     const innerHeight = graphHeight - padding.top - padding.bottom;
     
-    // Define fixed x and y scales
-    const xScale = innerWidth / MAX_YEARS;
+    // Determine visible window for the graph - exactly like in debuginterface
+    const visibleYears = 20; // Show 20 years at a time
+    
+    // Calculate visible data range
+    const startYear = Math.max(0, currentYear - visibleYears + 1);
+    const visibleData = populationData.filter(d => d.year >= startYear && d.year <= currentYear);
+    
+    // Define scales based on visible window
+    const xScale = innerWidth / (visibleYears - 1 || 1); // Avoid division by zero
     const yScale = innerHeight / maxPopulation;
     
-    // Generate line points (using the fixed scales)
-    const points = populationData.map((d) => {
-      // Always use fixed scales
-      const x = padding.left + (d.year * xScale);
+    // Generate line points for visible data only
+    const points = visibleData.map((d) => {
+      // Map year to x position relative to the visible window
+      const x = padding.left + ((d.year - startYear) * xScale);
       const y = padding.top + innerHeight - (d[dataKey] * yScale);
       return `${x},${y}`;
     }).join(' ');
     
+    // Current value is the latest data point
     const currentValue = populationData.length > 0 
       ? populationData[populationData.length - 1][dataKey] 
       : 0;
+    
+    // Calculate visible x-axis labels based on current window
+    const visibleXLabels = [];
+    const numLabels = 6;
+    for (let i = 0; i < numLabels; i++) {
+      const yearOffset = Math.floor(i * (visibleYears - 1) / (numLabels - 1));
+      visibleXLabels.push(startYear + yearOffset);
+    }
     
     return (
       <div style={{ marginBottom: '15px' }}>
@@ -538,11 +561,9 @@ const EcosystemVisualization = () => {
             );
           })}
           
-          {/* X-axis grid lines and labels */}
-          {Array.from({ length: 6 }).map((_, i) => {
-            const yearInterval = MAX_YEARS / 5;
-            const x = padding.left + i * (innerWidth / 5);
-            const year = i * yearInterval;
+          {/* X-axis grid lines and labels - now based on visible window */}
+          {visibleXLabels.map((year, i) => {
+            const x = padding.left + (i * innerWidth / (numLabels - 1));
             return (
               <React.Fragment key={`grid-x-${i}`}>
                 <line 
@@ -561,7 +582,7 @@ const EcosystemVisualization = () => {
                   fontSize: '10px',
                   color: '#666'
                 }}>
-                  {Math.floor(year)}
+                  {year}
                 </div>
               </React.Fragment>
             );
@@ -591,8 +612,8 @@ const EcosystemVisualization = () => {
             Year
           </div>
           
-          {/* Population line */}
-          {populationData.length > 1 && (
+          {/* Population line - only for visible data */}
+          {visibleData.length > 1 && (
             <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
               <polyline 
                 points={points} 
@@ -602,10 +623,10 @@ const EcosystemVisualization = () => {
               />
               
               {/* Current value marker */}
-              {populationData.length > 0 && (
+              {visibleData.length > 0 && (
                 <circle 
-                  cx={padding.left + (populationData[populationData.length - 1].year * xScale)}
-                  cy={padding.top + innerHeight - (populationData[populationData.length - 1][dataKey] * yScale)}
+                  cx={padding.left + ((visibleData[visibleData.length - 1].year - startYear) * xScale)}
+                  cy={padding.top + innerHeight - (visibleData[visibleData.length - 1][dataKey] * yScale)}
                   r="4"
                   fill="white"
                   stroke={color}
