@@ -1,4 +1,4 @@
-// This version uses a reliable setInterval approach to run the simulation.
+// This version uses a simple async loop to run the simulation
 import React, { useState, useEffect, useRef } from 'react';
 import { SimulationManager } from '../simulation/SimulationManager';
 
@@ -36,8 +36,8 @@ const EcosystemVisualization = () => {
   // Refs
   const simRef = useRef(null);
   const logsRef = useRef([]);
-  const intervalRef = useRef(null);
-  const isRunningRef = useRef(false);
+  // Simple ref to track if simulation should keep running
+  const shouldRunRef = useRef(false);
   
   // Simulation configuration
   const config = {
@@ -118,6 +118,7 @@ const EcosystemVisualization = () => {
     setPopulationData([]);
     logsRef.current = [];
     setLogs([]);
+    shouldRunRef.current = false;
     
     try {
       // STEP 1: Create a new simulation manager
@@ -168,19 +169,19 @@ const EcosystemVisualization = () => {
   // Run a single year of the simulation
   const runSimulationYear = () => {
     if (!simRef.current || !isInitialized || isStabilizing || isComplete) {
-      return;
+      return false;
     }
     
     try {
       // Log year start
-      addLog(`Starting Year ${currentYear + 1}`, 'system');
+      const nextYear = currentYear + 1;
+      addLog(`Starting Year ${nextYear}`, 'system');
       
       // Run one simulation year
       const yearStats = simRef.current.simulateYear();
       
       // Update year counter
-      const newYear = currentYear + 1;
-      setCurrentYear(newYear);
+      setCurrentYear(nextYear);
       
       // Update stats display
       setStats({...yearStats});
@@ -189,33 +190,25 @@ const EcosystemVisualization = () => {
       logDetailedStats(yearStats);
       
       // Create and add new data point to graph data
-      const newDataPoint = createDataPoint(newYear, yearStats);
+      const newDataPoint = createDataPoint(nextYear, yearStats);
       setPopulationData(prevData => [...prevData, newDataPoint]);
       
       // Check if simulation is complete
-      if (newYear >= config.years) {
+      if (nextYear >= config.years) {
         addLog("Simulation complete!", 'system');
         setIsRunning(false);
+        shouldRunRef.current = false;
         setIsComplete(true);
-        
-        // Clean up interval if running
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-        }
+        return false;
       }
       
-      return yearStats;
+      return true;
     } catch (error) {
       console.error("Error running simulation year:", error);
       addLog(`Error during simulation: ${error.message}`, 'error');
       setIsRunning(false);
-      
-      // Clean up interval if running
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      shouldRunRef.current = false;
+      return false;
     }
   };
   
@@ -241,83 +234,74 @@ const EcosystemVisualization = () => {
     addLog(`  - Deaths: Age=${yearStats.wolves.ageDeaths || 0}, Starvation=${yearStats.wolves.starvationDeaths || 0}`, 'wolf');
   };
   
+  // Simple sleep utility
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  
   // Initialize on component mount
   useEffect(() => {
     initializeSimulation();
     
-    // Cleanup on unmount
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      // No need for cleanup since we're not using intervals
+      shouldRunRef.current = false;
     };
   }, []);
   
-  // Timer-based continuous simulation
+  // This is our simplified auto-run function
+  const runContinuously = async () => {
+    // This will keep running until shouldRunRef.current becomes false
+    while (shouldRunRef.current) {
+      const success = runSimulationYear();
+      if (!success) {
+        // If runSimulationYear returns false, something went wrong or simulation completed
+        shouldRunRef.current = false;
+        setIsRunning(false);
+        break;
+      }
+      
+      // Pause for the specified simulation speed
+      await sleep(simulationSpeed);
+    }
+  };
+  
+  // Timer-based continuous simulation - simplified to use async/await
   const handleStart = () => {
-    if (!isInitialized || isStabilizing || isComplete || isRunningRef.current) return;
+    if (!isInitialized || isStabilizing || isComplete || isRunning) return;
     
-    isRunningRef.current = true;
+    // Set state for UI
     setIsRunning(true);
     
-    // Clear any existing interval just in case
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
+    // Set ref for control logic
+    shouldRunRef.current = true;
     
-    // Set up a simple interval that runs the simulation
-    intervalRef.current = setInterval(() => {
-      runSimulationYear();
-    }, simulationSpeed);
+    // Start the continuous simulation
+    runContinuously();
     
     addLog("Simulation running", 'system');
   };
   
-  // Stop the simulation
+  // Stop the simulation - just change the flag
   const handleStop = () => {
-    isRunningRef.current = false;
+    shouldRunRef.current = false;
     setIsRunning(false);
-    
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    
     addLog("Simulation paused", 'system');
   };
   
-  // Step button handler
+  // Step button handler - just runs one year directly
   const handleStep = () => {
-    if (!isInitialized || isStabilizing || isComplete) return;
+    if (!isInitialized || isStabilizing || isComplete || isRunning) return;
     
-    // If currently running, stop first
-    if (isRunningRef.current) {
-      handleStop();
-    }
-    
-    // Run one year
     runSimulationYear();
   };
   
   // Reset button handler
   const handleReset = () => {
-    handleStop();
+    shouldRunRef.current = false;
+    setIsRunning(false);
     initializeSimulation();
   };
   
-  // Update interval when speed changes
-  useEffect(() => {
-    if (isRunningRef.current && intervalRef.current) {
-      clearInterval(intervalRef.current);
-      
-      intervalRef.current = setInterval(() => {
-        runSimulationYear();
-      }, simulationSpeed);
-      
-      addLog(`Simulation speed changed to ${simulationSpeed}ms`, 'system');
-    }
-  }, [simulationSpeed]);
-  
+  // Simply update the speed state - it will be used next time in the loop
   const handleSpeedChange = (e) => {
     const newSpeed = Number(e.target.value);
     setSimulationSpeed(newSpeed);
