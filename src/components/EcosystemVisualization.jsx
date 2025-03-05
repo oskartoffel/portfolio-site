@@ -1,7 +1,28 @@
-// This version uses a simple async loop to run the simulation
+// src/pages/EcosystemSimulation.jsx
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import Window from '../components/ui/Window';
+import XPBackground from '../components/ui/XPBackground';
 import { SimulationManager } from '../simulation/SimulationManager';
 
+const EcosystemSimulation = () => {
+  // We'll render the ecosystem visualization component here
+  return (
+    <XPBackground>
+      <Window title="Ecosystem Simulation" width="95%" height="95%">
+        <div style={{ padding: '5px' }}>
+          <h1 style={{ textAlign: 'center', marginTop: '0' }}>Forest Ecosystem Simulation</h1>
+          <EcosystemVisualization />
+          <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            <Link to="/portfolio"><button>Back to Portfolio</button></Link>
+          </div>
+        </div>
+      </Window>
+    </XPBackground>
+  );
+};
+
+// This is the component with the fixes
 const EcosystemVisualization = () => {
   // Simulation state
   const [simulationManager, setSimulationManager] = useState(null);
@@ -36,8 +57,9 @@ const EcosystemVisualization = () => {
   // Refs
   const simRef = useRef(null);
   const logsRef = useRef([]);
-  // Simple ref to track if simulation should keep running
-  const shouldRunRef = useRef(false);
+  const timeoutRef = useRef(null); // Changed from intervalRef to timeoutRef
+  const isRunningRef = useRef(false);
+  const currentYearRef = useRef(0); // Add a ref to track current year
   
   // Simulation configuration
   const config = {
@@ -80,7 +102,7 @@ const EcosystemVisualization = () => {
     const newLog = {
       id: Date.now(),
       timestamp: new Date().toISOString(),
-      year: currentYear,
+      year: currentYearRef.current, // Use ref instead of state
       type,
       message
     };
@@ -114,11 +136,11 @@ const EcosystemVisualization = () => {
     setIsStabilizing(true);
     setStabilizationProgress(0);
     setCurrentYear(0);
+    currentYearRef.current = 0; // Reset the ref too
     setIsComplete(false);
     setPopulationData([]);
     logsRef.current = [];
     setLogs([]);
-    shouldRunRef.current = false;
     
     try {
       // STEP 1: Create a new simulation manager
@@ -169,18 +191,21 @@ const EcosystemVisualization = () => {
   // Run a single year of the simulation
   const runSimulationYear = () => {
     if (!simRef.current || !isInitialized || isStabilizing || isComplete) {
-      return false;
+      return null;
     }
     
     try {
+      // Get the current year from ref (more reliable)
+      const nextYear = currentYearRef.current + 1;
+      
       // Log year start
-      const nextYear = currentYear + 1;
       addLog(`Starting Year ${nextYear}`, 'system');
       
       // Run one simulation year
       const yearStats = simRef.current.simulateYear();
       
-      // Update year counter
+      // Update year counter in BOTH state and ref
+      currentYearRef.current = nextYear;
       setCurrentYear(nextYear);
       
       // Update stats display
@@ -197,18 +222,30 @@ const EcosystemVisualization = () => {
       if (nextYear >= config.years) {
         addLog("Simulation complete!", 'system');
         setIsRunning(false);
-        shouldRunRef.current = false;
+        isRunningRef.current = false;
         setIsComplete(true);
-        return false;
+        
+        // Clean up timeout if running
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
       }
       
-      return true;
+      return yearStats;
     } catch (error) {
       console.error("Error running simulation year:", error);
       addLog(`Error during simulation: ${error.message}`, 'error');
       setIsRunning(false);
-      shouldRunRef.current = false;
-      return false;
+      isRunningRef.current = false;
+      
+      // Clean up timeout if running
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      
+      return null;
     }
   };
   
@@ -234,74 +271,85 @@ const EcosystemVisualization = () => {
     addLog(`  - Deaths: Age=${yearStats.wolves.ageDeaths || 0}, Starvation=${yearStats.wolves.starvationDeaths || 0}`, 'wolf');
   };
   
-  // Simple sleep utility
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-  
   // Initialize on component mount
   useEffect(() => {
     initializeSimulation();
     
+    // Cleanup on unmount
     return () => {
-      // No need for cleanup since we're not using intervals
-      shouldRunRef.current = false;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
   
-  // This is our simplified auto-run function
-  const runContinuously = async () => {
-    // This will keep running until shouldRunRef.current becomes false
-    while (shouldRunRef.current) {
-      const success = runSimulationYear();
-      if (!success) {
-        // If runSimulationYear returns false, something went wrong or simulation completed
-        shouldRunRef.current = false;
-        setIsRunning(false);
-        break;
+  // MAJOR CHANGE: Changed from setInterval to recursive setTimeout
+  const runContinuously = () => {
+    // Check if we should still be running
+    if (!isRunningRef.current || currentYearRef.current >= config.years) {
+      isRunningRef.current = false;
+      setIsRunning(false);
+      if (currentYearRef.current >= config.years) {
+        setIsComplete(true);
       }
-      
-      // Pause for the specified simulation speed
-      await sleep(simulationSpeed);
+      return;
+    }
+    
+    // Run one simulation year
+    const yearStats = runSimulationYear();
+    
+    // If we should continue running, schedule the next iteration
+    if (isRunningRef.current && currentYearRef.current < config.years) {
+      timeoutRef.current = setTimeout(runContinuously, simulationSpeed);
     }
   };
   
-  // Timer-based continuous simulation - simplified to use async/await
+  // Start button handler - completely rewritten
   const handleStart = () => {
-    if (!isInitialized || isStabilizing || isComplete || isRunning) return;
+    if (!isInitialized || isStabilizing || isComplete || isRunningRef.current) return;
     
-    // Set state for UI
+    // Set running flags
+    isRunningRef.current = true;
     setIsRunning(true);
     
-    // Set ref for control logic
-    shouldRunRef.current = true;
-    
-    // Start the continuous simulation
-    runContinuously();
-    
     addLog("Simulation running", 'system');
+    
+    // Start the recursive process
+    runContinuously();
   };
   
-  // Stop the simulation - just change the flag
+  // Stop the simulation
   const handleStop = () => {
-    shouldRunRef.current = false;
+    isRunningRef.current = false;
     setIsRunning(false);
+    
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    
     addLog("Simulation paused", 'system');
   };
   
-  // Step button handler - just runs one year directly
+  // Step button handler
   const handleStep = () => {
-    if (!isInitialized || isStabilizing || isComplete || isRunning) return;
+    if (!isInitialized || isStabilizing || isComplete) return;
     
+    // If currently running, stop first
+    if (isRunningRef.current) {
+      handleStop();
+    }
+    
+    // Run one year
     runSimulationYear();
   };
   
   // Reset button handler
   const handleReset = () => {
-    shouldRunRef.current = false;
-    setIsRunning(false);
+    handleStop();
     initializeSimulation();
   };
   
-  // Simply update the speed state - it will be used next time in the loop
   const handleSpeedChange = (e) => {
     const newSpeed = Number(e.target.value);
     setSimulationSpeed(newSpeed);
@@ -1058,4 +1106,4 @@ const EcosystemVisualization = () => {
   );
 };
 
-export default EcosystemVisualization;
+export default EcosystemSimulation;
