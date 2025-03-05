@@ -1,8 +1,11 @@
 // src/components/ecosystem/visualization/ForestVisualization.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import TreeDensityGrid from './TreeDensityGrid';
+import CanvasTreeDensityGrid from './CanvasTreeDensityGrid';
 
 const ForestVisualization = ({ simulationManager }) => {
+  const [useCanvasView, setUseCanvasView] = useState(true);
+  
   return (
     <div style={{ 
       backgroundColor: '#f0f0f0',
@@ -13,18 +16,76 @@ const ForestVisualization = ({ simulationManager }) => {
       flexDirection: 'column',
       alignItems: 'center'
     }}>
-      <h2 style={{ 
-        fontSize: '16px', 
-        textAlign: 'center', 
-        margin: '0 0 10px 0',
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: '10px',
         borderBottom: '1px solid #ccc',
-        paddingBottom: '5px',
-        width: '100%'
+        paddingBottom: '5px'
       }}>
-        Forest Ecosystem
-      </h2>
+        <h2 style={{ 
+          fontSize: '16px', 
+          margin: 0
+        }}>
+          Forest Ecosystem
+        </h2>
+        
+        <div style={{
+          display: 'flex',
+          gap: '5px',
+          alignItems: 'center'
+        }}>
+          <span style={{ fontSize: '11px' }}>View:</span>
+          <button 
+            onClick={() => setUseCanvasView(true)}
+            style={{
+              backgroundColor: useCanvasView ? '#2874A6' : '#e0e0e0',
+              color: useCanvasView ? 'white' : 'black',
+              border: '2px outset #ddd',
+              borderRadius: '2px',
+              padding: '2px 8px',
+              fontSize: '11px',
+              cursor: 'pointer'
+            }}
+          >
+            Enhanced
+          </button>
+          <button 
+            onClick={() => setUseCanvasView(false)}
+            style={{
+              backgroundColor: !useCanvasView ? '#2874A6' : '#e0e0e0',
+              color: !useCanvasView ? 'white' : 'black',
+              border: '2px outset #ddd',
+              borderRadius: '2px',
+              padding: '2px 8px',
+              fontSize: '11px',
+              cursor: 'pointer'
+            }}
+          >
+            Grid
+          </button>
+        </div>
+      </div>
       
-      <TreeDensityGrid simulationManager={simulationManager} />
+      {useCanvasView ? (
+        <CanvasTreeDensityGrid simulationManager={simulationManager} />
+      ) : (
+        <TreeDensityGrid simulationManager={simulationManager} />
+      )}
+      
+      <div style={{ 
+        marginTop: '10px', 
+        fontSize: '11px', 
+        fontStyle: 'italic',
+        textAlign: 'center',
+        color: '#666'
+      }}>
+        {useCanvasView 
+          ? "Enhanced view shows the forest with natural tree distribution patterns." 
+          : "Grid view divides the forest into regions by tree density."}
+      </div>
     </div>
   );
 };
