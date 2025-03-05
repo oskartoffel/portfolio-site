@@ -1,0 +1,96 @@
+/* src/styles/enhanced-button.css */
+
+.enhanced-button {
+    /* Base Button Styles */
+    font-family: 'Tahoma', sans-serif;
+    border-radius: 3px;
+    padding: 6px 12px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+  }
+  
+  /* Button with XP gradient look (makes it more Y2K) */
+  .enhanced-button.primary {
+    position: relative;
+    border-width: 2px;
+    border-style: solid;
+    transition: all 0.2s ease;
+  }
+  
+  /* Home theme button */
+  .enhanced-button.primary.home {
+    border-color: var(--home-accent);
+    background: linear-gradient(to bottom, #4a7a9c, #2c4957);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.3);
+  }
+  .enhanced-button.primary.home:hover {
+    background: linear-gradient(to bottom, #5b8bad, #3d5a68);
+  }
+  
+  /* Portfolio theme button */
+  .enhanced-button.primary.portfolio {
+    border-color: var(--eco-accent-1);
+    background: linear-gradient(to bottom, #4b9460, #1b4d2e);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.3);
+  }
+  .enhanced-button.primary.portfolio:hover {
+    background: linear-gradient(to bottom, #5ca571, #2c5e3f);
+  }
+  
+  /* CV theme button */
+  .enhanced-button.primary.cv {
+    border-color: var(--cv-accent-1);
+    background: linear-gradient(to bottom, #d53f8c, #42275a);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.3);
+  }
+  .enhanced-button.primary.cv:hover {
+    background: linear-gradient(to bottom, #e650a1, #53366b);
+  }
+  
+  /* Cover Letter theme button */
+  .enhanced-button.primary.coverletter {
+    border-color: var(--cl-accent-1);
+    background: linear-gradient(to bottom, #f27d0c, #6b2113);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.3);
+  }
+  .enhanced-button.primary.coverletter:hover {
+    background: linear-gradient(to bottom, #ff8e1d, #7c3224);
+  }
+  
+  /* Disabled state */
+  .enhanced-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(40%);
+  }
+  
+  /* Y2K Shimmer effect on hover */
+  .enhanced-button.primary:after {
+    content: '';
+    position: absolute;
+    top: -110%;
+    left: -210%;
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    transform: rotate(30deg);
+    background: rgba(255, 255, 255, 0.13);
+    background: linear-gradient(
+      to right, 
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.13) 77%,
+      rgba(255, 255, 255, 0.5) 92%,
+      rgba(255, 255, 255, 0.0) 100%
+    );
+  }
+  
+  .enhanced-button.primary:hover:after {
+    opacity: 1;
+    top: -30%;
+    left: -30%;
+    transition-property: left, top, opacity;
+    transition-duration: 0.7s, 0.7s, 0.15s;
+    transition-timing-function: ease;
+  }

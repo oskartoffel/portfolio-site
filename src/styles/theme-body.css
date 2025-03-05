@@ -1,0 +1,48 @@
+/* src/styles/theme-body.css */
+
+/* Base body styles */
+body {
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.4s ease;
+  }
+  
+  /* Home Theme */
+  body.theme-home {
+    background-color: var(--home-secondary);
+    color: var(--color-text-primary);
+    background-image: linear-gradient(to bottom right, var(--home-secondary), var(--home-primary));
+  }
+  
+  /* Portfolio/Ecosystem Theme */
+  body.theme-portfolio {
+    background-color: var(--eco-secondary);
+    color: var(--color-text-primary);
+    background-image: linear-gradient(to bottom right, var(--eco-secondary), var(--eco-primary));
+    /* Optional subtle texture */
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234b9460' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(to bottom right, var(--eco-secondary), var(--eco-primary));
+  }
+  
+  /* CV Theme */
+  body.theme-cv {
+    background-color: var(--cv-secondary);
+    color: var(--color-text-primary);
+    background-image: linear-gradient(to bottom right, var(--cv-secondary), var(--cv-primary));
+    /* Optional subtle stars pattern */
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18l5-5 5 5-5 5-5-5zm10 10l5-5 5 5-5 5-5-5zm10 10l5-5 5 5-5 5-5-5z' fill='%239f7aea' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E"),
+      linear-gradient(to bottom right, var(--cv-secondary), var(--cv-primary));
+  }
+  
+  /* Cover Letter Theme */
+  body.theme-coverletter {
+    background-color: var(--cl-secondary);
+    color: var(--color-text-primary);
+    background-image: linear-gradient(to bottom right, var(--cl-secondary), var(--cl-primary));
+    /* Optional subtle flame-like pattern */
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f27d0c' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(to bottom right, var(--cl-secondary), var(--cl-primary));
+  }

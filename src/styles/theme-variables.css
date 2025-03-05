@@ -1,0 +1,37 @@
+/* src/styles/theme-variables.css */
+:root {
+    /* Base Colors */
+    --color-background: rgb(10, 32, 41); 
+    --color-text-primary: #f0f0f0;
+    --color-text-secondary: #b8b8b8;
+    
+    /* XP Theme Colors */
+    --xp-blue: #3a6ea5;
+    --xp-silver: #d4d0c8;
+    --xp-border-light: #ffffff;
+    --xp-border-dark: #808080;
+    
+    /* Theme: Home */
+    --home-primary: #2c4957;
+    --home-secondary: #1d3240;
+    --home-accent: #4a7a9c;
+    
+    /* Theme: Portfolio/Ecosystem */
+    --eco-primary: #1b4d2e;     /* Dark forest green */
+    --eco-secondary: #0f2e1b;   /* Deeper green */
+    --eco-accent-1: #4b9460;    /* Bright leaf green */
+    --eco-accent-2: #8b5a2b;    /* Woody brown */
+    --eco-accent-3: #2a7a9b;    /* Water blue */
+    
+    /* Theme: CV */
+    --cv-primary: #42275a;      /* Deep purple */
+    --cv-secondary: #2c1a3d;    /* Darker purple */
+    --cv-accent-1: #d53f8c;     /* Pink */
+    --cv-accent-2: #9f7aea;     /* Light purple */
+    
+    /* Theme: Cover Letter */
+    --cl-primary: #6b2113;      /* Deep red */
+    --cl-secondary: #42140c;    /* Darker red */
+    --cl-accent-1: #f27d0c;     /* Orange */
+    --cl-accent-2: #fcce00;     /* Yellow */
+  }
