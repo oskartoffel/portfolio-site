@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import XPBackground from '../components/ui/XPBackground';
 import ClassicWindow from '../components/ui/ClassicWindow';
+import ClassicXPButton from '../components/ui/ClassicXPButton';
 import { useTheme } from '../components/ui/ThemeProvider';
 
 const Home = () => {
@@ -24,8 +25,8 @@ const Home = () => {
           <h1 style={{ 
             marginTop: '10px',
             color: 'var(--home-primary)',
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '24px'
+            fontFamily: 'Popstar, Tahoma, Arial, sans-serif',
+            fontSize: '28px'
           }}>
             Hi, welcome to my portfolio!
           </h1>
@@ -49,62 +50,27 @@ const Home = () => {
             flexWrap: 'wrap'
           }}>
             <Link to="/cv" style={{ textDecoration: 'none' }}>
-              <button className="xp-button" style={buttonStyle('cv')}>
+              <ClassicXPButton size="large">
                 My CV
-              </button>
+              </ClassicXPButton>
             </Link>
             
             <Link to="/cover-letter" style={{ textDecoration: 'none' }}>
-              <button className="xp-button" style={buttonStyle('coverletter')}>
+              <ClassicXPButton size="large">
                 Cover Letter
-              </button>
+              </ClassicXPButton>
             </Link>
             
             <Link to="/portfolio" style={{ textDecoration: 'none' }}>
-              <button className="xp-button" style={buttonStyle('portfolio')}>
+              <ClassicXPButton size="large">
                 Portfolio
-              </button>
+              </ClassicXPButton>
             </Link>
           </div>
         </div>
       </ClassicWindow>
     </XPBackground>
   );
-};
-
-// Custom button styles that match XP theme but with custom colors
-const buttonStyle = (type) => {
-  const styles = {
-    cv: {
-      background: 'linear-gradient(to bottom, #9a3683, #6e1e5a)',
-      borderColor: '#6e1e5a',
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: '14px',
-      padding: '6px 16px',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
-    },
-    coverletter: {
-      background: 'linear-gradient(to bottom, #c15d26, #992a0a)',
-      borderColor: '#992a0a',
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: '14px',
-      padding: '6px 16px',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
-    },
-    portfolio: {
-      background: 'linear-gradient(to bottom, #38ae57, #267532)',
-      borderColor: '#267532',
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: '14px',
-      padding: '6px 16px',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
-    }
-  };
-  
-  return styles[type];
 };
 
 export default Home;
