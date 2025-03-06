@@ -2,47 +2,106 @@
 
 /* Base body styles */
 body {
-    margin: 0;
-    padding: 0;
-    transition: background-color 0.4s ease;
-  }
-  
-  /* Home Theme */
-  body.theme-home {
-    background-color: var(--home-secondary);
-    color: var(--color-text-primary);
-    background-image: linear-gradient(to bottom right, var(--home-secondary), var(--home-primary));
-  }
-  
-  /* Portfolio/Ecosystem Theme */
-  body.theme-portfolio {
-    background-color: var(--eco-secondary);
-    color: var(--color-text-primary);
-    background-image: linear-gradient(to bottom right, var(--eco-secondary), var(--eco-primary));
-    /* Optional subtle texture */
-    background-image: 
-      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234b9460' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
-      linear-gradient(to bottom right, var(--eco-secondary), var(--eco-primary));
-  }
-  
-  /* CV Theme */
-  body.theme-cv {
-    background-color: var(--cv-secondary);
-    color: var(--color-text-primary);
-    background-image: linear-gradient(to bottom right, var(--cv-secondary), var(--cv-primary));
-    /* Optional subtle stars pattern */
-    background-image: 
-      url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18l5-5 5 5-5 5-5-5zm10 10l5-5 5 5-5 5-5-5zm10 10l5-5 5 5-5 5-5-5z' fill='%239f7aea' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E"),
-      linear-gradient(to bottom right, var(--cv-secondary), var(--cv-primary));
-  }
-  
-  /* Cover Letter Theme */
-  body.theme-coverletter {
-    background-color: var(--cl-secondary);
-    color: var(--color-text-primary);
-    background-image: linear-gradient(to bottom right, var(--cl-secondary), var(--cl-primary));
-    /* Optional subtle flame-like pattern */
-    background-image: 
-      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f27d0c' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
-      linear-gradient(to bottom right, var(--cl-secondary), var(--cl-primary));
-  }
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease;
+  font-family: 'Tahoma', Arial, sans-serif;
+  color: var(--color-text-primary);
+}
+
+button, input, select, textarea {
+  font-family: 'Tahoma', Arial, sans-serif;
+}
+
+/* Classic Window XP button styles */
+.xp-button {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-family: 'Tahoma', Arial, sans-serif;
+  background: linear-gradient(to bottom, #f6f6f6, #e4e4e4);
+  border: 1px solid #999;
+  border-radius: 3px;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+}
+
+.xp-button:hover {
+  background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
+}
+
+.xp-button:active {
+  background: linear-gradient(to bottom, #e4e4e4, #f6f6f6);
+  border-color: #666;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Theme-specific buttons */
+body.theme-home .themed-button {
+  background: linear-gradient(to bottom, #1084d0, #0c61b6);
+  border: 1px solid #0c61b6;
+  color: white;
+}
+
+body.theme-portfolio .themed-button {
+  background: linear-gradient(to bottom, #38ae57, #267532);
+  border: 1px solid #267532;
+  color: white;
+}
+
+body.theme-cv .themed-button {
+  background: linear-gradient(to bottom, #9a3683, #6e1e5a);
+  border: 1px solid #6e1e5a;
+  color: white;
+}
+
+body.theme-coverletter .themed-button {
+  background: linear-gradient(to bottom, #c15d26, #992a0a);
+  border: 1px solid #992a0a;
+  color: white;
+}
+
+/* Home Theme - Classic Windows XP */
+body.theme-home {
+  background-color: var(--xp-blue);
+  /* Default solid color fallback */
+}
+
+/* Portfolio/Ecosystem Theme */
+body.theme-portfolio {
+  background-color: var(--eco-secondary);
+  /* Optional subtle texture */
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234b9460' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* CV Theme */
+body.theme-cv {
+  background-color: var(--cv-secondary);
+}
+
+/* Cover Letter Theme */
+body.theme-coverletter {
+  background-color: var(--cl-secondary);
+}
+
+/* Classic XP window styles */
+.window {
+  border: 1px solid #0c61b6;
+  box-shadow: 0 0 0 1px #ffffff, 2px 2px 8px rgba(0,0,0,0.3);
+  border-radius: 3px;
+  background-color: var(--xp-window-bg);
+}
+
+.title-bar {
+  background: var(--home-titlebar);
+  color: white;
+  padding: 4px 6px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.window-body {
+  padding: 10px;
+  border-top: 1px solid #dfdfdf;
+}

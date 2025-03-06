@@ -1,0 +1,86 @@
+/* src/styles/fonts.css */
+
+/* System Fonts */
+@font-face {
+    font-family: 'Tahoma';
+    src: url('/public/fonts/tahoma.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Tahoma';
+    src: url('/public/fonts/tahomabd.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+  /* Custom Decorative Fonts */
+  @font-face {
+    font-family: 'Bubblicious';
+    src: url('/public/fonts/Bubblicious.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Husky Stash';
+    src: url('/public/fonts/husky stash.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Hybrid';
+    src: url('/public/fonts/hybrid_o.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Hybrid';
+    src: url('/public/fonts/Hybrid_b.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Octuple Max';
+    src: url('/public/fonts/Octuple-max-demo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Popstar';
+    src: url('/public/fonts/POPSTAR.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Popstar Pop';
+    src: url('/public/fonts/POPSTAR_pop.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  /* Usage Examples:
+  
+  Header with Bubblicious font:
+  h1.bubblicious {
+    font-family: 'Bubblicious', cursive;
+  }
+  
+  Text with Husky Stash:
+  p.husky {
+    font-family: 'Husky Stash', sans-serif;
+  }
+  
+  Bold Hybrid text:
+  strong.hybrid {
+    font-family: 'Hybrid', sans-serif;
+    font-weight: bold;
+  }
+  
+  */

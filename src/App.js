@@ -8,6 +8,7 @@ import CoverLetter from './pages/CoverLetter';
 import Portfolio from './pages/Portfolio';
 import EcosystemSimulation from './pages/EcosystemSimulation';
 import './App.css';
+import './styles/fonts.css'; // Import custom fonts
 
 function App() {
   return (

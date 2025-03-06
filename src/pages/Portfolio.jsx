@@ -1,17 +1,25 @@
 // src/pages/Portfolio.jsx 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Window from '../components/ui/Window';
+import ClassicWindow from '../components/ui/ClassicWindow';
 import XPBackground from '../components/ui/XPBackground';
+import { useTheme } from '../components/ui/ThemeProvider';
 
 const Portfolio = () => {
+  const { setTheme } = useTheme();
+  
+  // Set theme to portfolio when component mounts
+  useEffect(() => {
+    setTheme('portfolio');
+  }, [setTheme]);
+
   return (
     <XPBackground>
-      <Window title="My Portfolio" icon="📂">
+      <ClassicWindow title="My Portfolio">
         <h1 style={{ 
           textAlign: 'center', 
           fontFamily: 'Tahoma, Arial, sans-serif',
-          color: '#0058aa',
+          color: '#2a8a43',
           margin: '10px 0 20px'
         }}>
           Portfolio Projects
@@ -29,44 +37,31 @@ const Portfolio = () => {
           <div style={{ 
             width: '300px', 
             backgroundColor: '#f5f5f5',
-            border: '2px outset #ddd',
+            border: '1px solid #ccc',
             borderRadius: '3px',
             overflow: 'hidden',
-            boxShadow: '3px 3px 5px rgba(0,0,0,0.2)'
+            boxShadow: '2px 2px 4px rgba(0,0,0,0.1)'
           }}>
             <div style={{ 
-              backgroundColor: '#2874A6', 
+              backgroundColor: '#2a8a43', 
               color: 'white',
               padding: '8px 15px',
-              borderBottom: '1px solid #1A5276',
+              borderBottom: '1px solid #1d6631',
               fontWeight: 'bold',
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
+              fontFamily: 'Tahoma, Arial, sans-serif'
             }}>
-              <span style={{ fontSize: '18px' }}>🌲</span>
-              <span>Ecosystem Simulation</span>
+              Ecosystem Simulation
             </div>
             
             <div style={{ padding: '15px' }}>
-              <p style={{ margin: '0 0 15px 0', fontSize: '13px', lineHeight: '1.4' }}>
+              <p style={{ margin: '0 0 15px 0', fontSize: '13px', lineHeight: '1.4', fontFamily: 'Tahoma, Arial, sans-serif' }}>
                 An interactive simulation of a forest ecosystem with trees, deer, and wolves.
                 Observe how these species interact and affect each other over time.
               </p>
               
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Link to="/ecosystem-simulation">
-                  <button style={{ 
-                    backgroundColor: '#2874A6', 
-                    color: 'white',
-                    border: '2px outset #5499C7',
-                    borderRadius: '2px',
-                    padding: '5px 15px',
-                    fontWeight: 'bold',
-                    fontSize: '12px',
-                    cursor: 'pointer'
-                  }}>
+                  <button className="xp-button" style={{ backgroundColor: '#4b9460', color: 'white', fontWeight: 'bold' }}>
                     Launch Simulation
                   </button>
                 </Link>
@@ -74,47 +69,33 @@ const Portfolio = () => {
             </div>
           </div>
           
-          {/* You can add more project cards here */}
+          {/* Project 2 Card */}
           <div style={{ 
             width: '300px', 
             backgroundColor: '#f5f5f5',
-            border: '2px outset #ddd',
+            border: '1px solid #ccc',
             borderRadius: '3px',
             overflow: 'hidden',
-            boxShadow: '3px 3px 5px rgba(0,0,0,0.2)'
+            boxShadow: '2px 2px 4px rgba(0,0,0,0.1)'
           }}>
             <div style={{ 
-              backgroundColor: '#C0392B', 
+              backgroundColor: '#8b5a2b', 
               color: 'white',
               padding: '8px 15px',
-              borderBottom: '1px solid #922B21',
+              borderBottom: '1px solid #6d4522',
               fontWeight: 'bold',
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
+              fontFamily: 'Tahoma, Arial, sans-serif'
             }}>
-              <span style={{ fontSize: '18px' }}>💻</span>
-              <span>Project 2</span>
+              Project 2
             </div>
             
             <div style={{ padding: '15px' }}>
-              <p style={{ margin: '0 0 15px 0', fontSize: '13px', lineHeight: '1.4' }}>
+              <p style={{ margin: '0 0 15px 0', fontSize: '13px', lineHeight: '1.4', fontFamily: 'Tahoma, Arial, sans-serif' }}>
                 Coming soon! This section will showcase another exciting project from my portfolio.
               </p>
               
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button style={{ 
-                  backgroundColor: '#C0392B', 
-                  color: 'white',
-                  border: '2px outset #E74C3C',
-                  borderRadius: '2px',
-                  padding: '5px 15px',
-                  fontWeight: 'bold',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  opacity: 0.6
-                }} disabled>
+                <button className="xp-button" style={{ opacity: 0.6 }} disabled>
                   Coming Soon
                 </button>
               </div>
@@ -124,20 +105,12 @@ const Portfolio = () => {
         
         <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
           <Link to="/">
-            <button style={{ 
-              backgroundColor: '#e0e0e0', 
-              border: '2px outset #f0f0f0',
-              borderRadius: '2px',
-              padding: '3px 10px',
-              fontSize: '12px',
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              cursor: 'pointer'
-            }}>
+            <button className="xp-button">
               Back to Home
             </button>
           </Link>
         </div>
-      </Window>
+      </ClassicWindow>
     </XPBackground>
   );
 };

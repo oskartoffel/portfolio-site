@@ -1,36 +1,9 @@
 // src/pages/Home.jsx
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import EnhancedBackground from '../components/ui/EnhancedBackground';
-import EnhancedWindow from '../components/ui/EnhancedWindow';
-import EnhancedButton from '../components/ui/EnhancedButton';
+import XPBackground from '../components/ui/XPBackground';
+import ClassicWindow from '../components/ui/ClassicWindow';
 import { useTheme } from '../components/ui/ThemeProvider';
-
-// Animation variants for staggered button appearance
-const buttonContainerVariants = {
-  initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.3
-    }
-  }
-};
-
-const buttonVariants = {
-  initial: { y: 20, opacity: 0 },
-  animate: { 
-    y: 0, 
-    opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 15
-    }
-  }
-};
 
 const Home = () => {
   const { setTheme } = useTheme();
@@ -41,17 +14,15 @@ const Home = () => {
   }, [setTheme]);
   
   return (
-    <EnhancedBackground>
-      <EnhancedWindow 
+    <XPBackground>
+      <ClassicWindow 
         title="Welcome to My Portfolio" 
         width="500px" 
         height="auto"
-        hideControls={true}
-        icon="👋"
       >
         <div style={{ textAlign: 'center', padding: '10px' }}>
           <h1 style={{ 
-            marginTop: '0',
+            marginTop: '10px',
             color: 'var(--home-primary)',
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '24px'
@@ -63,52 +34,77 @@ const Home = () => {
             color: '#333',
             lineHeight: '1.5',
             fontSize: '15px',
-            marginBottom: '30px'
+            marginBottom: '30px',
+            fontFamily: 'Tahoma, Arial, sans-serif'
           }}>
             Please feel free to explore my work, learn about my background, or check out my 
-            forest ecosystem simulation project. Enjoy your stay! ✨
+            forest ecosystem simulation project. Enjoy your stay!
           </p>
           
-          <motion.div 
-            variants={buttonContainerVariants}
-            initial="initial"
-            animate="animate"
-            style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              gap: '15px', 
-              marginTop: '25px',
-              flexWrap: 'wrap'
-            }}
-          >
-            <motion.div variants={buttonVariants}>
-              <Link to="/cv" style={{ textDecoration: 'none' }}>
-                <EnhancedButton primary themeOverride="cv">
-                  💼 My CV
-                </EnhancedButton>
-              </Link>
-            </motion.div>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '15px', 
+            marginTop: '25px',
+            flexWrap: 'wrap'
+          }}>
+            <Link to="/cv" style={{ textDecoration: 'none' }}>
+              <button className="xp-button" style={buttonStyle('cv')}>
+                My CV
+              </button>
+            </Link>
             
-            <motion.div variants={buttonVariants}>
-              <Link to="/cover-letter" style={{ textDecoration: 'none' }}>
-                <EnhancedButton primary themeOverride="coverletter">
-                  🔥 Cover Letter
-                </EnhancedButton>
-              </Link>
-            </motion.div>
+            <Link to="/cover-letter" style={{ textDecoration: 'none' }}>
+              <button className="xp-button" style={buttonStyle('coverletter')}>
+                Cover Letter
+              </button>
+            </Link>
             
-            <motion.div variants={buttonVariants}>
-              <Link to="/portfolio" style={{ textDecoration: 'none' }}>
-                <EnhancedButton primary themeOverride="portfolio">
-                  🌲 Portfolio
-                </EnhancedButton>
-              </Link>
-            </motion.div>
-          </motion.div>
+            <Link to="/portfolio" style={{ textDecoration: 'none' }}>
+              <button className="xp-button" style={buttonStyle('portfolio')}>
+                Portfolio
+              </button>
+            </Link>
+          </div>
         </div>
-      </EnhancedWindow>
-    </EnhancedBackground>
+      </ClassicWindow>
+    </XPBackground>
   );
+};
+
+// Custom button styles that match XP theme but with custom colors
+const buttonStyle = (type) => {
+  const styles = {
+    cv: {
+      background: 'linear-gradient(to bottom, #9a3683, #6e1e5a)',
+      borderColor: '#6e1e5a',
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: '14px',
+      padding: '6px 16px',
+      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+    },
+    coverletter: {
+      background: 'linear-gradient(to bottom, #c15d26, #992a0a)',
+      borderColor: '#992a0a',
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: '14px',
+      padding: '6px 16px',
+      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+    },
+    portfolio: {
+      background: 'linear-gradient(to bottom, #38ae57, #267532)',
+      borderColor: '#267532',
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: '14px',
+      padding: '6px 16px',
+      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+    }
+  };
+  
+  return styles[type];
 };
 
 export default Home;
