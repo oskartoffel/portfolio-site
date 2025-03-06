@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import CV from './pages/CV';
 import CoverLetter from './pages/CoverLetter';
 import Portfolio from './pages/Portfolio';
+import BehindWorks from './pages/BehindWorks';
 import EcosystemSimulation from './pages/EcosystemSimulation';
 import './App.css';
 import './styles/fonts.css'; // Import custom fonts
@@ -19,6 +20,7 @@ function App() {
           <Route path="/cv" element={<CV />} />
           <Route path="/cover-letter" element={<CoverLetter />} />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/behind-works" element={<BehindWorks />} />
           <Route path="/ecosystem-simulation" element={<EcosystemSimulation />} />
         </Routes>
       </ThemeProvider>
