@@ -171,7 +171,7 @@ const CV = () => {
                 position: 'absolute',
                 top: '0',
                 bottom: '0',
-                right: '24px', // Moved away from the content
+                right: '0px', // Moved away from the content
                 width: '2px',
                 background: '#7d336a',
                 zIndex: 1
@@ -208,7 +208,7 @@ const CV = () => {
                   {/* Mac OS inspired 3D glossy button */}
                   <div style={{
                     position: 'absolute',
-                    right: '16px', // Aligned with the timeline line
+                    right: '-8px', // Aligned with the timeline line
                     top: '50%',
                     transform: 'translateY(-50%)',
                     width: '16px',
