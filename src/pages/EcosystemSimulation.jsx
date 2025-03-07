@@ -7,7 +7,7 @@ import XPBackground from '../components/ui/XPBackground';
 import { useTheme } from '../components/ui/ThemeProvider';
 
 // Import updated ecosystem visualization
-import GameVisualization from '../components/ecosystem/GameVisualization';
+import FlatGameVisualization from '../components/ecosystem/FlatGameVisualization';
 
 const EcosystemSimulation = () => {
   const { setTheme } = useTheme();
@@ -30,7 +30,7 @@ const EcosystemSimulation = () => {
           }}>
             The Game
           </h1>
-          <GameVisualization />
+          <FlatGameVisualization />
           <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
             <Link to="/portfolio">
               <ClassicXPButton>

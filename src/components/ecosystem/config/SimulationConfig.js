@@ -28,10 +28,10 @@ const simulationConfig = {
     initial: 5,
     arraySize: 200,
     maturity: 2,
-    staminaFactor: 5,
+    staminaFactor: 6,
     hungerFactor: 4,
-    reproductionFactor: 4,
-    migrationFactor: 5
+    reproductionFactor: 6,
+    migrationFactor: 7
   },
   graph: {
     MAX_YEARS: 50,
