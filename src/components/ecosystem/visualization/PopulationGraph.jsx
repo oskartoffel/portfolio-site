@@ -12,8 +12,8 @@ const PopulationGraph = ({
 }) => {
   // Graph dimensions
   const graphWidth = 360;
-  const graphHeight = 150;
-  const padding = { top: 20, right: 30, bottom: 30, left: 40 };
+  const graphHeight = 100;
+  const padding = { top: 20, right: 30, bottom: 20, left: 40 };
   const innerWidth = graphWidth - padding.left - padding.right;
   const innerHeight = graphHeight - padding.top - padding.bottom;
   
@@ -54,8 +54,7 @@ const PopulationGraph = ({
       <div style={{ 
         fontSize: '12px', 
         fontWeight: 'bold', 
-        backgroundColor: color, 
-        color: 'white',
+        color: color,
         padding: '4px',
         marginBottom: '5px',
         textAlign: 'center'

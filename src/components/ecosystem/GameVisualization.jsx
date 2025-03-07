@@ -211,7 +211,8 @@ const GameVisualization = () => {
         }}>
           <div style={{ 
             flex: '1 1 auto',
-            maxHeight: 'calc(100% - 170px)',
+            maxHeight: 'calc(100% - 60px)',
+            maxWidth: 'calc(100% - 200px)',
             overflow: 'hidden'
           }}>
             <ForestVisualization 
@@ -399,7 +400,7 @@ const GameVisualization = () => {
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '10px',
         margin: '15px auto 0',
-        maxWidth: '1400px'
+        maxWidth: '600px'
       }}>
         <div>
           <StatisticsCard 

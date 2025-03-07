@@ -204,17 +204,18 @@ const CanvasTreeDensityGrid = ({ simulationManager }) => {
     // Define a natural forest color palette with multiple reference points
     // These colors are sampled from actual forest imagery
     const forestPalette = [
-      { density: 0.0,  color: { r: 171, g: 145, b: 68 } },  // Barren/desert
-      { density: 0.1,  color: { r: 147, g: 155, b: 60 } },  // Very sparse vegetation
-      { density: 0.2,  color: { r: 122, g: 154, b: 62 } },  // Beginning greenery
-      { density: 0.3,  color: { r: 95,  g: 141, b: 64 } },  // Light forest
-      { density: 0.4,  color: { r: 76,  g: 130, b: 60 } },  // Medium light forest
-      { density: 0.5,  color: { r: 56,  g: 114, b: 56 } },  // Medium forest (darker)
-      { density: 0.6,  color: { r: 42,  g: 105, b: 52 } },  // Medium dense forest
-      { density: 0.7,  color: { r: 30,  g: 96,  b: 48 } },  // Dense forest
-      { density: 0.85, color: { r: 24,  g: 110, b: 45 } },  // Very dense forest
-      { density: 1.0,  color: { r: 18,  g: 140, b: 40 } },  // Exceptionally dense, vibrant forest
-    ];
+      { density: 0.0,  color: { r: 187, g: 157, b: 70 } },  // Barren/desert
+      { density: 0.03,  color: { r: 161, g: 162, b: 60 } },  // Very sparse vegetation
+      { density: 0.07,  color: { r: 136, g: 167, b: 51 } },  // Beginning greenery
+      { density: 0.11,  color: { r: 104, g: 173, b: 39 } },  // Light forest
+      { density: 0.15,  color: { r: 72,  g: 162, b: 33 } },  // Medium light forest
+      { density: 0.22,  color: { r: 21,  g: 143, b: 23 } },  // Medium forest (darker)
+      { density: 0.31,  color: { r: 17,  g: 124, b: 21 } },  // Medium dense forest
+      { density: 0.42,  color: { r: 11,  g: 99,  b: 19 } },  // Dense forest
+      { density: 0.55,  color: { r: 6,   g: 76,  b: 17 } },  // Very dense forest
+      { density: 1.0,  color: { r: 0,   g: 50,  b: 14 } },  // Exceptionally dense, vibrant forest
+    ];    
+    
     
     // Find the two palette entries to interpolate between
     let lower = forestPalette[0];
@@ -309,7 +310,7 @@ const CanvasTreeDensityGrid = ({ simulationManager }) => {
           <div style={{ 
             width: '180px', 
             height: '15px', 
-            background: 'linear-gradient(to right, rgb(171, 145, 68), rgb(95, 141, 64), rgb(56, 114, 56), rgb(30, 96, 48), rgb(18, 140, 40))'
+            background: 'linear-gradient(to right, rgb(171, 145, 68), rgb(95, 141, 64), rgb(38, 83, 38), rgb(24, 80, 39))'
           }}></div>
           <span style={{ whiteSpace: 'nowrap' }}>Forest Density</span>
         </div>

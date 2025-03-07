@@ -19,7 +19,7 @@ const Portfolio = () => {
         <div style={{ padding: '10px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
             <h1 style={{ 
-              fontFamily: 'Husky Stash, Tahoma, Arial, sans-serif',
+              fontFamily: 'Popstar, Tahoma, Arial, sans-serif',
               color: '#2a8a43',
               margin: '0 0 20px',
               fontSize: '26px'
@@ -94,10 +94,10 @@ const Portfolio = () => {
               boxShadow: '2px 2px 4px rgba(0,0,0,0.1)'
             }}>
               <div style={{ 
-                backgroundColor: '#8b5a2b', 
+                backgroundColor: '#2a8a43', 
                 color: 'white',
                 padding: '8px 15px',
-                borderBottom: '1px solid #6d4522',
+                borderBottom: '1px solid #1d6631',
                 fontWeight: 'bold',
                 fontFamily: 'Tahoma, Arial, sans-serif'
               }}>
@@ -106,7 +106,7 @@ const Portfolio = () => {
               
               <div style={{ padding: '15px' }}>
                 <p style={{ margin: '0 0 15px 0', fontSize: '13px', lineHeight: '1.4', fontFamily: 'Tahoma, Arial, sans-serif' }}>
-                  Learn about the inspiration, development journey, and future vision behind my ecosystem simulation project.
+                  Learn about the inspiration, developdgsgsdgdsgsdgdsgsdegsdsdgsdgsdgsdgsdgsdment journey, and future vision behind my ecosystem simulation project.
                 </p>
                 
                 <div style={{ display: 'flex', justifyContent: 'center' }}>

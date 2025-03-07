@@ -19,7 +19,7 @@ const BehindWorks = () => {
       <ClassicWindow title="Behind My Works">
         <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
           <h1 style={{ 
-            fontFamily: 'Husky Stash, Tahoma, Arial, sans-serif',
+            fontFamily: 'Popstar, Tahoma, Arial, sans-serif',
             color: '#2a8a43',
             fontSize: '26px',
             marginBottom: '25px',
@@ -30,7 +30,7 @@ const BehindWorks = () => {
           
           <div style={{ marginBottom: '30px' }}>
             <h3 style={{ 
-              fontFamily: 'Octuple Max, Tahoma, Arial, sans-serif',
+              fontFamily: 'Tahoma, Arial, sans-serif',
               color: '#2a8a43',
               fontSize: '20px',
               paddingBottom: '5px',
@@ -62,7 +62,7 @@ const BehindWorks = () => {
           
           <div style={{ marginBottom: '30px' }}>
             <h3 style={{ 
-              fontFamily: 'Bubblicious, Tahoma, Arial, sans-serif',
+              fontFamily: 'Tahoma, Arial, sans-serif',
               color: '#2a8a43',
               fontSize: '20px',
               paddingBottom: '5px',
@@ -102,7 +102,7 @@ const BehindWorks = () => {
           
           <div style={{ marginBottom: '30px' }}>
             <h3 style={{ 
-              fontFamily: 'Popstar Pop, Tahoma, Arial, sans-serif',
+              fontFamily: 'Tahoma, Arial, sans-serif',
               color: '#2a8a43',
               fontSize: '20px',
               paddingBottom: '5px',

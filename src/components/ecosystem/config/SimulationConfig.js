@@ -35,9 +35,9 @@ const simulationConfig = {
   },
   graph: {
     MAX_YEARS: 50,
-    MAX_TREE_POPULATION: 5000,
+    MAX_TREE_POPULATION: 2000,
     MAX_DEER_POPULATION: 100,
-    MAX_WOLF_POPULATION: 50,
+    MAX_WOLF_POPULATION: 15,
   }
 };
 
