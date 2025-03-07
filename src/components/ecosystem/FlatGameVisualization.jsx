@@ -1208,9 +1208,15 @@ const FlatGameVisualization = () => {
             padding: '10px',
             boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
             border: '1px solid #ddd',
-            height: '100%'
+            height: '100%',
+            display: 'flex',  // Add flex display
+            justifyContent: 'center',  // Center horizontally
+            alignItems: 'center' // Center vertically
           }}>
-            <SimpleForestView simulationManager={simulationManager} />
+            <SimpleForestView 
+              simulationManager={simulationManager} 
+              currentYear={currentYear} 
+            />
           </div>
           
           {/* Right column - Actions and Feedback */}

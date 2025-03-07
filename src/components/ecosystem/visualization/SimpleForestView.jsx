@@ -1,7 +1,7 @@
 // src/components/ecosystem/visualization/SimpleForestView.jsx
 import React, { useRef, useState, useEffect } from 'react';
 
-const SimpleForestView = ({ simulationManager }) => {
+const SimpleForestView = ({ simulationManager, currentYear }) => {
   // Define hooks at the top level (not conditionally)
   const canvasRef = useRef(null);
   const [canvasSize, setCanvasSize] = useState({ width: 300, height: 300 });
@@ -38,7 +38,21 @@ const SimpleForestView = ({ simulationManager }) => {
     return densityGrid;
   };
   
-  // Render the forest on the canvas
+  // Force redraw every 500ms to ensure visualization stays current
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (canvasRef.current && simulationManager?.treeManager) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        const densityGrid = calculateDensityGrid();
+        renderForestCanvas(ctx, densityGrid, canvas.width, canvas.height);
+      }
+    }, 500);
+    
+    return () => clearInterval(intervalId);
+  }, [simulationManager]);
+  
+  // Render the forest on the canvas when currentYear changes
   useEffect(() => {
     if (!canvasRef.current || !simulationManager?.treeManager) return;
     
@@ -48,12 +62,19 @@ const SimpleForestView = ({ simulationManager }) => {
     
     // Render the fluid gradient visualization
     renderForestCanvas(ctx, densityGrid, canvas.width, canvas.height);
-    
-    // Set up a resize handler
+  }, [simulationManager, currentYear]);
+  
+  // Also handle window resize
+  useEffect(() => {
     const handleResize = () => {
-      const container = canvas.parentElement;
+      if (!canvasRef.current) return;
+      
+      const container = canvasRef.current.parentElement;
       if (container) {
-        const size = Math.min(container.clientWidth, 300);
+        // Calculate the available space, accounting for padding
+        const availableWidth = container.clientWidth - 20; // 10px padding on each side
+        // Cap the size at a reasonable maximum and minimum
+        const size = Math.min(Math.max(availableWidth, 200), 280);
         setCanvasSize({ width: size, height: size });
       }
     };
@@ -64,7 +85,7 @@ const SimpleForestView = ({ simulationManager }) => {
     // Add resize event listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [simulationManager]);
+  }, []);
   
   // Get forest color using a natural color palette
   const getForestColor = (normalizedDensity) => {
@@ -109,6 +130,9 @@ const SimpleForestView = ({ simulationManager }) => {
   
   // Render the forest on the canvas
   const renderForestCanvas = (ctx, densityGrid, width, height) => {
+    // Clear the canvas first
+    ctx.clearRect(0, 0, width, height);
+    
     // First create an ImageData object to work with pixel data directly
     const imageData = ctx.createImageData(width, height);
     const data = imageData.data;
@@ -274,7 +298,8 @@ const SimpleForestView = ({ simulationManager }) => {
         height={canvasSize.height}
         style={{
           borderRadius: '3px',
-          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+          maxWidth: '100%' // Ensure it never exceeds its container
         }}
       />
       
