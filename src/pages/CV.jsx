@@ -1,4 +1,4 @@
-// src/pages/CV.jsx - Fixed timeline styling and reverted to original header bars
+// src/pages/CV.jsx - With improved timeline hover effects
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClassicWindow from '../components/ui/ClassicWindow';
@@ -60,21 +60,71 @@ const timelinePeriods = [
   }
 ];
 
+// Skills data
+const skillsData = [
+  {
+    title: "Technical Skills",
+    items: [
+      "Python, R-Studio, SQL",
+      "Matlab and C",
+      "QGIS and Excel",
+      "Data visualization"
+    ]
+  },
+  {
+    title: "Languages",
+    items: [
+      "German - Native",
+      "English - Fluent (C1)",
+      "French - Fluent"
+    ]
+  }
+];
+
+// Additional content that appears when hovering over a period
+const expandedContent = {
+  '1998-2014': 'During my early years, I developed a curiosity for the natural world and technology. My time in primary and secondary school laid the foundation for my interest in science and mathematics, which would later influence my educational path. I began exploring computers and programming through small projects and games.',
+  '2014-2018': 'My high school years were formative for my academic interests. Working at the Children\'s Hospital IT Support gave me practical technology experience while I pursued a rigorous academic program. My Matura thesis explored environmental modeling, combining my interest in computing with environmental sciences.',
+  '2018-2019': 'This period of civil service and travel was essential for my personal growth. Working with people with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Europe and volunteering on organic farms connected me to sustainable practices and different cultures.',
+  '2020-2023': 'My bachelor studies at ETH Lausanne gave me a strong technical foundation in environmental engineering. I developed specialized skills in data analysis and modeling environmental systems. My work at Oekoskop further reinforced my commitment to environmental protection, working on projects to preserve Alpine ecosystems.',
+  '2023-2025': 'My recent professional experiences have diversified my skillset and prepared me for advanced studies. Teaching robotics to children has improved my communication and teaching abilities, while my logistics and construction roles have given me practical insights into resource management and physical systems.'
+};
+
 const CV = () => {
   const { setTheme } = useTheme();
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  
+  // Toggle expanded content when clicking the arrow
+  const toggleExpand = (index) => {
+    if (expandedIndex === index) {
+      setExpandedIndex(null);
+    } else {
+      setExpandedIndex(index);
+    }
+  };
   
   // Set theme to cv when component mounts
   useEffect(() => {
     setTheme('cv');
   }, [setTheme]);
 
+  const handleDownloadCV = () => {
+    const link = document.createElement('a');
+    link.href = '/documents/cv-oskar-wasmer.pdf';
+    link.setAttribute('download', 'cv-oskar-wasmer.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <XPBackground>
-      <ClassicWindow title="My CV" width="95%" height="95%">
+      <ClassicWindow title="My CV" width="80%" height="95%">
         <div style={{ 
           padding: '20px', 
           width: '100%',
-          maxWidth: '1100px', // More compact width
+          maxWidth: '950px',
           margin: '0 auto'
         }}>
           {/* Header with photo placeholder */}
@@ -86,7 +136,9 @@ const CV = () => {
             padding: '15px 20px', 
             boxShadow: '3px 3px 6px rgba(0,0,0,0.2)',
             display: 'flex',
-            gap: '20px'
+            maxWidth: '850px',
+            gap: '20px',
+            margin: '40px auto'
           }}>
             {/* Photo placeholder with Y2K style frame */}
             <div style={{
@@ -108,7 +160,7 @@ const CV = () => {
             
             <div>
               <h1 style={{ 
-                fontFamily: 'Tahoma, Arial, sans-serif',
+                fontFamily: 'Popstar Pop, Tahoma, Arial, sans-serif',
                 color: '#7d336a',
                 fontSize: '28px',
                 marginBottom: '15px',
@@ -133,20 +185,8 @@ const CV = () => {
             </div>
           </div>
           
-          {/* My Journey Header */}
-          <h2 style={{ 
-            fontFamily: 'Bubblicious, Tahoma, Arial, sans-serif',
-            color: '#7d336a',
-            fontSize: '28px',
-            textAlign: 'center',
-            textShadow: '2px 2px 0 #fff',
-            marginBottom: '20px',
-          }}>
-            My Journey
-          </h2>
-          
           {/* Timeline container */}
-          <div style={{ 
+                      <div style={{ 
             display: 'flex',
             width: '100%',
             position: 'relative',
@@ -154,334 +194,286 @@ const CV = () => {
             borderRadius: '10px',
             overflow: 'hidden',
             boxShadow: '0 3px 8px rgba(0,0,0,0.1)',
-            minHeight: '800px'
+            minHeight: '680px',
+            transition: 'all 0.3s ease',
+            padding: '0' // Removed padding to allow full extension
           }}>
-            {/* Left sidebar with years - extends full height */}
-            <div style={{ 
-              width: '140px', // Increased width
-              minWidth: '140px', // Increased width 
-              background: 'linear-gradient(to right, #e9d8f4, #f8f0fc)',
-              borderRight: 'none',
-              display: 'flex',
-              flexDirection: 'column',
+            {/* Timeline Grid with two columns: years and content */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '140px 1fr',
+              width: '100%',
               position: 'relative',
+              gridGap: '0', // Ensure no gap between columns
+              padding: '20px 0' // Add padding to the grid instead
             }}>
-              {/* Single vertical purple timeline line */}
+              {/* Left column background - continuous shading */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: '140px',
+                background: 'linear-gradient(to right, #e9d8f4, #f8f0fc)',
+                zIndex: 0
+              }}></div>
+              
+              {/* Vertical purple timeline line - extended fully */}
               <div style={{
                 position: 'absolute',
                 top: '0',
                 bottom: '0',
-                right: '0px', // Moved away from the content
+                left: '140px', // At the end of the years column
                 width: '2px',
                 background: '#7d336a',
                 zIndex: 1
               }}></div>
               
-              {/* Year labels - distributed evenly */}
+              {/* Timeline entries */}
               {timelinePeriods.map((period, index) => (
-                <div 
-                  key={index} 
-                  style={{ 
-                    position: 'relative',
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderBottom: index < timelinePeriods.length - 1 ? '1px solid #d8c1dd' : 'none',
-                    padding: '20px 0'
-                  }}
-                >
-                  {/* Year labels with Y2K styling */}
-                  <div style={{
-                    fontFamily: 'Tahoma, Arial, sans-serif',
-                    fontWeight: 'bold',
-                    fontSize: '16px',
-                    color: '#7d336a',
-                    textShadow: '1px 1px 0 #fff',
-                    padding: '10px 5px',
-                    textAlign: 'center',
-                    zIndex: 2
-                  }}>
-                    {period.years}
-                  </div>
-                  
-                  {/* Mac OS inspired 3D glossy button */}
-                  <div style={{
-                    position: 'absolute',
-                    right: '-8px', // Aligned with the timeline line
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle at 35% 35%, #d094ed, #7d336a)', // Glossy effect
-                    border: '1px solid rgba(255, 255, 255, 0.8)',
-                    boxShadow: '0 0 3px rgba(0, 0, 0, 0.3), inset 0 0 2px rgba(255, 255, 255, 0.8)',
-                    zIndex: 3
-                  }}></div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Right content area */}
-            <div style={{ 
-              flex: '1',
-              backgroundColor: 'rgba(248, 240, 252, 0.2)',
-              padding: '20px 20px 20px 30px', // Added more left padding
-              display: 'flex',
-              flexDirection: 'column',
-              marginLeft: '10px' // Added margin to separate from the years column
-            }}>
-              {/* Display one box per time period */}
-              {timelinePeriods.map((period, index) => (
-                <div 
-                  key={index}
-                  style={{
-                    flex: 1,
-                    marginBottom: index < timelinePeriods.length - 1 ? '20px' : '0',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                >
-                  {/* Content box */}
-                  <div style={{
-                    background: 'white',
-                    borderRadius: '8px',
-                    border: '1px solid #9f7aea',
-                    overflow: 'hidden',
-                    boxShadow: '2px 2px 6px rgba(0,0,0,0.1)',
-                    margin: '10px 0',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}>
-                    {/* Original header bar style (vertical gradient) */}
+                <React.Fragment key={index}>
+                  {/* Year column */}
+                  <div 
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      position: 'relative',
+                      height: 'auto', // Height not affected by hover anymore
+                      minHeight: '180px',
+                      transition: 'all 0.4s ease',
+                      cursor: 'pointer',
+                      backgroundColor: hoveredIndex === index ? 'rgba(157, 50, 172, 0.1)' : 'transparent',
+                      marginBottom: '35px', // Increased spacing between entries
+                      zIndex: 2
+                    }}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                  >
                     <div style={{
-                      padding: '8px 12px',
-                      background: 'linear-gradient(to bottom, #9f7aea, #7d336a)', // Vertical gradient
-                      color: 'white',
                       fontFamily: 'Tahoma, Arial, sans-serif',
                       fontWeight: 'bold',
                       fontSize: '16px',
-                      boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                      textShadow: '1px 1px 1px rgba(0, 0, 0, 0.4)',
-                      borderRadius: '6px 6px 0 0' // Rounded top corners
+                      color: hoveredIndex === index ? '#5d1b68' : '#7d336a',
+                      textShadow: '1px 1px 0 #fff',
+                      padding: '10px',
+                      textAlign: 'center',
+                      width: '100%',
+                      position: 'absolute',
+                      top: '45.5px', // Positioned 15.5px below the bullet point (30px + 15.5px)
+                      transition: 'color 0.3s ease'
                     }}>
-                      {period.title}
+                      {period.years}
                     </div>
-
-                    {/* Bulleted list */}
-                    <div style={{ 
+                    
+                    {/* Purple dot marker aligned with content header */}
+                    <div style={{
+                      position: 'absolute',
+                      right: '-9px', // Position on the timeline
+                      top: '30px',
+                      width: hoveredIndex === index ? '20px' : '16px',
+                      height: hoveredIndex === index ? '20px' : '16px',
+                      borderRadius: '50%',
+                      background: hoveredIndex === index ? 
+                        'radial-gradient(circle at 35% 35%, #f8c6ff, #7d336a)' : 
+                        'radial-gradient(circle at 35% 35%, #d094ed, #7d336a)',
+                      border: '1px solid rgba(255, 255, 255, 0.8)',
+                      boxShadow: hoveredIndex === index ? 
+                        '0 0 8px rgba(125, 51, 106, 0.6), inset 0 0 4px rgba(255, 255, 255, 0.8)' : 
+                        '0 0 3px rgba(0, 0, 0, 0.3), inset 0 0 2px rgba(255, 255, 255, 0.8)',
+                      zIndex: 3,
+                      transition: 'all 0.3s ease'
+                    }}></div>
+                  </div>
+                  
+                  {/* Content column */}
+                  <div 
+                    style={{
+                      backgroundColor: 'rgba(248, 240, 252, 0.2)',
+                      padding: '0 20px 0 30px',
+                      height: hoveredIndex === index ? 'auto' : '180px', // Increased height
+                      minHeight: '180px',
+                      transition: 'all 0.4s ease',
+                      cursor: 'pointer',
+                      marginBottom: '35px', // Increased spacing between entries
+                      position: 'relative',
+                      zIndex: 2
+                    }}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                  >
+                    {/* Content box */}
+                    <div style={{
+                      background: 'white',
+                      borderRadius: '8px',
+                      border: `1px solid ${hoveredIndex === index ? '#9a4cbc' : '#9f7aea'}`,
+                      overflow: 'hidden',
+                      boxShadow: hoveredIndex === index ? 
+                        '3px 3px 10px rgba(125, 51, 106, 0.3)' : 
+                        '2px 2px 6px rgba(0,0,0,0.1)',
                       padding: '15px',
-                      flex: '1'
+                      height: '100%',
+                      transition: 'all 0.3s ease'
                     }}>
+                      {/* Content title */}
+                      <div style={{
+                        fontFamily: 'Tahoma, Arial, sans-serif',
+                        fontSize: hoveredIndex === index ? '20px' : '18px',
+                        fontWeight: 'bold',
+                        color: hoveredIndex === index ? '#5d1b68' : '#7d336a',
+                        marginBottom: '12px',
+                        transition: 'all 0.3s ease'
+                      }}>
+                        {period.title}
+                      </div>
+                      
+                      {/* List items */}
                       <ul style={{
                         margin: '0',
                         paddingLeft: '20px',
-                        color: '#4a5568',
+                        color: hoveredIndex === index ? '#333' : '#4a5568',
                         fontFamily: 'Tahoma, Arial, sans-serif',
-                        fontSize: '14px',
-                        lineHeight: '1.6'
+                        fontSize: hoveredIndex === index ? '15px' : '14px',
+                        lineHeight: '1.6',
+                        transition: 'all 0.3s ease'
                       }}>
                         {period.items.map((item, i) => (
                           <li key={i}>{item}</li>
                         ))}
                       </ul>
+                      
+                      {/* Expanded content that appears when hovered */}
+                      {hoveredIndex === index && (
+                        <div style={{
+                          marginTop: '15px',
+                          padding: '10px',
+                          backgroundColor: 'rgba(248, 240, 252, 0.4)',
+                          borderRadius: '6px',
+                          border: '1px dashed #9f7aea',
+                          fontSize: '14px',
+                          lineHeight: '1.5',
+                          fontFamily: 'Tahoma, Arial, sans-serif',
+                          color: '#333',
+                          animation: 'fadeIn 0.5s ease'
+                        }}>
+                          {expandedContent[period.years]}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
+                </React.Fragment>
               ))}
             </div>
           </div>
           
-          {/* Skills section with same header style as timeline items */}
-          <div style={{ marginTop: '30px', maxWidth: '1000px', margin: '30px auto 0' }}>
-            {/* Header with original style */}
-            <div style={{ 
-              padding: '8px 15px',
-              background: 'linear-gradient(to bottom, #9f7aea, #7d336a)', // Vertical gradient
-              color: 'white',
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              fontWeight: 'bold',
-              fontSize: '16px',
-              borderRadius: '8px',
-              textAlign: 'center',
-              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.3), 2px 2px 5px rgba(0,0,0,0.15)',
-              textShadow: '1px 1px 1px rgba(0, 0, 0, 0.4)',
-              marginBottom: '15px'
-            }}>
-              Skills & Competencies
-            </div>
+          {/* Skills section */}
+          <div style={{ 
+            marginTop: '30px', 
+            background: 'linear-gradient(to bottom, #d8c1dd, #f8f0fc)',
+            border: '2px solid #9f7aea',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '3px 3px 6px rgba(0,0,0,0.2)',
+            maxWidth: '690px',
+            margin: '30px auto 0'
+          }}>
+            {/* Decorative line instead of title */}
+            <div style={{
+              height: '2px',
+              background: '#7d336a',
+              width: '100%',
+              maxWidth: '200px',
+              margin: '0 auto 20px',
+              borderRadius: '1px'
+            }}></div>
             
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', 
-              gap: '15px',
+            {/* Skills are horizontally aligned */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: '30px',
               marginBottom: '20px'
             }}>
-              {/* Personal */}
-              <div style={{ 
-                backgroundColor: 'white',
-                border: '1px solid #9f7aea',
-                borderRadius: '8px',
-                padding: '0',
-                boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
-                overflow: 'hidden'
-              }}>
-                {/* Header with original style */}
-                <div style={{ 
-                  padding: '5px 10px',
-                  background: 'linear-gradient(to bottom, #9f7aea, #7d336a)', // Vertical gradient
-                  color: 'white',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontWeight: 'bold',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)',
-                  textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
-                  borderRadius: '6px 6px 0 0'
+              {skillsData.map((skill, index) => (
+                <div key={index} style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #9f7aea',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
+                  width: '250px',
+                  textAlign: 'center'
                 }}>
-                  Personal
+                  <div style={{
+                    fontFamily: 'Tahoma, Arial, sans-serif',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    color: '#7d336a',
+                    marginBottom: '8px',
+                    borderBottom: '1px solid #e9d8f4',
+                    paddingBottom: '4px'
+                  }}>
+                    {skill.title}
+                  </div>
+                  <ul style={{
+                    margin: '0',
+                    padding: '0',
+                    listStyle: 'none',
+                    color: '#4a5568',
+                    fontFamily: 'Tahoma, Arial, sans-serif',
+                    fontSize: '13px',
+                    lineHeight: '1.4',
+                    textAlign: 'center'
+                  }}>
+                    {skill.items.map((item, i) => (
+                      <li key={i} style={{ margin: '6px 0' }}>{item}</li>
+                    ))}
+                  </ul>
                 </div>
-                <ul style={{ 
-                  margin: '8px 0',
-                  paddingLeft: '25px',
-                  paddingRight: '10px',
-                  color: '#4a5568',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontSize: '13px',
-                  lineHeight: '1.4'
-                }}>
-                  <li>Teamfähig</li>
-                  <li>Lernfreudig</li>
-                  <li>Kommunikativ</li>
-                </ul>
-              </div>
-              
-              {/* Technical Skills */}
-              <div style={{ 
-                backgroundColor: 'white',
-                border: '1px solid #9f7aea',
-                borderRadius: '8px',
-                padding: '0',
-                boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
-                overflow: 'hidden'
+              ))}
+            </div>
+            
+            {/* Contact card */}
+            <div style={{
+              width: '250px',
+              margin: '20px auto',
+              backgroundColor: 'white',
+              border: '1px solid #9f7aea',
+              borderRadius: '8px',
+              padding: '15px',
+              textAlign: 'center',
+              boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.2)'
+            }}>
+              <h2 style={{
+                fontFamily: 'Popstar Pop, Tahoma, Arial, sans-serif',
+                color: '#7d336a',
+                fontSize: '16px',
+                marginBottom: '10px'
               }}>
-                <div style={{ 
-                  padding: '5px 10px',
-                  background: 'linear-gradient(to bottom, #9f7aea, #7d336a)', // Vertical gradient
-                  color: 'white',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontWeight: 'bold',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)',
-                  textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
-                  borderRadius: '6px 6px 0 0'
-                }}>
-                  Technical Skills
-                </div>
-                <ul style={{ 
-                  margin: '8px 0',
-                  paddingLeft: '25px',
-                  paddingRight: '10px',
-                  color: '#4a5568',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontSize: '13px',
-                  lineHeight: '1.4'
-                }}>
-                  <li>Python, R-Studio, SQL</li>
-                  <li>Matlab and C</li>
-                  <li>QGIS and Excel</li>
-                  <li>Data visualization</li>
-                </ul>
-              </div>
-              
-              {/* Professional Strengths */}
-              <div style={{ 
-                backgroundColor: 'white',
-                border: '1px solid #9f7aea',
-                borderRadius: '8px',
-                padding: '0',
-                boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
-                overflow: 'hidden'
+                Contact
+              </h2>
+              <p style={{
+                margin: '0',
+                fontFamily: 'Tahoma, Arial, sans-serif',
+                fontSize: '13px',
+                color: '#4a5568',
+                lineHeight: '1.6'
               }}>
-                <div style={{ 
-                  padding: '5px 10px',
-                  background: 'linear-gradient(to bottom, #9f7aea, #7d336a)', // Vertical gradient
-                  color: 'white',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontWeight: 'bold',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)',
-                  textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
-                  borderRadius: '6px 6px 0 0'
-                }}>
-                  Professional Strengths
-                </div>
-                <ul style={{ 
-                  margin: '8px 0',
-                  paddingLeft: '25px',
-                  paddingRight: '10px',
-                  color: '#4a5568',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontSize: '13px',
-                  lineHeight: '1.4'
-                }}>
-                  <li>Environmental care</li>
-                  <li>Education & support</li>
-                  <li>Logistics & organization</li>
-                  <li>Handwerkliche Vielseitigkeit</li>
-                </ul>
-              </div>
-              
-              {/* Languages */}
-              <div style={{ 
-                backgroundColor: 'white',
-                border: '1px solid #9f7aea',
-                borderRadius: '8px',
-                padding: '0',
-                boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
-                overflow: 'hidden'
-              }}>
-                <div style={{ 
-                  padding: '5px 10px',
-                  background: 'linear-gradient(to bottom, #9f7aea, #7d336a)', // Vertical gradient
-                  color: 'white',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontWeight: 'bold',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)',
-                  textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
-                  borderRadius: '6px 6px 0 0'
-                }}>
-                  Languages
-                </div>
-                <ul style={{ 
-                  margin: '8px 0',
-                  paddingLeft: '25px',
-                  paddingRight: '10px',
-                  color: '#4a5568',
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontSize: '13px',
-                  lineHeight: '1.4'
-                }}>
-                  <li>German - Native</li>
-                  <li>English - Fluent (C1)</li>
-                  <li>French - Fluent</li>
-                </ul>
-              </div>
+                Email: oskar.wasmer@gmail.com<br />
+                Phone: (+41) 78 629 37 83<br />
+                Address: Neuhausstrasse 12, 4057 Basel
+              </p>
             </div>
           </div>
           
-          {/* Bottom buttons - matching style */}
+          {/* Bottom buttons */}
           <div style={{ 
             display: 'flex', 
             justifyContent: 'center', 
             gap: '20px',
-            marginTop: '25px'
+            marginTop: '25px',
+            borderTop: '1px solid #d8c1dd',
+            paddingTop: '15px'
           }}>
             <Link to="/">
               <ClassicXPButton>
@@ -489,15 +481,7 @@ const CV = () => {
               </ClassicXPButton>
             </Link>
             
-            <ClassicXPButton onClick={() => {
-              // Create a link to download the PDF
-              const link = document.createElement('a');
-              link.href = '/documents/cv-oskar-wasmer.pdf';
-              link.setAttribute('download', 'cv-oskar-wasmer.pdf');
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }}>
+            <ClassicXPButton onClick={handleDownloadCV}>
               Download CV (PDF)
             </ClassicXPButton>
           </div>
