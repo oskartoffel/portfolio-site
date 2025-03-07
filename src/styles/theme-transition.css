@@ -1,0 +1,32 @@
+/* src/styles/theme-transition.css */
+
+/* Default styling for body before JS loads (prevents flashing) */
+body {
+    /* Set a default background color that's neutral */
+    background-color: #f0f0f0;
+    /* Smooth transitions between themes */
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  /* The page will get this class once ThemeProvider has loaded */
+  body.theme-loaded {
+    /* Once loaded, make background transitions smoother */
+    transition: background-color 0.5s ease-in-out;
+  }
+  
+  /* Ensure each theme has a specific background instantly applied */
+  body.theme-home {
+    background-color: var(--xp-blue);
+  }
+  
+  body.theme-portfolio {
+    background-color: var(--eco-secondary);
+  }
+  
+  body.theme-cv {
+    background-color: var(--cv-secondary);
+  }
+  
+  body.theme-coverletter {
+    background-color: var(--cl-secondary);
+  }

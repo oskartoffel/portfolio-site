@@ -234,21 +234,24 @@ const CV = () => {
                 <React.Fragment key={index}>
                   {/* Year column */}
                   <div 
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      position: 'relative',
-                      height: 'auto', // Height not affected by hover anymore
-                      minHeight: '180px',
-                      transition: 'all 0.4s ease',
-                      cursor: 'pointer',
-                      backgroundColor: hoveredIndex === index ? 'rgba(157, 50, 172, 0.1)' : 'transparent',
-                      marginBottom: '45px', // Increased spacing between entries
-                      zIndex: 2
-                    }}
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                  >
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        position: 'relative',
+                        height: 'auto',
+                        minHeight: '180px',
+                        transition: 'all 0.4s ease',
+                        cursor: 'pointer',
+                        backgroundColor: hoveredIndex === index ? 'rgba(157, 50, 172, 0.1)' : 'transparent',
+                        marginBottom: '40px',
+                        zIndex: 2,
+                        // Add these properties to fix the vertical fill:
+                        paddingTop: '0',
+                        paddingBottom: '0'
+                      }}
+                      onMouseEnter={() => setHoveredIndex(index)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    >
                     <div style={{
                       fontFamily: 'Tahoma, Arial, sans-serif',
                       fontWeight: 'bold',
@@ -353,6 +356,9 @@ const CV = () => {
                           lineHeight: '1.5',
                           fontFamily: 'Tahoma, Arial, sans-serif',
                           color: '#333',
+                          // Add a max-height with overflow to prevent large layout shifts
+                          maxHeight: '150px',
+                          overflowY: 'auto',
                           animation: 'fadeIn 0.5s ease'
                         }}>
                           {expandedContent[period.years]}
