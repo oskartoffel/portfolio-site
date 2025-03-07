@@ -17,6 +17,7 @@ const FlatGameVisualization = () => {
   const [initProgress, setInitProgress] = useState(0);
   const [initComplete, setInitComplete] = useState(false);
   const [simulationStarted, setSimulationStarted] = useState(false);
+  const [speedDropdownOpen, setSpeedDropdownOpen] = useState(false);
   
   // Use the simulation hook
   const {
@@ -112,6 +113,179 @@ const FlatGameVisualization = () => {
     sustainabilityScore: 72
   };
 
+  // =========== STYLING CONSTANTS ===========
+  // XP/Aqua inspired styling
+  const styles = {
+    // Window/Panel styles
+    xpPanel: {
+      backgroundColor: '#ECE9D8', // Classic XP color
+      border: '2px solid #0A246A',
+      borderRadius: '8px',
+      boxShadow: '2px 2px 12px rgba(0,0,0,0.2)',
+      padding: '10px',
+      marginBottom: '15px',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    xpPanelHeader: {
+      background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
+      color: 'white',
+      padding: '5px 10px',
+      fontFamily: 'Tahoma, Arial, sans-serif',
+      fontWeight: 'bold',
+      fontSize: '14px',
+      marginBottom: '10px',
+      borderRadius: '5px',
+      boxShadow: 'inset 0 -2px 3px rgba(0,0,0,0.2)'
+    },
+    aquaPanel: {
+      backgroundColor: '#EFF7FF', // Light aqua blue background
+      border: '1px solid rgba(149, 190, 229, 0.9)',
+      borderRadius: '8px',
+      boxShadow: '0 3px 7px rgba(0,0,0,0.15)',
+      padding: '10px',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    aquaGlassEffect: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '50%',
+      background: 'linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.1))',
+      borderRadius: '7px 7px 0 0',
+      pointerEvents: 'none' // Don't block interaction with the panel content
+    },
+    
+    // Control bar
+    controlBar: {
+      backgroundColor: '#DDE4EB',
+      border: '1px solid #B5CAE0',
+      borderRadius: '8px',
+      boxShadow: 'inset 0 1px 0 #fff, 0 1px 3px rgba(0,0,0,0.1)',
+      padding: '8px 12px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: '15px',
+      gap: '15px'
+    },
+    yearDisplay: {
+      fontWeight: 'bold',
+      fontSize: '14px',
+      padding: '5px 10px',
+      backgroundColor: '#F8FAFF',
+      border: '1px solid #B5CAE0',
+      borderRadius: '5px',
+      minWidth: '100px',
+      textAlign: 'center',
+      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)',
+      color: '#0A246A'
+    },
+    
+    // Buttons
+    xpButton: {
+      backgroundColor: '#ECE9D8',
+      border: '2px outset #f5f5f5',
+      borderRadius: '3px',
+      padding: '4px 12px',
+      fontFamily: 'Tahoma, Arial, sans-serif',
+      fontSize: '12px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      color: '#0A246A',
+      boxShadow: '1px 1px 3px rgba(0,0,0,0.1)'
+    },
+    playButton: {
+      backgroundColor: '#3cb371',
+      color: 'white',
+      minWidth: '90px',
+      padding: '5px 10px',
+      borderRadius: '3px',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.2)',
+      border: '1px solid #2a8a43'
+    },
+    pauseButton: {
+      backgroundColor: '#cd5c5c',
+      color: 'white',
+      minWidth: '90px',
+      padding: '5px 10px',
+      borderRadius: '3px',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.2)',
+      border: '1px solid #a04545'
+    },
+    
+    // Action buttons
+    actionButton: {
+      background: 'linear-gradient(to bottom, #81c784, #4caf50 45%, #388e3c)',
+      color: 'white',
+      border: '1px solid #2e7d32',
+      borderRadius: '5px',
+      padding: '6px 0',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      fontSize: '12px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '5px',
+      boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+      fontFamily: 'Tahoma, Arial, sans-serif',
+      transition: 'all 0.1s ease'
+    },
+    
+    // Stat cards
+    statCard: {
+      backgroundColor: '#F8FAFF',
+      border: '1px solid #B5CAE0',
+      borderRadius: '5px',
+      padding: '8px',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05)',
+      marginBottom: '10px'
+    },
+    
+    // Population bar
+    populationBar: {
+      height: '14px',
+      borderRadius: '7px',
+      border: '1px solid',
+      overflow: 'hidden',
+      position: 'relative',
+      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)'
+    },
+    populationFill: {
+      height: '100%',
+      background: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%)',
+      borderRadius: '6px 0 0 6px',
+      transition: 'width 0.5s ease',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)'
+    },
+    
+    // Grid layout
+    mainGrid: {
+      display: 'grid',
+      gridTemplateColumns: '7fr 3fr',
+      gap: '15px',
+      marginBottom: '15px'
+    },
+    statsGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: '15px'
+    },
+    
+    // Graph styling
+    graphPanel: {
+      backgroundColor: '#F8FAFF',
+      borderRadius: '6px',
+      padding: '10px',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.1)',
+      border: '1px solid #B5CAE0',
+      marginBottom: '10px'
+    }
+  };
+
   // =========== INDIVIDUAL COMPONENT RENDERING ===========
   
   // Intro popup
@@ -133,14 +307,14 @@ const FlatGameVisualization = () => {
       }}>
         <div style={{
           width: '500px',
-          backgroundColor: '#f0f0f0',
+          backgroundColor: '#ECE9D8',
           borderRadius: '8px',
           boxShadow: '0 0 0 1px #ffffff, 2px 2px 12px rgba(0,0,0,0.5)',
-          border: '1px solid #2a8a43',
+          border: '2px solid #0A246A',
           overflow: 'hidden'
         }}>
           <div style={{
-            background: 'linear-gradient(to right, #266e35, #38ae57)',
+            background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
             color: 'white',
             padding: '8px 12px',
             fontWeight: 'bold',
@@ -247,14 +421,14 @@ const FlatGameVisualization = () => {
       }}>
         <div style={{
           width: '450px',
-          backgroundColor: '#f0f0f0',
+          backgroundColor: '#ECE9D8',
           borderRadius: '8px',
           boxShadow: '0 0 0 1px #ffffff, 2px 2px 12px rgba(0,0,0,0.5)',
-          border: '1px solid #2a8a43',
+          border: '2px solid #0A246A',
           overflow: 'hidden'
         }}>
           <div style={{
-            background: 'linear-gradient(to right, #266e35, #38ae57)',
+            background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
             color: 'white',
             padding: '8px 12px',
             fontWeight: 'bold',
@@ -277,9 +451,9 @@ const FlatGameVisualization = () => {
             <div style={{
               width: '100%',
               height: '22px',
-              backgroundColor: '#e0e0e0',
+              backgroundColor: '#DDE4EB',
               borderRadius: '3px',
-              border: '1px solid #999',
+              border: '1px solid #B5CAE0',
               overflow: 'hidden',
               marginBottom: '20px',
               position: 'relative',
@@ -353,14 +527,14 @@ const FlatGameVisualization = () => {
       }}>
         <div style={{
           width: '500px',
-          backgroundColor: '#f0f0f0',
+          backgroundColor: '#ECE9D8',
           borderRadius: '8px',
           boxShadow: '0 0 0 1px #ffffff, 2px 2px 12px rgba(0,0,0,0.5)',
-          border: '1px solid #2a8a43',
+          border: '2px solid #0A246A',
           overflow: 'hidden'
         }}>
           <div style={{
-            background: 'linear-gradient(to right, #266e35, #38ae57)',
+            background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
             color: 'white',
             padding: '8px 12px',
             fontWeight: 'bold',
@@ -390,12 +564,12 @@ const FlatGameVisualization = () => {
             }}>
               {Object.entries(playerStats).map(([key, value]) => (
                 <div key={key} style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
+                  backgroundColor: '#F8FAFF',
+                  border: '1px solid #B5CAE0',
+                  borderRadius: '6px',
                   padding: '10px',
                   textAlign: 'center',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.1)'
                 }}>
                   <div style={{ 
                     fontSize: '20px', 
@@ -477,67 +651,40 @@ const FlatGameVisualization = () => {
   // Top control bar
   const renderControlBar = () => {
     return (
-      <div style={{ 
-        backgroundColor: '#e0e0e0', 
-        padding: '8px 15px', 
-        display: 'flex', 
-        justifyContent: 'center',
-        alignItems: 'center',
-        boxShadow: 'inset 0 1px 0 #fff, 0 1px 3px rgba(0,0,0,0.1)',
-        borderRadius: '4px',
-        marginBottom: '10px',
-        gap: '15px'
-      }}>
-        <div style={{ 
-          fontWeight: 'bold', 
-          fontSize: '14px',
-          padding: '5px 10px',
-          backgroundColor: 'rgba(255,255,255,0.5)',
-          border: '1px solid #ccc',
-          borderRadius: '3px',
-          minWidth: '100px',
-          textAlign: 'center',
-          boxShadow: 'inset 0 1px 0 #fff'
-        }}>
+      <div style={styles.controlBar}>
+        <div style={styles.yearDisplay}>
           Year: {currentYear} / {simulationConfig.years}
         </div>
         
         {isRunning ? (
-          <ClassicXPButton 
+          <button 
             onClick={stopSimulation}
-            primary
-            size="medium"
-            style={{ 
-              backgroundColor: '#cd5c5c', 
-              minWidth: '90px',
-              padding: '4px 8px'
+            style={{
+              ...styles.xpButton,
+              ...styles.pauseButton
             }}
           >
             ⏸ Pause
-          </ClassicXPButton>
+          </button>
         ) : (
-          <ClassicXPButton 
+          <button 
             onClick={startSimulation}
             disabled={!isInitialized || isStabilizing || isComplete}
-            primary
-            size="medium"
-            style={{ 
-              backgroundColor: '#3cb371', 
-              minWidth: '90px',
-              padding: '4px 8px'
+            style={{
+              ...styles.xpButton,
+              ...styles.playButton,
+              opacity: (!isInitialized || isStabilizing || isComplete) ? 0.7 : 1,
+              cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer',
             }}
           >
             ▶ Resume
-          </ClassicXPButton>
+          </button>
         )}
         
         {renderSpeedControl()}
       </div>
     );
   };
-  
-  // State for speed dropdown
-  const [speedDropdownOpen, setSpeedDropdownOpen] = useState(false);
   
   // Speed control dropdown
   const renderSpeedControl = () => {
@@ -553,16 +700,18 @@ const FlatGameVisualization = () => {
     
     return (
       <div style={{ position: 'relative' }}>
-        <ClassicXPButton 
+        <button 
           onClick={() => setSpeedDropdownOpen(!speedDropdownOpen)}
           style={{
+            ...styles.xpButton,
+            background: 'linear-gradient(to bottom, #f4f4f4, #dfdfdf)',
             fontSize: '13px',
             fontWeight: 'bold',
             minWidth: '60px'
           }}
         >
           {currentOption.label} <span style={{ fontSize: '8px', marginLeft: '4px' }}>▼</span>
-        </ClassicXPButton>
+        </button>
         
         {speedDropdownOpen && (
           <div style={{
@@ -570,9 +719,9 @@ const FlatGameVisualization = () => {
             top: '100%',
             left: 0,
             right: 0,
-            backgroundColor: 'white',
-            border: '1px solid #ccc',
-            borderRadius: '3px',
+            backgroundColor: '#F8FAFF',
+            border: '1px solid #B5CAE0',
+            borderRadius: '5px',
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             zIndex: 100
           }}>
@@ -590,7 +739,8 @@ const FlatGameVisualization = () => {
                   fontFamily: 'Tahoma, Arial, sans-serif',
                   fontSize: '12px',
                   textAlign: 'center',
-                  borderBottom: '1px solid #eee'
+                  borderBottom: '1px solid #eee',
+                  color: '#0A246A'
                 }}
               >
                 {option.label}
@@ -604,22 +754,34 @@ const FlatGameVisualization = () => {
   
   // Population health bar
   const renderPopulationBar = ({ type, count, maxCount }) => {
-    // Determine color based on type
-    const color = type === 'deer' ? '#8B4513' : type === 'wolf' ? '#555' : '#228B22';
-    const bgColor = type === 'deer' ? 'rgba(139, 69, 19, 0.1)' : type === 'wolf' ? 'rgba(85, 85, 85, 0.1)' : 'rgba(34, 139, 34, 0.1)';
+    // Colors for each entity type with XP/Aqua style gradients
+    const colors = {
+      trees: {
+        border: '#2e7d32',
+        background: 'rgba(46, 125, 50, 0.1)',
+        fill: 'linear-gradient(to bottom, #81c784, #4caf50 45%, #388e3c)'
+      },
+      deer: {
+        border: '#8B4513',
+        background: 'rgba(139, 69, 19, 0.1)',
+        fill: 'linear-gradient(to bottom, #bcaaa4, #8d6e63 45%, #5d4037)'
+      },
+      wolf: {
+        border: '#555',
+        background: 'rgba(85, 85, 85, 0.1)',
+        fill: 'linear-gradient(to bottom, #9e9e9e, #757575 45%, #424242)'
+      }
+    };
+    
+    const color = colors[type];
     const emoji = type === 'deer' ? '🦌' : type === 'wolf' ? '🐺' : '🌲';
     
     // Calculate percentage for the bar
     const percentage = Math.min(100, (count / maxCount) * 100);
     
-    // Calculate emoji display
-    const emojiCount = type === 'trees' 
-      ? Math.min(40, Math.ceil(count / 50)) // Show 1 tree emoji per 50 trees, max 40
-      : Math.min(40, count); // Show actual count for deer and wolves, max 40
-    
     return (
       <div style={{
-        marginBottom: '5px'
+        marginBottom: '8px',
       }}>
         <div style={{
           display: 'flex',
@@ -635,9 +797,10 @@ const FlatGameVisualization = () => {
             <span style={{ fontSize: '14px' }}>{emoji}</span>
             <span style={{ 
               fontWeight: 'bold', 
-              color, 
+              color: color.border, 
               fontSize: '13px',
-              fontFamily: 'Tahoma, Arial, sans-serif'
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              textShadow: '0 1px 0 rgba(255,255,255,0.5)'
             }}>
               {count} {type}
             </span>
@@ -645,52 +808,15 @@ const FlatGameVisualization = () => {
         </div>
         
         <div style={{
-          height: '12px',
-          backgroundColor: bgColor,
-          borderRadius: '6px',
-          border: `1px solid ${color}`,
-          overflow: 'hidden',
-          position: 'relative'
+          ...styles.populationBar,
+          backgroundColor: color.background,
+          borderColor: color.border
         }}>
           <div style={{
+            ...styles.populationFill,
             width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: color,
-            borderRadius: '5px',
-            transition: 'width 0.5s ease'
+            background: color.fill
           }}></div>
-          
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            padding: '0 5px',
-            overflow: 'hidden'
-          }}>
-            {[...Array(emojiCount)].map((_, i) => (
-              <span key={i} style={{ 
-                fontSize: '10px',
-                opacity: 0.8,
-                marginRight: '2px',
-                filter: 'drop-shadow(0 0 1px white)'
-              }}>{emoji}</span>
-            ))}
-            
-            {(type !== 'trees' && count > 40) && (
-              <span style={{ 
-                fontSize: '8px', 
-                color: 'white',
-                marginLeft: '2px',
-                alignSelf: 'center',
-                textShadow: '0 0 2px black'
-              }}>
-                +{count - 40} more
-              </span>
-            )}
-          </div>
         </div>
       </div>
     );
@@ -699,7 +825,14 @@ const FlatGameVisualization = () => {
   // Population bars group
   const renderPopulationBars = () => {
     return (
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ 
+        marginBottom: '15px',
+        padding: '10px', 
+        backgroundColor: '#F8FAFF',
+        border: '1px solid #B5CAE0',
+        borderRadius: '8px',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)'
+      }}>
         {renderPopulationBar({
           type: "trees", 
           count: stats.trees.total, 
@@ -723,18 +856,22 @@ const FlatGameVisualization = () => {
   const renderActionButtons = () => {
     return (
       <div style={{
-        backgroundColor: 'white',
-        borderRadius: '4px',
-        padding: '8px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        border: '1px solid #ddd'
+        backgroundColor: '#F0F6FF',
+        backgroundImage: 'linear-gradient(to bottom, #F8FAFF, #E8F0F8)',
+        borderRadius: '8px',
+        padding: '10px',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 5px rgba(0,0,0,0.1)',
+        border: '1px solid #B5CAE0'
       }}>
         <div style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          color: '#996515',
-          marginBottom: '8px',
-          textAlign: 'center'
+          color: '#0A246A',
+          marginBottom: '10px',
+          textAlign: 'center',
+          borderBottom: '1px solid #D4E4F7',
+          paddingBottom: '5px',
+          textShadow: '0 1px 0 rgba(255,255,255,0.5)'
         }}>
           Actions
         </div>
@@ -742,24 +879,24 @@ const FlatGameVisualization = () => {
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '6px'
+          gap: '8px'
         }}>
           <button 
             onClick={handleShootDeer}
-            style={{
-              backgroundColor: '#4caf50',
-              color: 'white',
-              border: '1px solid #388e3c',
-              borderRadius: '3px',
-              padding: '5px 0',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px',
-              boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)'
+            style={styles.actionButton}
+            onMouseOver={(e) => {
+              e.currentTarget.style.filter = 'brightness(1.1)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.filter = 'brightness(1)';
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(1px)';
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
             <span>🦌</span> Shoot Deer
@@ -767,20 +904,20 @@ const FlatGameVisualization = () => {
           
           <button 
             onClick={handleShootWolf}
-            style={{
-              backgroundColor: '#4caf50',
-              color: 'white',
-              border: '1px solid #388e3c',
-              borderRadius: '3px',
-              padding: '5px 0',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px',
-              boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)'
+            style={styles.actionButton}
+            onMouseOver={(e) => {
+              e.currentTarget.style.filter = 'brightness(1.1)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.filter = 'brightness(1)';
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(1px)';
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
             <span>🐺</span> Shoot Wolf
@@ -788,20 +925,20 @@ const FlatGameVisualization = () => {
           
           <button 
             onClick={handleHarvestTree}
-            style={{
-              backgroundColor: '#4caf50',
-              color: 'white',
-              border: '1px solid #388e3c',
-              borderRadius: '3px',
-              padding: '5px 0',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px',
-              boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)'
+            style={styles.actionButton}
+            onMouseOver={(e) => {
+              e.currentTarget.style.filter = 'brightness(1.1)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.filter = 'brightness(1)';
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(1px)';
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
             <span>🌲</span> Harvest Tree
@@ -809,20 +946,20 @@ const FlatGameVisualization = () => {
           
           <button 
             onClick={handlePlantSeedling}
-            style={{
-              backgroundColor: '#4caf50',
-              color: 'white',
-              border: '1px solid #388e3c',
-              borderRadius: '3px',
-              padding: '5px 0',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px',
-              boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)'
+            style={styles.actionButton}
+            onMouseOver={(e) => {
+              e.currentTarget.style.filter = 'brightness(1.1)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.filter = 'brightness(1)';
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(1px)';
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
             <span>🌱</span> Plant Seedling
@@ -836,19 +973,23 @@ const FlatGameVisualization = () => {
   const renderEcosystemStats = () => {
     return (
       <div style={{
-        backgroundColor: 'white',
-        borderRadius: '4px',
-        padding: '8px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        border: '1px solid #ddd',
-        flex: '1'
+        backgroundColor: '#F0F6FF',
+        backgroundImage: 'linear-gradient(to bottom, #F8FAFF, #E8F0F8)',
+        borderRadius: '8px',
+        padding: '10px',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 5px rgba(0,0,0,0.1)',
+        border: '1px solid #B5CAE0',
+        marginTop: '15px'
       }}>
         <div style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          color: '#996515',
-          marginBottom: '8px',
-          textAlign: 'center'
+          color: '#0A246A',
+          marginBottom: '10px',
+          textAlign: 'center',
+          borderBottom: '1px solid #D4E4F7',
+          paddingBottom: '5px',
+          textShadow: '0 1px 0 rgba(255,255,255,0.5)'
         }}>
           Ecosystem Stats
         </div>
@@ -856,18 +997,19 @@ const FlatGameVisualization = () => {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '6px'
+          gap: '8px'
         }}>
           {Object.entries(playerStats).map(([key, value]) => (
             <div key={key} style={{
-              backgroundColor: '#f9f9f9',
-              border: '1px solid #ddd',
-              borderRadius: '3px',
+              backgroundColor: 'rgba(255,255,255,0.7)',
+              border: '1px solid #D4E4F7',
+              borderRadius: '6px',
               padding: '6px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '2px'
+              gap: '2px',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
             }}>
               <div style={{ fontSize: '15px' }}>
                 {key === 'carbonCaptured' ? '🌿' : 
@@ -956,7 +1098,8 @@ const FlatGameVisualization = () => {
             fontWeight: 'bold', 
             color, 
             textAlign: 'center',
-            marginBottom: '5px'
+            marginBottom: '5px',
+            textShadow: '0 1px 0 rgba(255,255,255,0.5)'
           }}>
             {title}
           </div>
@@ -967,9 +1110,10 @@ const FlatGameVisualization = () => {
           width: `${graphWidth}px`,
           height: `${graphHeight}px`,
           backgroundColor: 'white',
-          borderRadius: '4px',
-          border: '1px solid #ddd',
-          margin: '0 auto'
+          borderRadius: '6px',
+          border: '1px solid #D4E4F7',
+          margin: '0 auto',
+          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)'
         }}>
           {/* Y-axis grid lines - much simpler */}
           {visibleYLabels.map((label, i) => {
@@ -1046,7 +1190,7 @@ const FlatGameVisualization = () => {
                 points={points} 
                 fill="none" 
                 stroke={color} 
-                strokeWidth="1.5" 
+                strokeWidth="2" 
               />
               
               {/* Current value marker */}
@@ -1054,27 +1198,28 @@ const FlatGameVisualization = () => {
                 <circle 
                   cx={padding.left + ((visibleData[visibleData.length - 1].year - startYear) * xScale)}
                   cy={padding.top + innerHeight - (visibleData[visibleData.length - 1][dataKey] * yScale)}
-                  r="3"
+                  r="4"
                   fill="white"
                   stroke={color}
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                 />
               )}
             </svg>
           )}
           
-          {/* Current value text - compact */}
+          {/* Current value text - XP style */}
           <div style={{
             position: 'absolute',
             top: '3px',
             right: '5px',
             fontSize: '10px',
             fontWeight: 'bold',
-            backgroundColor: 'rgba(255,255,255,0.7)',
+            backgroundColor: '#F0F6FF',
             border: `1px solid ${color}`,
-            borderRadius: '2px',
-            padding: '1px 3px',
-            color: color
+            borderRadius: '4px',
+            padding: '1px 4px',
+            color: color,
+            boxShadow: '1px 1px 3px rgba(0,0,0,0.1)'
           }}>
             {currentValue}
           </div>
@@ -1087,34 +1232,37 @@ const FlatGameVisualization = () => {
   const renderCompactStatsCard = ({ title, stats, color, iconEmoji }) => {
     return (
       <div style={{ width: '100%' }}>
-        {/* Header */}
+        {/* XP-style panel header */}
         <div style={{ 
-          backgroundColor: color,
+          backgroundImage: `linear-gradient(to bottom, ${color}, ${color}cc)`,
           color: 'white',
           fontWeight: 'bold',
-          padding: '3px 6px',
+          padding: '4px 8px',
           fontSize: '12px',
           display: 'flex',
           alignItems: 'center',
-          borderRadius: '3px 3px 0 0',
-          gap: '5px'
+          borderRadius: '6px 6px 0 0',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)',
+          gap: '5px',
+          textShadow: '0 -1px 0 rgba(0,0,0,0.25)'
         }}>
           {iconEmoji && <span>{iconEmoji}</span>}
           <span>{title}</span>
         </div>
         
-        {/* Content - Clean two-column grid */}
+        {/* Content - Clean two-column grid with XP/Aqua styling */}
         <div style={{ 
-          border: '1px solid #ddd',
+          border: '1px solid #D4E4F7',
           borderTop: 'none',
-          borderRadius: '0 0 3px 3px',
-          backgroundColor: 'white',
-          padding: '5px'
+          borderRadius: '0 0 6px 6px',
+          backgroundColor: '#F8FAFF',
+          padding: '8px',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)'
         }}>
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: '1fr 1fr', 
-            rowGap: '3px',
+            rowGap: '5px',
             columnGap: '10px'
           }}>
             {Object.entries(stats).map(([key, value]) => (
@@ -1122,7 +1270,8 @@ const FlatGameVisualization = () => {
                 <div style={{ 
                   textAlign: 'left', 
                   fontSize: '10px',
-                  color: '#666'
+                  color: '#666',
+                  textShadow: '0 1px 0 rgba(255,255,255,0.5)'
                 }}>
                   {key}:
                 </div>
@@ -1130,7 +1279,8 @@ const FlatGameVisualization = () => {
                   textAlign: 'right', 
                   fontWeight: key === 'total' ? 'bold' : 'normal', 
                   fontSize: '10px',
-                  color: key === 'total' ? color : '#333'
+                  color: key === 'total' ? color : '#333',
+                  textShadow: '0 1px 0 rgba(255,255,255,0.5)'
                 }}>
                   {typeof value === 'number' ? 
                     (Number.isInteger(value) ? value : value.toFixed(1)) : 
@@ -1150,30 +1300,30 @@ const FlatGameVisualization = () => {
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        marginTop: '10px'
+        marginTop: '15px',
+        marginBottom: '15px'
       }}>
-        <ClassicXPButton
+        <button
           onClick={handleToggleLogs}
           style={{
-            padding: '4px 20px',
-            backgroundColor: showLogs ? '#4caf50' : '#e0e0e0',
-            color: showLogs ? 'white' : 'black'
+            padding: '6px 20px',
+            backgroundColor: showLogs ? '#4caf50' : '#ECE9D8',
+            color: showLogs ? 'white' : '#0A246A',
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '13px',
+            fontWeight: 'bold',
+            border: showLogs ? '1px solid #388e3c' : '2px outset #f5f5f5',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            boxShadow: showLogs ? 
+              'inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)' : 
+              '0 1px 2px rgba(0,0,0,0.1)'
           }}
         >
           {showLogs ? 'Hide Logs' : 'Show Logs'}
-        </ClassicXPButton>
+        </button>
       </div>
     );
-  };
-  
-  // Section container style
-  const sectionStyle = {
-    backgroundColor: '#f0f0f0',
-    borderRadius: '4px',
-    padding: '10px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    marginBottom: '15px',
-    border: '1px solid #ccc'
   };
   
   return (
@@ -1181,7 +1331,8 @@ const FlatGameVisualization = () => {
       fontFamily: 'Tahoma, Arial, sans-serif',
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '10px'
+      padding: '10px',
+      backgroundColor: '#ECE9D8'
     }}>
       {/* Popups */}
       {renderIntroPopup()}
@@ -1191,67 +1342,86 @@ const FlatGameVisualization = () => {
       {/* Top Control Bar */}
       {renderControlBar()}
 
-      {/* Main Game Container */}
-      <div style={sectionStyle}>
-        {/* Population bars at top level */}
-        {renderPopulationBars()}
+      {/* Main Game Container with XP/Aqua styling */}
+      <div style={styles.xpPanel}>
+        {/* Glass effect overlay - for that Aqua feel */}
+        <div style={styles.aquaGlassEffect}></div>
         
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '3fr 1fr',
-          gap: '15px',
-        }}>
-          {/* Forest Visualization */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '4px',
-            padding: '10px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            border: '1px solid #ddd',
-            height: '100%',
-            display: 'flex',  // Add flex display
-            justifyContent: 'center',  // Center horizontally
-            alignItems: 'center' // Center vertically
-          }}>
-            <SimpleForestView 
-              simulationManager={simulationManager} 
-              currentYear={currentYear} 
-            />
+        {/* Main content grid - simplified layout */}
+        <div style={styles.mainGrid}>
+          {/* Left column - Forest visualization with population bars */}
+          <div>
+            {/* First row: Population bars and forest in same container */}
+            <div style={{
+              ...styles.aquaPanel,
+              marginBottom: '15px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              {/* Title bar */}
+              <div style={styles.xpPanelHeader}>
+                Forest Ecosystem Status
+              </div>
+              
+              {/* Integrated population bars */}
+              {renderPopulationBars()}
+              
+              {/* Forest visualization */}
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                borderRadius: '8px',
+                padding: '10px',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.1)',
+                border: '1px solid #B5CAE0',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <SimpleForestView 
+                  simulationManager={simulationManager} 
+                  currentYear={currentYear} 
+                />
+              </div>
+            </div>
           </div>
           
-          {/* Right column - Actions and Feedback */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '15px',
-            height: '100%'
-          }}>
-            {/* Action Buttons at top level */}
-            {renderActionButtons()}
-            
-            {/* Ecosystem Stats at top level */}
-            {renderEcosystemStats()}
+          {/* Right column - Actions and Ecosystem Stats vertically stacked */}
+          <div>
+            <div style={{
+              ...styles.aquaPanel,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0' // Remove gap between elements
+            }}>
+              {/* Title bar */}
+              <div style={styles.xpPanelHeader}>
+                User Controls
+              </div>
+              
+              {/* Action Buttons in the same style container */}
+              {renderActionButtons()}
+              
+              {/* Ecosystem Stats integrated in the same container */}
+              {renderEcosystemStats()}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Secondary Game Container - Graphs and Stats Cards */}
-      <div style={sectionStyle}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '15px'
-        }}>
+      <div style={styles.xpPanel}>
+        {/* Glass effect overlay */}
+        <div style={styles.aquaGlassEffect}></div>
+        
+        {/* Header */}
+        <div style={styles.xpPanelHeader}>
+          Population Data
+        </div>
+        
+        <div style={styles.statsGrid}>
           {/* Tree Column */}
           <div>
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              padding: '8px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #ddd',
-              marginBottom: '10px'
-            }}>
+            <div style={styles.graphPanel}>
               {renderSingleGraph({
                 dataKey: "trees",
                 color: "#228B22",
@@ -1261,11 +1431,11 @@ const FlatGameVisualization = () => {
             </div>
             
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              padding: '8px',
+              backgroundColor: '#F8FAFF',
+              borderRadius: '6px',
+              padding: '0', // No padding needed as the card has its own padding
               boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #ddd'
+              border: '1px solid #B5CAE0'
             }}>
               {renderCompactStatsCard({
                 title: "TREES",
@@ -1288,14 +1458,7 @@ const FlatGameVisualization = () => {
           
           {/* Deer Column */}
           <div>
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              padding: '8px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #ddd',
-              marginBottom: '10px'
-            }}>
+            <div style={styles.graphPanel}>
               {renderSingleGraph({
                 dataKey: "deer",
                 color: "#8B4513",
@@ -1305,11 +1468,11 @@ const FlatGameVisualization = () => {
             </div>
             
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              padding: '8px',
+              backgroundColor: '#F8FAFF',
+              borderRadius: '6px',
+              padding: '0', // No padding needed as the card has its own padding
               boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #ddd'
+              border: '1px solid #B5CAE0'
             }}>
               {renderCompactStatsCard({
                 title: "DEER",
@@ -1332,14 +1495,7 @@ const FlatGameVisualization = () => {
           
           {/* Wolves Column */}
           <div>
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              padding: '8px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #ddd',
-              marginBottom: '10px'
-            }}>
+            <div style={styles.graphPanel}>
               {renderSingleGraph({
                 dataKey: "wolves",
                 color: "#555",
@@ -1349,11 +1505,11 @@ const FlatGameVisualization = () => {
             </div>
             
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              padding: '8px',
+              backgroundColor: '#F8FAFF',
+              borderRadius: '6px',
+              padding: '0', // No padding needed as the card has its own padding
               boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #ddd'
+              border: '1px solid #B5CAE0'
             }}>
               {renderCompactStatsCard({
                 title: "WOLVES",
