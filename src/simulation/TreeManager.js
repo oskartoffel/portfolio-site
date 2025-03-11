@@ -314,6 +314,70 @@ class TreeManager {
     }
 
     /**
+     * Harvest a tree - user interaction method
+     * @returns {Object|null} The harvested tree data or null if none available
+     */
+    harvestTree() {
+        // Find mature trees (better for harvesting)
+        const matureTrees = this.trees
+            .map((tree, index) => (tree && tree.position !== 0 && tree.age >= 10) ? index : -1)
+            .filter(index => index !== -1);
+        
+        // If no mature trees, check for any trees
+        const availableTrees = matureTrees.length > 0 ? matureTrees : 
+            this.trees
+                .map((tree, index) => (tree && tree.position !== 0) ? index : -1)
+                .filter(index => index !== -1);
+        
+        if (availableTrees.length === 0) {
+            console.log("HARVEST: No trees available to harvest");
+            return null;
+        }
+        
+        // Randomly select a tree
+        const randomIndex = Math.floor(Math.random() * availableTrees.length);
+        const treeIndex = availableTrees[randomIndex];
+        
+        // Store tree data before removing it
+        const harvestedTree = {
+            age: this.trees[treeIndex].age,
+            height: this.trees[treeIndex].height,
+            diameter: this.trees[treeIndex].diameter,
+            mass: this.trees[treeIndex].mass
+        };
+        
+        // Remove the tree
+        console.log(`HARVEST: Tree at position ${treeIndex} was harvested (age: ${harvestedTree.age}, mass: ${harvestedTree.mass.toFixed(2)})`);
+        this.removeTree(treeIndex, 'harvested');
+        
+        return harvestedTree;
+    }
+
+    /**
+     * Plant a seedling - user interaction method
+     * @returns {boolean} whether planting was successful
+     */
+    plantSeedling() {
+        const newPos = this.findEmptyPosition();
+        if (newPos === -1) {
+            console.log("PLANT: No space available for new seedling");
+            return false;
+        }
+        
+        // Create a new seedling (age 1)
+        const tempTree = new Tree(newPos + 1, 1, 0, 0, 0);
+        const calculatedTree = this.calculateTreeProperties(tempTree);
+        
+        if (calculatedTree) {
+            this.trees[newPos] = calculatedTree;
+            console.log(`PLANT: Seedling planted at position ${newPos}`);
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
      * Set stabilization mode
      */
     setStabilizationMode(isStabilizing) {

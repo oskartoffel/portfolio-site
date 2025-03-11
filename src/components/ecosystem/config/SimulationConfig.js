@@ -12,7 +12,7 @@ const simulationConfig = {
     ageSigma: 20,
     maturity: 10,
     stressLevel: 3,
-    reproductionFactor: 5,
+    reproductionFactor: 8,
     edibleAge: 4
   },
   deer: {
@@ -25,13 +25,13 @@ const simulationConfig = {
     migrationFactor: 5
   },
   wolf: {
-    initial: 0,
+    initial: 5,
     arraySize: 200,
     maturity: 2,
-    staminaFactor: 2,
-    hungerFactor: 1,
-    reproductionFactor: 1,
-    migrationFactor: 0.1
+    staminaFactor: 5,
+    hungerFactor: 4,
+    reproductionFactor: 5,
+    migrationFactor: 5
   },
   graph: {
     MAX_YEARS: 50,

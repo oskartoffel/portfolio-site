@@ -479,6 +479,32 @@ class DeerManager {
         }
         return this.migrationCount || 0; // Return the count for easier debuggin
     }
+    
+    /**
+     * Hunt (shoot) a deer - user interaction method
+     * @returns {boolean} whether a deer was successfully shot
+     */
+    huntDeer() {
+        // Find alive deer to hunt
+        const aliveDeerIndices = this.deers
+            .map((deer, index) => deer.isAlive() ? index : -1)
+            .filter(index => index !== -1);
+        
+        if (aliveDeerIndices.length === 0) {
+            console.log("HUNT: No deer available to hunt");
+            return false;
+        }
+        
+        // Randomly select a deer to hunt
+        const randomIndex = Math.floor(Math.random() * aliveDeerIndices.length);
+        const deerIndex = aliveDeerIndices[randomIndex];
+        
+        // Kill the deer and mark as user action
+        this.killDeer(deerIndex, 'hunting');
+        console.log(`HUNT: Deer at position ${deerIndex} was shot by user`);
+        
+        return true;
+    }
 
     /**
      * Get current deer population count

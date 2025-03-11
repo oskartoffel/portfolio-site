@@ -599,6 +599,32 @@ class WolfManager {
     }
 
     /**
+     * Hunt (shoot) a wolf - user interaction method
+     * @returns {boolean} whether a wolf was successfully shot
+     */
+    huntWolf() {
+        // Find alive wolves to hunt
+        const aliveWolfIndices = this.wolves
+            .map((wolf, index) => wolf.isAlive() ? index : -1)
+            .filter(index => index !== -1);
+        
+        if (aliveWolfIndices.length === 0) {
+            console.log("HUNT: No wolves available to hunt");
+            return false;
+        }
+        
+        // Randomly select a wolf to hunt
+        const randomIndex = Math.floor(Math.random() * aliveWolfIndices.length);
+        const wolfIndex = aliveWolfIndices[randomIndex];
+        
+        // Kill the wolf and mark as user action
+        this.killWolf(wolfIndex, 'hunting');
+        console.log(`HUNT: Wolf at position ${wolfIndex} was shot by user`);
+        
+        return true;
+    }
+
+    /**
      * Get current wolf population count
      * @returns {number} - Number of living wolves
      */
