@@ -19,17 +19,8 @@ const EcosystemSimulation = () => {
 
   return (
     <XPBackground>
-      <ClassicWindow title="The Game - Forest Ecosystem Simulation" width="95%" height="95%">
+      <ClassicWindow title="Forest Ecosystem Simulation" width="95%" height="95%">
         <div style={{ padding: '5px' }}>
-          <h1 style={{ 
-            textAlign: 'center', 
-            marginTop: '0',
-            fontFamily: 'Hybrid, Tahoma, Arial, sans-serif',
-            color: '#2a8a43',
-            fontSize: '20px'
-          }}>
-            The Game
-          </h1>
           <FlatGameVisualization />
           <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
             <Link to="/portfolio">

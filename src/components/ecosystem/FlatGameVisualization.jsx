@@ -18,6 +18,16 @@ const FlatGameVisualization = () => {
   const [initComplete, setInitComplete] = useState(false);
   const [simulationStarted, setSimulationStarted] = useState(false);
   const [speedDropdownOpen, setSpeedDropdownOpen] = useState(false);
+  const [showHelp, setShowHelp] = useState(null);
+  
+  // Track user actions for reporting
+  const [userStats, setUserStats] = useState({
+    animalsKilled: 0,
+    treesPlanted: 0,
+    treesHarvested: 0,
+    moneyEarned: 0,
+    carbonCaptured: 0
+  });
   
   // Use the simulation hook
   const {
@@ -69,12 +79,22 @@ const FlatGameVisualization = () => {
   const completeInitialization = () => {
     setShowInitialization(false);
     setSimulationStarted(true);
-    // Auto-start the simulation
+    // Auto-start the simulation with 1x speed (1000ms)
+    setSpeed(1000);
     startSimulation();
   };
   
   // Handle simulation reset/replay
   const handleReplay = () => {
+    // Reset user stats
+    setUserStats({
+      animalsKilled: 0,
+      treesPlanted: 0,
+      treesHarvested: 0,
+      moneyEarned: 0,
+      carbonCaptured: 0
+    });
+    
     resetSimulation();
     setInitProgress(0);
     setInitComplete(false);
@@ -82,44 +102,116 @@ const FlatGameVisualization = () => {
     startInitialization();
   };
   
-  // Action functions 
+  // Action functions for user interaction with the ecosystem
+  
   const handleShootDeer = () => {
-    addLog("User shot a deer", "system");
-    // Implementation will come later
+    if (simulationManager?.deerManager) {
+      const success = simulationManager.deerManager.huntDeer();
+      if (success) {
+        // Update stats
+        setUserStats(prev => ({
+          ...prev,
+          animalsKilled: prev.animalsKilled + 1,
+          // Hunting deer costs carbon due to emissions
+          carbonCaptured: prev.carbonCaptured - 15, // -15kg CO2 for hunting activity
+          // Small amount of money earned from deer meat
+          moneyEarned: prev.moneyEarned + 150 // $150 per deer
+        }));
+        addLog("User shot a deer. +$150, -15kg CO2", "system");
+      }
+    }
   };
   
   const handleShootWolf = () => {
-    addLog("User shot a wolf", "system");
-    // Implementation will come later
+    if (simulationManager?.wolfManager) {
+      const success = simulationManager.wolfManager.huntWolf();
+      if (success) {
+        // Update stats
+        setUserStats(prev => ({
+          ...prev,
+          animalsKilled: prev.animalsKilled + 1,
+          // Hunting wolf costs carbon due to emissions
+          carbonCaptured: prev.carbonCaptured - 20, // -20kg CO2 for hunting activity
+          // No money from wolf hunting (conservation policy)
+          moneyEarned: prev.moneyEarned - 50 // $50 fine for wolf hunting
+        }));
+        addLog("User shot a wolf. -$50 fine, -20kg CO2", "system");
+      }
+    }
   };
   
   const handleHarvestTree = () => {
-    addLog("User harvested a tree", "system");
-    // Implementation will come later
+    if (simulationManager?.treeManager) {
+      const harvestedTree = simulationManager.treeManager.harvestTree();
+      if (harvestedTree) {
+        // Calculate earnings based on tree mass
+        const treeValue = Math.round(harvestedTree.mass * 5); // $5 per mass unit
+        
+        // Calculate carbon impact
+        // Tree harvesting releases some stored carbon and machinery produces emissions
+        const carbonImpact = Math.round(-(harvestedTree.mass * 0.5)); // 50% of mass released as CO2
+        
+        // Update stats
+        setUserStats(prev => ({
+          ...prev,
+          treesHarvested: prev.treesHarvested + 1,
+          moneyEarned: prev.moneyEarned + treeValue,
+          carbonCaptured: prev.carbonCaptured + carbonImpact
+        }));
+        
+        addLog(`User harvested a tree. +$${treeValue}, ${carbonImpact}kg CO2`, "system");
+      }
+    }
   };
   
   const handlePlantSeedling = () => {
-    addLog("User planted a seedling", "system");
-    // Implementation will come later
+    if (simulationManager?.treeManager) {
+      const success = simulationManager.treeManager.plantSeedling();
+      if (success) {
+        // Update stats
+        setUserStats(prev => ({
+          ...prev,
+          treesPlanted: prev.treesPlanted + 1,
+          moneyEarned: prev.moneyEarned - 20, // Cost to plant
+          carbonCaptured: prev.carbonCaptured - 5 // Small emissions from planting activity
+        }));
+        addLog("User planted a seedling. -$20, -5kg CO2", "system");
+      }
+    }
   };
   
-  // Placeholder player stats
-  const playerStats = {
-    carbonCaptured: "245 tons",
-    moneyEarned: "$1,250",
-    animalsKilled: 3,
-    treesPlanted: 25,
-    ecosystemHealth: "Stable",
-    sustainabilityScore: 72
-  };
+  // Update carbon captured based on forest growth
+  useEffect(() => {
+    if (currentYear > 0 && populationData.length >= 2) {
+      // Get current and previous year data
+      const currentData = populationData[populationData.length - 1];
+      const prevData = populationData[populationData.length - 2];
+      
+      // Calculate net tree growth
+      const netTreeGrowth = currentData.trees - prevData.trees;
+      
+      // Estimate carbon captured based on growth
+      // A growing forest captures carbon, a shrinking one loses carbon
+      const carbonChange = netTreeGrowth * 20; // Each net new tree captures ~20kg CO2
+      
+      // Add carbon from tree mass increase (even existing trees capture more as they grow)
+      const additionalCarbon = currentData.trees * 5; // Each existing tree captures ~5kg CO2 per year
+      
+      // Update carbon tracking
+      setUserStats(prev => ({
+        ...prev,
+        carbonCaptured: prev.carbonCaptured + carbonChange + additionalCarbon
+      }));
+    }
+  }, [currentYear, populationData]);
 
   // =========== STYLING CONSTANTS ===========
-  // XP/Aqua inspired styling
+  // XP/Aqua inspired styling with forest green theme
   const styles = {
     // Window/Panel styles
     xpPanel: {
       backgroundColor: '#ECE9D8', // Classic XP color
-      border: '2px solid #0A246A',
+      border: '2px solid #2a8a43', // Changed to green
       borderRadius: '8px',
       boxShadow: '2px 2px 12px rgba(0,0,0,0.2)',
       padding: '10px',
@@ -128,7 +220,8 @@ const FlatGameVisualization = () => {
       overflow: 'hidden'
     },
     xpPanelHeader: {
-      background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
+      // Changed to green gradient
+      background: 'linear-gradient(to right, #266e35, #38ae57)',
       color: 'white',
       padding: '5px 10px',
       fontFamily: 'Tahoma, Arial, sans-serif',
@@ -140,7 +233,7 @@ const FlatGameVisualization = () => {
     },
     aquaPanel: {
       backgroundColor: '#EFF7FF', // Light aqua blue background
-      border: '1px solid rgba(149, 190, 229, 0.9)',
+      border: '1px solid rgba(42, 138, 67, 0.9)', // Changed to green
       borderRadius: '8px',
       boxShadow: '0 3px 7px rgba(0,0,0,0.15)',
       padding: '10px',
@@ -161,7 +254,7 @@ const FlatGameVisualization = () => {
     // Control bar
     controlBar: {
       backgroundColor: '#DDE4EB',
-      border: '1px solid #B5CAE0',
+      border: '1px solid #90d7a3',
       borderRadius: '8px',
       boxShadow: 'inset 0 1px 0 #fff, 0 1px 3px rgba(0,0,0,0.1)',
       padding: '8px 12px',
@@ -176,12 +269,12 @@ const FlatGameVisualization = () => {
       fontSize: '14px',
       padding: '5px 10px',
       backgroundColor: '#F8FAFF',
-      border: '1px solid #B5CAE0',
+      border: '1px solid #90d7a3',
       borderRadius: '5px',
       minWidth: '100px',
       textAlign: 'center',
       boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)',
-      color: '#0A246A'
+      color: '#2a8a43'
     },
     
     // Buttons
@@ -194,12 +287,12 @@ const FlatGameVisualization = () => {
       fontSize: '12px',
       fontWeight: 'bold',
       cursor: 'pointer',
-      color: '#0A246A',
+      color: '#2a8a43',
       boxShadow: '1px 1px 3px rgba(0,0,0,0.1)'
     },
     playButton: {
       backgroundColor: '#3cb371',
-      color: 'white',
+      color: '#FFFFFF', // Fixed white on white issue - white text on green button
       minWidth: '90px',
       padding: '5px 10px',
       borderRadius: '3px',
@@ -208,7 +301,7 @@ const FlatGameVisualization = () => {
     },
     pauseButton: {
       backgroundColor: '#cd5c5c',
-      color: 'white',
+      color: '#FFFFFF', // Fixed white on white issue - white text on red button
       minWidth: '90px',
       padding: '5px 10px',
       borderRadius: '3px',
@@ -238,7 +331,7 @@ const FlatGameVisualization = () => {
     // Stat cards
     statCard: {
       backgroundColor: '#F8FAFF',
-      border: '1px solid #B5CAE0',
+      border: '1px solid #90d7a3',
       borderRadius: '5px',
       padding: '8px',
       boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05)',
@@ -281,9 +374,60 @@ const FlatGameVisualization = () => {
       borderRadius: '6px',
       padding: '10px',
       boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.1)',
-      border: '1px solid #B5CAE0',
+      border: '1px solid #90d7a3',
       marginBottom: '10px'
+    },
+    
+    // Help icon
+    helpIcon: {
+      display: 'inline-block',
+      width: '16px',
+      height: '16px',
+      borderRadius: '50%',
+      backgroundColor: '#2a8a43',
+      color: 'white',
+      textAlign: 'center',
+      lineHeight: '16px',
+      fontSize: '12px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      marginLeft: '5px',
+      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+    },
+    
+    // Help tooltip
+    helpTooltip: {
+      position: 'absolute',
+      zIndex: 100,
+      width: '250px',
+      backgroundColor: '#fffef0',
+      border: '1px solid #2a8a43',
+      borderRadius: '4px',
+      padding: '10px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      fontSize: '12px',
+      color: '#333',
+      lineHeight: '1.4'
     }
+  };
+  
+  // Help text for different components
+  const helpTexts = {
+    forest: "This visualization shows tree density in the forest ecosystem. Darker green areas represent denser forests, while lighter areas have fewer trees. The density affects deer feeding patterns and forest growth dynamics.",
+    
+    populationBars: "These bars show the current population size for each species relative to sustainable levels. When populations get too high, natural controls like food scarcity or predation typically bring them back down.",
+    
+    actions: "These buttons let you directly interact with the ecosystem. Harvesting trees earns money but reduces carbon storage. Shooting deer or wolves affects population dynamics. Planting trees costs money but increases future carbon capture.",
+    
+    ecosystemStats: "These metrics track your impact on the ecosystem. Money earned comes from harvesting trees and hunting deer. Carbon captured represents the net CO2 sequestered by trees minus emissions from your actions.",
+    
+    trees: "Trees grow over time, capturing carbon as they mature. Young trees are vulnerable to deer browsing. Tree population is affected by available space, deer predation, and your harvesting choices.",
+    
+    deer: "Deer feed on young trees and reproduce quickly. Their population is limited by food availability and wolf predation. Without natural predators, deer can destroy forest regeneration.",
+    
+    wolves: "Wolves control deer populations through predation. A healthy wolf population indirectly protects forest health by preventing deer overpopulation. Wolves reproduce more slowly than deer.",
+    
+    controls: "Control the simulation speed or pause to observe specific interactions. The simulation models 100 years of ecosystem dynamics."
   };
 
   // =========== INDIVIDUAL COMPONENT RENDERING ===========
@@ -310,11 +454,11 @@ const FlatGameVisualization = () => {
           backgroundColor: '#ECE9D8',
           borderRadius: '8px',
           boxShadow: '0 0 0 1px #ffffff, 2px 2px 12px rgba(0,0,0,0.5)',
-          border: '2px solid #0A246A',
+          border: '2px solid #2a8a43', // Changed to green
           overflow: 'hidden'
         }}>
           <div style={{
-            background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
+            background: 'linear-gradient(to right, #266e35, #38ae57)', // Changed to green gradient
             color: 'white',
             padding: '8px 12px',
             fontWeight: 'bold',
@@ -325,16 +469,6 @@ const FlatGameVisualization = () => {
           </div>
           
           <div style={{ padding: '20px' }}>
-            <h2 style={{
-              fontFamily: 'Husky Stash, Tahoma, Arial, sans-serif',
-              color: '#2a8a43',
-              fontSize: '20px',
-              marginTop: 0,
-              marginBottom: '15px'
-            }}>
-              Welcome to the Forest Ecosystem!
-            </h2>
-            
             <p style={{
               fontFamily: 'Tahoma, Arial, sans-serif',
               fontSize: '14px',
@@ -424,11 +558,11 @@ const FlatGameVisualization = () => {
           backgroundColor: '#ECE9D8',
           borderRadius: '8px',
           boxShadow: '0 0 0 1px #ffffff, 2px 2px 12px rgba(0,0,0,0.5)',
-          border: '2px solid #0A246A',
+          border: '2px solid #2a8a43', // Changed to green
           overflow: 'hidden'
         }}>
           <div style={{
-            background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
+            background: 'linear-gradient(to right, #266e35, #38ae57)', // Changed to green gradient
             color: 'white',
             padding: '8px 12px',
             fontWeight: 'bold',
@@ -453,7 +587,7 @@ const FlatGameVisualization = () => {
               height: '22px',
               backgroundColor: '#DDE4EB',
               borderRadius: '3px',
-              border: '1px solid #B5CAE0',
+              border: '1px solid #90d7a3', // Changed to green
               overflow: 'hidden',
               marginBottom: '20px',
               position: 'relative',
@@ -530,11 +664,11 @@ const FlatGameVisualization = () => {
           backgroundColor: '#ECE9D8',
           borderRadius: '8px',
           boxShadow: '0 0 0 1px #ffffff, 2px 2px 12px rgba(0,0,0,0.5)',
-          border: '2px solid #0A246A',
+          border: '2px solid #2a8a43', // Changed to green
           overflow: 'hidden'
         }}>
           <div style={{
-            background: 'linear-gradient(to right, #0A246A, #A6CAF0)',
+            background: 'linear-gradient(to right, #266e35, #38ae57)', // Changed to green gradient
             color: 'white',
             padding: '8px 12px',
             fontWeight: 'bold',
@@ -562,47 +696,170 @@ const FlatGameVisualization = () => {
               gap: '15px',
               margin: '20px 0'
             }}>
-              {Object.entries(playerStats).map(([key, value]) => (
-                <div key={key} style={{
-                  backgroundColor: '#F8FAFF',
-                  border: '1px solid #B5CAE0',
-                  borderRadius: '6px',
-                  padding: '10px',
-                  textAlign: 'center',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.1)'
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                border: '1px solid #90d7a3',
+                borderRadius: '6px',
+                padding: '10px',
+                textAlign: 'center',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.1)'
+              }}>
+                <div style={{ 
+                  fontSize: '20px', 
+                  marginBottom: '5px'
                 }}>
-                  <div style={{ 
-                    fontSize: '20px', 
-                    marginBottom: '5px'
-                  }}>
-                    {key === 'carbonCaptured' ? '🌿' : 
-                     key === 'moneyEarned' ? '💰' : 
-                     key === 'animalsKilled' ? '🩸' : 
-                     key === 'treesPlanted' ? '🌱' : 
-                     key === 'ecosystemHealth' ? '❤️' : 
-                     key === 'sustainabilityScore' ? '♻️' : '📊'}
-                  </div>
-                  
-                  <div style={{
-                    fontFamily: 'Tahoma, Arial, sans-serif',
-                    fontSize: '12px',
-                    color: '#666',
-                    textTransform: 'capitalize'
-                  }}>
-                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
-                  </div>
-                  
-                  <div style={{
-                    fontFamily: 'Tahoma, Arial, sans-serif',
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginTop: '5px'
-                  }}>
-                    {value}
-                  </div>
+                  🌿
                 </div>
-              ))}
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '12px',
+                  color: '#666'
+                }}>
+                  Carbon Captured
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  marginTop: '5px'
+                }}>
+                  {userStats.carbonCaptured > 0 ? 
+                    `+${userStats.carbonCaptured}kg` : 
+                    `${userStats.carbonCaptured}kg`}
+                </div>
+              </div>
+              
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                border: '1px solid #90d7a3',
+                borderRadius: '6px',
+                padding: '10px',
+                textAlign: 'center',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.1)'
+              }}>
+                <div style={{ 
+                  fontSize: '20px', 
+                  marginBottom: '5px'
+                }}>
+                  💰
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '12px',
+                  color: '#666'
+                }}>
+                  Money Earned
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  marginTop: '5px'
+                }}>
+                  ${userStats.moneyEarned}
+                </div>
+              </div>
+              
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                border: '1px solid #90d7a3',
+                borderRadius: '6px',
+                padding: '10px',
+                textAlign: 'center',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.1)'
+              }}>
+                <div style={{ 
+                  fontSize: '20px', 
+                  marginBottom: '5px'
+                }}>
+                  🩸
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '12px',
+                  color: '#666'
+                }}>
+                  Animals Killed
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  marginTop: '5px'
+                }}>
+                  {userStats.animalsKilled}
+                </div>
+              </div>
+              
+              {/* Additional stats in the next row */}
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                border: '1px solid #90d7a3',
+                borderRadius: '6px',
+                padding: '10px',
+                textAlign: 'center',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.1)',
+                gridColumn: '1 / 2'
+              }}>
+                <div style={{ 
+                  fontSize: '20px', 
+                  marginBottom: '5px'
+                }}>
+                  🌱
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '12px',
+                  color: '#666'
+                }}>
+                  Trees Planted
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  marginTop: '5px'
+                }}>
+                  {userStats.treesPlanted}
+                </div>
+              </div>
+              
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                border: '1px solid #90d7a3',
+                borderRadius: '6px',
+                padding: '10px',
+                textAlign: 'center',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.1)',
+                gridColumn: '2 / 4'
+              }}>
+                <div style={{ 
+                  fontSize: '20px', 
+                  marginBottom: '5px'
+                }}>
+                  🌲
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '12px',
+                  color: '#666'
+                }}>
+                  Trees Harvested
+                </div>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  marginTop: '5px'
+                }}>
+                  {userStats.treesHarvested}
+                </div>
+              </div>
             </div>
             
             <p style={{
@@ -615,11 +872,11 @@ const FlatGameVisualization = () => {
               borderRadius: '4px',
               border: '1px solid #c8e6c9'
             }}>
-              {playerStats.sustainabilityScore > 70 ? 
-                'Excellent work! Your ecosystem management created a balanced and thriving forest environment.' : 
-                playerStats.sustainabilityScore > 40 ? 
-                'Good job maintaining the ecosystem. With some adjustments, you could create an even more sustainable balance.' : 
-                'Your ecosystem experienced significant challenges. Try a different approach to improve sustainability.'}
+              {userStats.carbonCaptured > 1000 && userStats.moneyEarned > 1000 ? 
+                'Excellent work! You managed to both generate income and maintain a carbon-positive forest ecosystem.' : 
+                userStats.carbonCaptured > 500 ? 
+                'Good job maintaining the ecosystem. Your management created a carbon-positive environment.' : 
+                'Your ecosystem experienced significant carbon loss. In the future, consider maintaining more trees to capture carbon.'}
             </p>
             
             <div style={{
@@ -682,6 +939,32 @@ const FlatGameVisualization = () => {
         )}
         
         {renderSpeedControl()}
+        
+        <div 
+          style={styles.helpIcon}
+          onClick={() => setShowHelp(showHelp === 'controls' ? null : 'controls')}
+        >
+          ?
+        </div>
+        
+        {showHelp === 'controls' && (
+          <div style={{
+            ...styles.helpTooltip,
+            top: '60px',
+            left: '50%',
+            transform: 'translateX(-50%)'
+          }}>
+            {helpTexts.controls}
+            <div style={{
+              marginTop: '8px',
+              textAlign: 'right',
+              fontSize: '11px',
+              fontStyle: 'italic'
+            }}>
+              Click anywhere to close
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -720,7 +1003,7 @@ const FlatGameVisualization = () => {
             left: 0,
             right: 0,
             backgroundColor: '#F8FAFF',
-            border: '1px solid #B5CAE0',
+            border: '1px solid #90d7a3', // Changed to green
             borderRadius: '5px',
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             zIndex: 100
@@ -740,7 +1023,7 @@ const FlatGameVisualization = () => {
                   fontSize: '12px',
                   textAlign: 'center',
                   borderBottom: '1px solid #eee',
-                  color: '#0A246A'
+                  color: '#2a8a43' // Changed to green
                 }}
               >
                 {option.label}
@@ -759,17 +1042,20 @@ const FlatGameVisualization = () => {
       trees: {
         border: '#2e7d32',
         background: 'rgba(46, 125, 50, 0.1)',
-        fill: 'linear-gradient(to bottom, #81c784, #4caf50 45%, #388e3c)'
+        fill: 'linear-gradient(to bottom, #81c784, #4caf50 45%, #388e3c)',
+        title: 'Trees'
       },
       deer: {
         border: '#8B4513',
         background: 'rgba(139, 69, 19, 0.1)',
-        fill: 'linear-gradient(to bottom, #bcaaa4, #8d6e63 45%, #5d4037)'
+        fill: 'linear-gradient(to bottom, #bcaaa4, #8d6e63 45%, #5d4037)',
+        title: 'Deer'
       },
       wolf: {
         border: '#555',
         background: 'rgba(85, 85, 85, 0.1)',
-        fill: 'linear-gradient(to bottom, #9e9e9e, #757575 45%, #424242)'
+        fill: 'linear-gradient(to bottom, #9e9e9e, #757575 45%, #424242)',
+        title: 'Wolves'
       }
     };
     
@@ -802,7 +1088,7 @@ const FlatGameVisualization = () => {
               fontFamily: 'Tahoma, Arial, sans-serif',
               textShadow: '0 1px 0 rgba(255,255,255,0.5)'
             }}>
-              {count} {type}
+              {color.title}: {count}
             </span>
           </div>
         </div>
@@ -829,10 +1115,51 @@ const FlatGameVisualization = () => {
         marginBottom: '15px',
         padding: '10px', 
         backgroundColor: '#F8FAFF',
-        border: '1px solid #B5CAE0',
+        border: '1px solid #90d7a3', // Changed to green
         borderRadius: '8px',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)'
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
+        position: 'relative'
       }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '8px'
+        }}>
+          <div style={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: '#2a8a43', // Changed to green
+          }}>
+            Population Levels
+          </div>
+          
+          <div 
+            style={styles.helpIcon}
+            onClick={() => setShowHelp(showHelp === 'populationBars' ? null : 'populationBars')}
+          >
+            ?
+          </div>
+        </div>
+        
+        {showHelp === 'populationBars' && (
+          <div style={{
+            ...styles.helpTooltip,
+            top: '40px',
+            right: '20px'
+          }}>
+            {helpTexts.populationBars}
+            <div style={{
+              marginTop: '8px',
+              textAlign: 'right',
+              fontSize: '11px',
+              fontStyle: 'italic'
+            }}>
+              Click anywhere to close
+            </div>
+          </div>
+        )}
+        
         {renderPopulationBar({
           type: "trees", 
           count: stats.trees.total, 
@@ -861,20 +1188,49 @@ const FlatGameVisualization = () => {
         borderRadius: '8px',
         padding: '10px',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 5px rgba(0,0,0,0.1)',
-        border: '1px solid #B5CAE0'
+        border: '1px solid #90d7a3', // Changed to green
+        position: 'relative'
       }}>
         <div style={{
-          fontSize: '14px',
-          fontWeight: 'bold',
-          color: '#0A246A',
-          marginBottom: '10px',
-          textAlign: 'center',
-          borderBottom: '1px solid #D4E4F7',
-          paddingBottom: '5px',
-          textShadow: '0 1px 0 rgba(255,255,255,0.5)'
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '10px'
         }}>
-          Actions
+          <div style={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: '#2a8a43', // Changed to green
+            textShadow: '0 1px 0 rgba(255,255,255,0.5)'
+          }}>
+            Actions
+          </div>
+          
+          <div 
+            style={styles.helpIcon}
+            onClick={() => setShowHelp(showHelp === 'actions' ? null : 'actions')}
+          >
+            ?
+          </div>
         </div>
+        
+        {showHelp === 'actions' && (
+          <div style={{
+            ...styles.helpTooltip,
+            top: '40px',
+            right: '20px'
+          }}>
+            {helpTexts.actions}
+            <div style={{
+              marginTop: '8px',
+              textAlign: 'right',
+              fontSize: '11px',
+              fontStyle: 'italic'
+            }}>
+              Click anywhere to close
+            </div>
+          </div>
+        )}
         
         <div style={{
           display: 'flex',
@@ -883,20 +1239,31 @@ const FlatGameVisualization = () => {
         }}>
           <button 
             onClick={handleShootDeer}
-            style={styles.actionButton}
+            disabled={!isInitialized || isStabilizing || isComplete}
+            style={{
+              ...styles.actionButton,
+              opacity: (!isInitialized || isStabilizing || isComplete) ? 0.5 : 1,
+              cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer'
+            }}
             onMouseOver={(e) => {
-              e.currentTarget.style.filter = 'brightness(1.1)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.filter = 'brightness(1.1)';
+              }
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.filter = 'brightness(1)';
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(1px)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(1px)';
+              }
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }
             }}
           >
             <span>🦌</span> Shoot Deer
@@ -904,20 +1271,31 @@ const FlatGameVisualization = () => {
           
           <button 
             onClick={handleShootWolf}
-            style={styles.actionButton}
+            disabled={!isInitialized || isStabilizing || isComplete}
+            style={{
+              ...styles.actionButton,
+              opacity: (!isInitialized || isStabilizing || isComplete) ? 0.5 : 1,
+              cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer'
+            }}
             onMouseOver={(e) => {
-              e.currentTarget.style.filter = 'brightness(1.1)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.filter = 'brightness(1.1)';
+              }
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.filter = 'brightness(1)';
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(1px)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(1px)';
+              }
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }
             }}
           >
             <span>🐺</span> Shoot Wolf
@@ -925,20 +1303,31 @@ const FlatGameVisualization = () => {
           
           <button 
             onClick={handleHarvestTree}
-            style={styles.actionButton}
+            disabled={!isInitialized || isStabilizing || isComplete}
+            style={{
+              ...styles.actionButton,
+              opacity: (!isInitialized || isStabilizing || isComplete) ? 0.5 : 1,
+              cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer'
+            }}
             onMouseOver={(e) => {
-              e.currentTarget.style.filter = 'brightness(1.1)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.filter = 'brightness(1.1)';
+              }
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.filter = 'brightness(1)';
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(1px)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(1px)';
+              }
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }
             }}
           >
             <span>🌲</span> Harvest Tree
@@ -946,20 +1335,31 @@ const FlatGameVisualization = () => {
           
           <button 
             onClick={handlePlantSeedling}
-            style={styles.actionButton}
+            disabled={!isInitialized || isStabilizing || isComplete}
+            style={{
+              ...styles.actionButton,
+              opacity: (!isInitialized || isStabilizing || isComplete) ? 0.5 : 1,
+              cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer'
+            }}
             onMouseOver={(e) => {
-              e.currentTarget.style.filter = 'brightness(1.1)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.filter = 'brightness(1.1)';
+              }
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.filter = 'brightness(1)';
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(1px)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(1px)';
+              }
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              if (!(!isInitialized || isStabilizing || isComplete)) {
+                e.currentTarget.style.boxShadow = 'inset 0 1px rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }
             }}
           >
             <span>🌱</span> Plant Seedling
@@ -978,65 +1378,185 @@ const FlatGameVisualization = () => {
         borderRadius: '8px',
         padding: '10px',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 5px rgba(0,0,0,0.1)',
-        border: '1px solid #B5CAE0',
-        marginTop: '15px'
+        border: '1px solid #90d7a3', // Changed to green
+        marginTop: '15px',
+        position: 'relative'
       }}>
         <div style={{
-          fontSize: '14px',
-          fontWeight: 'bold',
-          color: '#0A246A',
-          marginBottom: '10px',
-          textAlign: 'center',
-          borderBottom: '1px solid #D4E4F7',
-          paddingBottom: '5px',
-          textShadow: '0 1px 0 rgba(255,255,255,0.5)'
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '10px'
         }}>
-          Ecosystem Stats
+          <div style={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: '#2a8a43', // Changed to green
+            textShadow: '0 1px 0 rgba(255,255,255,0.5)'
+          }}>
+            Ecosystem Stats
+          </div>
+          
+          <div 
+            style={styles.helpIcon}
+            onClick={() => setShowHelp(showHelp === 'ecosystemStats' ? null : 'ecosystemStats')}
+          >
+            ?
+          </div>
         </div>
+        
+        {showHelp === 'ecosystemStats' && (
+          <div style={{
+            ...styles.helpTooltip,
+            top: '40px',
+            right: '20px'
+          }}>
+            {helpTexts.ecosystemStats}
+            <div style={{
+              marginTop: '8px',
+              textAlign: 'right',
+              fontSize: '11px',
+              fontStyle: 'italic'
+            }}>
+              Click anywhere to close
+            </div>
+          </div>
+        )}
         
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
           gap: '8px'
         }}>
-          {Object.entries(playerStats).map(([key, value]) => (
-            <div key={key} style={{
-              backgroundColor: 'rgba(255,255,255,0.7)',
-              border: '1px solid #D4E4F7',
-              borderRadius: '6px',
-              padding: '6px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '2px',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
-            }}>
-              <div style={{ fontSize: '15px' }}>
-                {key === 'carbonCaptured' ? '🌿' : 
-                 key === 'moneyEarned' ? '💰' : 
-                 key === 'animalsKilled' ? '🩸' : 
-                 key === 'treesPlanted' ? '🌱' : 
-                 key === 'ecosystemHealth' ? '❤️' : 
-                 key === 'sustainabilityScore' ? '♻️' : '📊'}
-              </div>
-              <div style={{
-                fontFamily: 'Tahoma, Arial, sans-serif',
-                fontSize: '9px',
-                color: '#666',
-                textTransform: 'capitalize'
-              }}>
-                {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
-              </div>
-              <div style={{
-                fontFamily: 'Tahoma, Arial, sans-serif',
-                fontSize: '11px',
-                fontWeight: 'bold',
-                color: '#333'
-              }}>
-                {value}
-              </div>
+          <div style={{
+            backgroundColor: 'rgba(255,255,255,0.7)',
+            border: '1px solid #D4E4F7',
+            borderRadius: '6px',
+            padding: '6px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
+          }}>
+            <div style={{ fontSize: '15px' }}>
+              🌿
             </div>
-          ))}
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '9px',
+              color: '#666',
+              textTransform: 'capitalize'
+            }}>
+              Carbon Captured
+            </div>
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              color: '#333'
+            }}>
+              {userStats.carbonCaptured > 0 ? 
+                `+${userStats.carbonCaptured}kg` : 
+                `${userStats.carbonCaptured}kg`}
+            </div>
+          </div>
+          
+          <div style={{
+            backgroundColor: 'rgba(255,255,255,0.7)',
+            border: '1px solid #D4E4F7',
+            borderRadius: '6px',
+            padding: '6px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
+          }}>
+            <div style={{ fontSize: '15px' }}>
+              💰
+            </div>
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '9px',
+              color: '#666',
+              textTransform: 'capitalize'
+            }}>
+              Money Earned
+            </div>
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              color: '#333'
+            }}>
+              ${userStats.moneyEarned}
+            </div>
+          </div>
+          
+          <div style={{
+            backgroundColor: 'rgba(255,255,255,0.7)',
+            border: '1px solid #D4E4F7',
+            borderRadius: '6px',
+            padding: '6px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
+          }}>
+            <div style={{ fontSize: '15px' }}>
+              🩸
+            </div>
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '9px',
+              color: '#666',
+              textTransform: 'capitalize'
+            }}>
+              Animals Killed
+            </div>
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              color: '#333'
+            }}>
+              {userStats.animalsKilled}
+            </div>
+          </div>
+          
+          <div style={{
+            backgroundColor: 'rgba(255,255,255,0.7)',
+            border: '1px solid #D4E4F7',
+            borderRadius: '6px',
+            padding: '6px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
+          }}>
+            <div style={{ fontSize: '15px' }}>
+              🌱
+            </div>
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '9px',
+              color: '#666',
+              textTransform: 'capitalize'
+            }}>
+              Trees Planted
+            </div>
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              color: '#333'
+            }}>
+              {userStats.treesPlanted}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -1235,7 +1755,7 @@ const FlatGameVisualization = () => {
         {/* XP-style panel header */}
         <div style={{ 
           backgroundImage: `linear-gradient(to bottom, ${color}, ${color}cc)`,
-          color: 'white',
+          color: 'white', // Ensure title is visible on any color
           fontWeight: 'bold',
           padding: '4px 8px',
           fontSize: '12px',
@@ -1308,7 +1828,7 @@ const FlatGameVisualization = () => {
           style={{
             padding: '6px 20px',
             backgroundColor: showLogs ? '#4caf50' : '#ECE9D8',
-            color: showLogs ? 'white' : '#0A246A',
+            color: showLogs ? 'white' : '#2a8a43', // Changed to green
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '13px',
             fontWeight: 'bold',
@@ -1320,11 +1840,28 @@ const FlatGameVisualization = () => {
               '0 1px 2px rgba(0,0,0,0.1)'
           }}
         >
-          {showLogs ? 'Hide Logs' : 'Show Logs'}
+          {showLogs ? 'Hide Details' : 'Show Details'}
         </button>
       </div>
     );
   };
+  
+  // Click anywhere to close help tooltips
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (showHelp) {
+        setShowHelp(null);
+      }
+    };
+    
+    if (showHelp) {
+      document.addEventListener('click', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [showHelp]);
   
   return (
     <div className="game-visualization" style={{ 
@@ -1372,11 +1909,59 @@ const FlatGameVisualization = () => {
                 borderRadius: '8px',
                 padding: '10px',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.1)',
-                border: '1px solid #B5CAE0',
+                border: '1px solid #90d7a3', // Changed to green
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                position: 'relative'
               }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '10px',
+                  left: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  zIndex: 5
+                }}>
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    color: '#2a8a43', // Changed to green
+                  }}>
+                    Forest View
+                  </div>
+                  
+                  <div 
+                    style={styles.helpIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowHelp(showHelp === 'forest' ? null : 'forest');
+                    }}
+                  >
+                    ?
+                  </div>
+                </div>
+                
+                {showHelp === 'forest' && (
+                  <div style={{
+                    ...styles.helpTooltip,
+                    top: '40px',
+                    left: '10px',
+                    zIndex: 10
+                  }}>
+                    {helpTexts.forest}
+                    <div style={{
+                      marginTop: '8px',
+                      textAlign: 'right',
+                      fontSize: '11px',
+                      fontStyle: 'italic'
+                    }}>
+                      Click anywhere to close
+                    </div>
+                  </div>
+                )}
+                
                 <SimpleForestView 
                   simulationManager={simulationManager} 
                   currentYear={currentYear} 
@@ -1408,134 +1993,241 @@ const FlatGameVisualization = () => {
         </div>
       </div>
 
-      {/* Secondary Game Container - Graphs and Stats Cards */}
-      <div style={styles.xpPanel}>
-        {/* Glass effect overlay */}
-        <div style={styles.aquaGlassEffect}></div>
-        
-        {/* Header */}
-        <div style={styles.xpPanelHeader}>
-          Population Data
-        </div>
-        
-        <div style={styles.statsGrid}>
-          {/* Tree Column */}
-          <div>
-            <div style={styles.graphPanel}>
-              {renderSingleGraph({
-                dataKey: "trees",
-                color: "#228B22",
-                maxValue: simulationConfig.graph.MAX_TREE_POPULATION,
-                title: "Trees"
-              })}
-            </div>
-            
-            <div style={{
-              backgroundColor: '#F8FAFF',
-              borderRadius: '6px',
-              padding: '0', // No padding needed as the card has its own padding
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #B5CAE0'
-            }}>
-              {renderCompactStatsCard({
-                title: "TREES",
-                stats: {
-                  total: stats.trees.total,
-                  "Avg Age": stats.trees.averageAge?.toFixed(1) || 0,
-                  Seedlings: stats.trees.ageDistribution?.seedling || 0,
-                  Young: stats.trees.ageDistribution?.young || 0,
-                  Mature: stats.trees.ageDistribution?.mature || 0,
-                  Deaths: stats.trees.totalDeaths || 0,
-                  "By Age": stats.trees.ageDeaths || 0,
-                  "By Stress": stats.trees.stressDeaths || 0,
-                  Eaten: stats.trees.consumedByDeer || 0
-                },
-                color: "#228B22",
-                iconEmoji: "🌲"
-              })}
-            </div>
-          </div>
-          
-          {/* Deer Column */}
-          <div>
-            <div style={styles.graphPanel}>
-              {renderSingleGraph({
-                dataKey: "deer",
-                color: "#8B4513",
-                maxValue: simulationConfig.graph.MAX_DEER_POPULATION,
-                title: "Deer"
-              })}
-            </div>
-            
-            <div style={{
-              backgroundColor: '#F8FAFF',
-              borderRadius: '6px',
-              padding: '0', // No padding needed as the card has its own padding
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #B5CAE0'
-            }}>
-              {renderCompactStatsCard({
-                title: "DEER",
-                stats: {
-                  total: stats.deer.total,
-                  "Avg Age": stats.deer.averageAge?.toFixed(1) || 0,
-                  "Reproduced": stats.deer.reproducedCount || 0,
-                  "Migrated": stats.deer.migratedCount || 0,
-                  "Foraging": stats.deer.averageForagingSuccess || 'N/A',
-                  Deaths: (stats.deer.starvationDeaths || 0) + (stats.deer.ageDeaths || 0) + (stats.deer.predationDeaths || 0),
-                  "By Age": stats.deer.ageDeaths || 0,
-                  "By Starvation": stats.deer.starvationDeaths || 0,
-                  "By Predation": stats.deer.predationDeaths || 0
-                },
-                color: "#8B4513",
-                iconEmoji: "🦌"
-              })}
-            </div>
-          </div>
-          
-          {/* Wolves Column */}
-          <div>
-            <div style={styles.graphPanel}>
-              {renderSingleGraph({
-                dataKey: "wolves",
-                color: "#555",
-                maxValue: simulationConfig.graph.MAX_WOLF_POPULATION,
-                title: "Wolves"
-              })}
-            </div>
-            
-            <div style={{
-              backgroundColor: '#F8FAFF',
-              borderRadius: '6px',
-              padding: '0', // No padding needed as the card has its own padding
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #B5CAE0'
-            }}>
-              {renderCompactStatsCard({
-                title: "WOLVES",
-                stats: {
-                  total: stats.wolves.total,
-                  "Avg Age": stats.wolves.averageAge?.toFixed(1) || 0,
-                  "Reproduced": stats.wolves.reproducedCount || 0,
-                  "Migrated": stats.wolves.migratedCount || 0,
-                  "Hunting": stats.wolves.averageHuntingSuccess || 'N/A',
-                  "Prey Killed": stats.wolves.preyKilled || 0,
-                  Deaths: (stats.wolves.starvationDeaths || 0) + (stats.wolves.ageDeaths || 0),
-                  "By Age": stats.wolves.ageDeaths || 0,
-                  "By Starvation": stats.wolves.starvationDeaths || 0
-                },
-                color: "#555",
-                iconEmoji: "🐺"
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Logs toggle */}
+      {/* Show Details Toggle Button */}
       {renderLogsToggle()}
+
+      {/* Secondary Game Container - Graphs and Stats Cards */}
+      {showLogs && (
+        <div style={styles.xpPanel}>
+          {/* Glass effect overlay */}
+          <div style={styles.aquaGlassEffect}></div>
+          
+          {/* Header */}
+          <div style={styles.xpPanelHeader}>
+            Population Data
+          </div>
+          
+          <div style={styles.statsGrid}>
+            {/* Tree Column */}
+            <div>
+              <div style={styles.graphPanel}>
+                {renderSingleGraph({
+                  dataKey: "trees",
+                  color: "#228B22",
+                  maxValue: simulationConfig.graph.MAX_TREE_POPULATION,
+                  title: "Trees"
+                })}
+              </div>
+              
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                borderRadius: '6px',
+                padding: '0', // No padding needed as the card has its own padding
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                border: '1px solid #90d7a3', // Changed to green
+                position: 'relative'
+              }}>
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: '5px',
+                    right: '28px',
+                    zIndex: 5
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowHelp(showHelp === 'trees' ? null : 'trees');
+                  }}
+                >
+                  <div style={styles.helpIcon}>?</div>
+                </div>
+                
+                {showHelp === 'trees' && (
+                  <div style={{
+                    ...styles.helpTooltip,
+                    top: '30px',
+                    right: '20px',
+                    zIndex: 10
+                  }}>
+                    {helpTexts.trees}
+                    <div style={{
+                      marginTop: '8px',
+                      textAlign: 'right',
+                      fontSize: '11px',
+                      fontStyle: 'italic'
+                    }}>
+                      Click anywhere to close
+                    </div>
+                  </div>
+                )}
+                
+                {renderCompactStatsCard({
+                  title: "TREES",
+                  stats: {
+                    total: stats.trees.total,
+                    "Avg Age": stats.trees.averageAge?.toFixed(1) || 0,
+                    Seedlings: stats.trees.ageDistribution?.seedling || 0,
+                    Young: stats.trees.ageDistribution?.young || 0,
+                    Mature: stats.trees.ageDistribution?.mature || 0,
+                    Deaths: stats.trees.totalDeaths || 0,
+                    "By Age": stats.trees.ageDeaths || 0,
+                    "By Stress": stats.trees.stressDeaths || 0,
+                    Eaten: stats.trees.consumedByDeer || 0
+                  },
+                  color: "#228B22",
+                  iconEmoji: "🌲"
+                })}
+              </div>
+            </div>
+            
+            {/* Deer Column */}
+            <div>
+              <div style={styles.graphPanel}>
+                {renderSingleGraph({
+                  dataKey: "deer",
+                  color: "#8B4513",
+                  maxValue: simulationConfig.graph.MAX_DEER_POPULATION,
+                  title: "Deer"
+                })}
+              </div>
+              
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                borderRadius: '6px',
+                padding: '0', // No padding needed as the card has its own padding
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                border: '1px solid #90d7a3', // Changed to green
+                position: 'relative'
+              }}>
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: '5px',
+                    right: '28px',
+                    zIndex: 5
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowHelp(showHelp === 'deer' ? null : 'deer');
+                  }}
+                >
+                  <div style={styles.helpIcon}>?</div>
+                </div>
+                
+                {showHelp === 'deer' && (
+                  <div style={{
+                    ...styles.helpTooltip,
+                    top: '30px',
+                    right: '20px',
+                    zIndex: 10
+                  }}>
+                    {helpTexts.deer}
+                    <div style={{
+                      marginTop: '8px',
+                      textAlign: 'right',
+                      fontSize: '11px',
+                      fontStyle: 'italic'
+                    }}>
+                      Click anywhere to close
+                    </div>
+                  </div>
+                )}
+                
+                {renderCompactStatsCard({
+                  title: "DEER",
+                  stats: {
+                    total: stats.deer.total,
+                    "Avg Age": stats.deer.averageAge?.toFixed(1) || 0,
+                    "Reproduced": stats.deer.reproducedCount || 0,
+                    "Migrated": stats.deer.migratedCount || 0,
+                    "Foraging": stats.deer.averageForagingSuccess || 'N/A',
+                    Deaths: (stats.deer.starvationDeaths || 0) + (stats.deer.ageDeaths || 0) + (stats.deer.predationDeaths || 0),
+                    "By Age": stats.deer.ageDeaths || 0,
+                    "By Starvation": stats.deer.starvationDeaths || 0,
+                    "By Predation": stats.deer.predationDeaths || 0
+                  },
+                  color: "#8B4513",
+                  iconEmoji: "🦌"
+                })}
+              </div>
+            </div>
+            
+            {/* Wolves Column */}
+            <div>
+              <div style={styles.graphPanel}>
+                {renderSingleGraph({
+                  dataKey: "wolves",
+                  color: "#555",
+                  maxValue: simulationConfig.graph.MAX_WOLF_POPULATION,
+                  title: "Wolves"
+                })}
+              </div>
+              
+              <div style={{
+                backgroundColor: '#F8FAFF',
+                borderRadius: '6px',
+                padding: '0', // No padding needed as the card has its own padding
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                border: '1px solid #90d7a3', // Changed to green
+                position: 'relative'
+              }}>
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: '5px',
+                    right: '28px',
+                    zIndex: 5
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowHelp(showHelp === 'wolves' ? null : 'wolves');
+                  }}
+                >
+                  <div style={styles.helpIcon}>?</div>
+                </div>
+                
+                {showHelp === 'wolves' && (
+                  <div style={{
+                    ...styles.helpTooltip,
+                    top: '30px',
+                    right: '20px',
+                    zIndex: 10
+                  }}>
+                    {helpTexts.wolves}
+                    <div style={{
+                      marginTop: '8px',
+                      textAlign: 'right',
+                      fontSize: '11px',
+                      fontStyle: 'italic'
+                    }}>
+                      Click anywhere to close
+                    </div>
+                  </div>
+                )}
+                
+                {renderCompactStatsCard({
+                  title: "WOLVES",
+                  stats: {
+                    total: stats.wolves.total,
+                    "Avg Age": stats.wolves.averageAge?.toFixed(1) || 0,
+                    "Reproduced": stats.wolves.reproducedCount || 0,
+                    "Migrated": stats.wolves.migratedCount || 0,
+                    "Hunting": stats.wolves.averageHuntingSuccess || 'N/A',
+                    "Prey Killed": stats.wolves.preyKilled || 0,
+                    Deaths: (stats.wolves.starvationDeaths || 0) + (stats.wolves.ageDeaths || 0),
+                    "By Age": stats.wolves.ageDeaths || 0,
+                    "By Starvation": stats.wolves.starvationDeaths || 0
+                  },
+                  color: "#555",
+                  iconEmoji: "🐺"
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
-      {/* Logs panel (collapsible) */}
+      {/* Simulation Logs */}
       {showLogs && (
         <LogsPanel 
           logs={logs}
