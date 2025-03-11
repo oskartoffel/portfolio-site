@@ -43,48 +43,6 @@ const LogsPanel = ({ logs, showLogs, onToggleLogs, onExportLogs }) => {
   
   return (
     <>
-      {/* Log control buttons */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        marginTop: '15px',
-        gap: '5px'
-      }}>
-        <button
-          onClick={onToggleLogs}
-          style={{
-            padding: '4px 8px',
-            fontSize: '12px',
-            backgroundColor: showLogs ? '#4caf50' : '#e0e0e0',
-            color: showLogs ? 'white' : 'black',
-            border: '2px outset #ddd',
-            borderRadius: '3px',
-            cursor: 'pointer',
-            flex: 1
-          }}
-        >
-          {showLogs ? 'Hide Logs' : 'Show Logs'}
-        </button>
-        
-        <button
-          onClick={onExportLogs}
-          disabled={logs.length === 0}
-          style={{
-            padding: '4px 8px',
-            fontSize: '12px',
-            backgroundColor: logs.length === 0 ? '#e0e0e0' : '#2196f3',
-            color: logs.length === 0 ? '#999' : 'white',
-            border: '2px outset #ddd',
-            borderRadius: '3px',
-            cursor: logs.length === 0 ? 'default' : 'pointer',
-            opacity: logs.length === 0 ? 0.7 : 1,
-            flex: 1
-          }}
-        >
-          Export Logs
-        </button>
-      </div>
-      
       {/* Logs panel (collapsible) */}
       {showLogs && (
         <div style={{
@@ -97,15 +55,47 @@ const LogsPanel = ({ logs, showLogs, onToggleLogs, onExportLogs }) => {
           maxWidth: '1200px',
           margin: '20px auto 0'
         }}>
-          <h2 style={{ 
-            fontSize: '16px', 
-            textAlign: 'center', 
-            margin: '0 0 10px 0',
-            borderBottom: '1px solid #ccc',
-            paddingBottom: '5px'
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '10px'
           }}>
-            Simulation Logs
-          </h2>
+            <h2 style={{ 
+              fontSize: '16px',
+              margin: '0',
+              color: '#2a8a43',
+              fontFamily: 'Tahoma, Arial, sans-serif',
+            }}>
+              Simulation Logs
+            </h2>
+            
+            {/* Log control buttons */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'flex-end', 
+              gap: '5px'
+            }}>
+              <button
+                onClick={onExportLogs}
+                disabled={logs.length === 0}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  backgroundColor: logs.length === 0 ? '#e0e0e0' : '#2a8a43', // Fixed green color
+                  color: logs.length === 0 ? '#999' : 'white', // Fixed contrast
+                  border: '2px outset #ddd',
+                  borderRadius: '3px',
+                  cursor: logs.length === 0 ? 'default' : 'pointer',
+                  opacity: logs.length === 0 ? 0.7 : 1,
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                }}
+              >
+                Export Logs
+              </button>
+            </div>
+          </div>
+          
           {renderLogs()}
         </div>
       )}

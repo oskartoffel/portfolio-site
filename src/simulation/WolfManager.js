@@ -18,6 +18,8 @@ class WolfManager {
         this.ageDeath = 0;
         this.starvationDeath = 0;
         this.unknownDeath = 0;
+        this.huntImpact = 0; // Range 0-1, higher means more impact from hunting
+
         
         // Statistics tracking for enhanced UI
         this.migrationCount = 0;
@@ -552,10 +554,14 @@ class WolfManager {
         // Skip if factor is zero
         if (migrationFactor <= 0) return;
         
-        // Your existing code here...
         // Scale migration factor where 5 is "normal"
         const packSizeBoost = this.getPopulationCount() < 3 ? 2.0 : 1.0;
-        const scaledFactor = Math.pow(migrationFactor / 5.0, 1.5) * packSizeBoost;
+        
+        // Apply hunting impact to reduce migration if hunting occurred recently
+        // Wolves are even more sensitive to hunting than deer
+        const huntingImpactReduction = 1 - (this.huntImpact * 1.5); // 50% greater impact for wolves
+        
+        const scaledFactor = Math.pow(migrationFactor / 5.0, 1.5) * packSizeBoost * huntingImpactReduction;
         
         // Base migration rate lower than deer (predators are typically less abundant)
         const baseMigrants = Math.random() < 0.3 ? 1 : 0; // 30% chance of 1 wolf, 70% chance of none
@@ -564,14 +570,14 @@ class WolfManager {
         const migrantCount = Math.max(0, Math.round(baseMigrants * scaledFactor));
         
         if (migrantCount > 0) {
-            console.log(`LOUP: ${migrantCount} wolves migrating into the ecosystem (factor=${migrationFactor})`);
-            
-            let localSuccessfulMigrants = 0;
-            for (let i = 0; i < migrantCount; i++) {
-              let newPos = this.findEmptyPosition();
-              if (newPos === -1) {
-                console.warn("LOUP: No space available for migrating wolves");
-                break;
+          console.log(`LOUP: ${migrantCount} wolves migrating into the ecosystem (factor=${migrationFactor}, hunt impact: ${this.huntImpact.toFixed(2)})`);
+          
+          let localSuccessfulMigrants = 0;
+          for (let i = 0; i < migrantCount; i++) {
+            let newPos = this.findEmptyPosition();
+            if (newPos === -1) {
+              console.warn("LOUP: No space available for migrating wolves");
+              break;
             }
             
             // Create a mature wolf with reasonable stats
@@ -585,18 +591,18 @@ class WolfManager {
             
             this.wolves[newPos] = tempWolf;
             localSuccessfulMigrants++;
+          }
+          
+          if (localSuccessfulMigrants > 0) {
+            console.log(`LOUP: ${localSuccessfulMigrants} wolves successfully migrated into the ecosystem`);
+            // Track migrations for statistics
+            this.migrationCount = (this.migrationCount || 0) + localSuccessfulMigrants;
+            console.log(`LOUP: Total wolf migrations this year: ${this.migrationCount}`);
+          }
         }
         
-        if (localSuccessfulMigrants > 0) {
-          console.log(`LOUP: ${localSuccessfulMigrants} wolves successfully migrated into the ecosystem`);
-          // Track migrations for statistics
-          this.migrationCount = (this.migrationCount || 0) + localSuccessfulMigrants;
-          console.log(`LOUP: Total wolf migrations this year: ${this.migrationCount}`);
-        }
+        return this.migrationCount || 0; // Return the count for easier debugging
       }
-      
-      return this.migrationCount || 0; // Return the count for easier debugging
-    }
 
     /**
      * Hunt (shoot) a wolf - user interaction method

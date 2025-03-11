@@ -19,6 +19,7 @@ const FlatGameVisualization = () => {
   const [simulationStarted, setSimulationStarted] = useState(false);
   const [speedDropdownOpen, setSpeedDropdownOpen] = useState(false);
   const [showHelp, setShowHelp] = useState(null);
+  const [lastHuntYear, setLastHuntYear] = useState(-10); // Track the last year hunting occurred
   
   // Track user actions for reporting
   const [userStats, setUserStats] = useState({
@@ -94,6 +95,7 @@ const FlatGameVisualization = () => {
       moneyEarned: 0,
       carbonCaptured: 0
     });
+    setLastHuntYear(-10);
     
     resetSimulation();
     setInitProgress(0);
@@ -117,6 +119,7 @@ const FlatGameVisualization = () => {
           // Small amount of money earned from deer meat
           moneyEarned: prev.moneyEarned + 150 // $150 per deer
         }));
+        setLastHuntYear(currentYear);
         addLog("User shot a deer. +$150, -15kg CO2", "system");
       }
     }
@@ -135,6 +138,7 @@ const FlatGameVisualization = () => {
           // No money from wolf hunting (conservation policy)
           moneyEarned: prev.moneyEarned - 50 // $50 fine for wolf hunting
         }));
+        setLastHuntYear(currentYear);
         addLog("User shot a wolf. -$50 fine, -20kg CO2", "system");
       }
     }
@@ -180,7 +184,7 @@ const FlatGameVisualization = () => {
     }
   };
   
-  // Update carbon captured based on forest growth
+  // Update carbon captured based on forest growth and losses
   useEffect(() => {
     if (currentYear > 0 && populationData.length >= 2) {
       // Get current and previous year data
@@ -190,20 +194,63 @@ const FlatGameVisualization = () => {
       // Calculate net tree growth
       const netTreeGrowth = currentData.trees - prevData.trees;
       
-      // Estimate carbon captured based on growth
-      // A growing forest captures carbon, a shrinking one loses carbon
-      const carbonChange = netTreeGrowth * 20; // Each net new tree captures ~20kg CO2
+      // Calculate carbon from tree deaths (natural deaths, excluding harvesting)
+      const naturalTreeDeaths = prevData.trees - currentData.trees + userStats.treesHarvested;
+      const carbonFromDeaths = naturalTreeDeaths > 0 ? -naturalTreeDeaths * 10 : 0;
       
-      // Add carbon from tree mass increase (even existing trees capture more as they grow)
-      const additionalCarbon = currentData.trees * 5; // Each existing tree captures ~5kg CO2 per year
+      // Carbon captured is based on total trees, but reduced to be more realistic
+      // Net new trees capture more carbon (young growing trees)
+      const newTreeCarbon = netTreeGrowth > 0 ? netTreeGrowth * 15 : 0;
+      
+      // Existing trees capture some carbon as they grow
+      const existingTreeCarbon = currentData.trees * 2; // Reduced from 5 to 2
+      
+      // Determine total carbon change
+      const totalCarbonChange = newTreeCarbon + existingTreeCarbon + carbonFromDeaths;
+      
+      // Limit maximum carbon gain to prevent unrealistic accumulation
+      const cappedCarbonChange = Math.min(totalCarbonChange, 1000);
       
       // Update carbon tracking
       setUserStats(prev => ({
         ...prev,
-        carbonCaptured: prev.carbonCaptured + carbonChange + additionalCarbon
+        carbonCaptured: prev.carbonCaptured + cappedCarbonChange
       }));
     }
-  }, [currentYear, populationData]);
+  }, [currentYear, populationData, userStats.treesHarvested]);
+  
+  // Pass hunting impact data to simulation manager for migration effects
+  useEffect(() => {
+    // Modify migration behavior if hunting occurred recently
+    if (simulationManager && currentYear > 0) {
+      // Calculate years since last hunt
+      const yearsSinceHunt = currentYear - lastHuntYear;
+      
+      // If hunting occurred in the last 3 years, reduce migration
+      if (yearsSinceHunt <= 3) {
+        // The more recent the hunt, the stronger the effect
+        const huntImpact = 1 - (yearsSinceHunt / 4); // Impact from 0.75 to 0.25
+        
+        // Modify deer manager migration
+        if (simulationManager.deerManager) {
+          simulationManager.deerManager.huntImpact = huntImpact;
+        }
+        
+        // Modify wolf manager migration
+        if (simulationManager.wolfManager) {
+          simulationManager.wolfManager.huntImpact = huntImpact;
+        }
+      } else {
+        // Reset hunt impact after 3 years
+        if (simulationManager.deerManager) {
+          simulationManager.deerManager.huntImpact = 0;
+        }
+        if (simulationManager.wolfManager) {
+          simulationManager.wolfManager.huntImpact = 0;
+        }
+      }
+    }
+  }, [currentYear, lastHuntYear, simulationManager]);
 
   // =========== STYLING CONSTANTS ===========
   // XP/Aqua inspired styling with forest green theme
@@ -292,7 +339,7 @@ const FlatGameVisualization = () => {
     },
     playButton: {
       backgroundColor: '#3cb371',
-      color: '#FFFFFF', // Fixed white on white issue - white text on green button
+      color: '#FFFFFF',
       minWidth: '90px',
       padding: '5px 10px',
       borderRadius: '3px',
@@ -301,7 +348,7 @@ const FlatGameVisualization = () => {
     },
     pauseButton: {
       backgroundColor: '#cd5c5c',
-      color: '#FFFFFF', // Fixed white on white issue - white text on red button
+      color: '#FFFFFF',
       minWidth: '90px',
       padding: '5px 10px',
       borderRadius: '3px',
@@ -314,6 +361,43 @@ const FlatGameVisualization = () => {
       background: 'linear-gradient(to bottom, #81c784, #4caf50 45%, #388e3c)',
       color: 'white',
       border: '1px solid #2e7d32',
+      borderRadius: '5px',
+      padding: '6px 0',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      fontSize: '12px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '5px',
+      boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+      fontFamily: 'Tahoma, Arial, sans-serif',
+      transition: 'all 0.1s ease'
+    },
+    
+    // Modified action buttons
+    huntButton: {
+      background: 'linear-gradient(to bottom, #ff8a80, #f44336 45%, #c62828)',
+      color: 'white',
+      border: '1px solid #b71c1c',
+      borderRadius: '5px',
+      padding: '6px 0',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      fontSize: '12px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '5px',
+      boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+      fontFamily: 'Tahoma, Arial, sans-serif',
+      transition: 'all 0.1s ease'
+    },
+    
+    harvestButton: {
+      background: 'linear-gradient(to bottom, #a1887f, #795548 45%, #5d4037)',
+      color: 'white',
+      border: '1px solid #4e342e',
       borderRadius: '5px',
       padding: '6px 0',
       cursor: 'pointer',
@@ -392,7 +476,9 @@ const FlatGameVisualization = () => {
       fontWeight: 'bold',
       cursor: 'pointer',
       marginLeft: '5px',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+      boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+      position: 'relative',
+      zIndex: 10 // Ensure it's above other elements
     },
     
     // Help tooltip
@@ -942,7 +1028,10 @@ const FlatGameVisualization = () => {
         
         <div 
           style={styles.helpIcon}
-          onClick={() => setShowHelp(showHelp === 'controls' ? null : 'controls')}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowHelp(showHelp === 'controls' ? null : 'controls');
+          }}
         >
           ?
         </div>
@@ -1136,7 +1225,10 @@ const FlatGameVisualization = () => {
           
           <div 
             style={styles.helpIcon}
-            onClick={() => setShowHelp(showHelp === 'populationBars' ? null : 'populationBars')}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowHelp(showHelp === 'populationBars' ? null : 'populationBars');
+            }}
           >
             ?
           </div>
@@ -1179,7 +1271,7 @@ const FlatGameVisualization = () => {
     );
   };
   
-  // Action buttons
+  // Action buttons with updated styles
   const renderActionButtons = () => {
     return (
       <div style={{
@@ -1208,7 +1300,10 @@ const FlatGameVisualization = () => {
           
           <div 
             style={styles.helpIcon}
-            onClick={() => setShowHelp(showHelp === 'actions' ? null : 'actions')}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowHelp(showHelp === 'actions' ? null : 'actions');
+            }}
           >
             ?
           </div>
@@ -1218,7 +1313,8 @@ const FlatGameVisualization = () => {
           <div style={{
             ...styles.helpTooltip,
             top: '40px',
-            right: '20px'
+            right: '20px',
+            zIndex: 15
           }}>
             {helpTexts.actions}
             <div style={{
@@ -1237,11 +1333,12 @@ const FlatGameVisualization = () => {
           flexDirection: 'column',
           gap: '8px'
         }}>
+          {/* Shoot Deer Button - Updated with hunting style */}
           <button 
             onClick={handleShootDeer}
             disabled={!isInitialized || isStabilizing || isComplete}
             style={{
-              ...styles.actionButton,
+              ...styles.huntButton,
               opacity: (!isInitialized || isStabilizing || isComplete) ? 0.5 : 1,
               cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer'
             }}
@@ -1266,14 +1363,15 @@ const FlatGameVisualization = () => {
               }
             }}
           >
-            <span>🦌</span> Shoot Deer
+            <span>🔫</span> Shoot Deer
           </button>
           
+          {/* Shoot Wolf Button - Updated with hunting style */}
           <button 
             onClick={handleShootWolf}
             disabled={!isInitialized || isStabilizing || isComplete}
             style={{
-              ...styles.actionButton,
+              ...styles.huntButton,
               opacity: (!isInitialized || isStabilizing || isComplete) ? 0.5 : 1,
               cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer'
             }}
@@ -1298,14 +1396,15 @@ const FlatGameVisualization = () => {
               }
             }}
           >
-            <span>🐺</span> Shoot Wolf
+            <span>🔫</span> Shoot Wolf
           </button>
           
+          {/* Harvest Tree Button - Updated with harvesting style */}
           <button 
             onClick={handleHarvestTree}
             disabled={!isInitialized || isStabilizing || isComplete}
             style={{
-              ...styles.actionButton,
+              ...styles.harvestButton,
               opacity: (!isInitialized || isStabilizing || isComplete) ? 0.5 : 1,
               cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer'
             }}
@@ -1330,9 +1429,10 @@ const FlatGameVisualization = () => {
               }
             }}
           >
-            <span>🌲</span> Harvest Tree
+            <span>🪓</span> Harvest Tree
           </button>
           
+          {/* Plant Seedling Button - Standard style */}
           <button 
             onClick={handlePlantSeedling}
             disabled={!isInitialized || isStabilizing || isComplete}
@@ -1399,7 +1499,10 @@ const FlatGameVisualization = () => {
           
           <div 
             style={styles.helpIcon}
-            onClick={() => setShowHelp(showHelp === 'ecosystemStats' ? null : 'ecosystemStats')}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowHelp(showHelp === 'ecosystemStats' ? null : 'ecosystemStats');
+            }}
           >
             ?
           </div>
@@ -1409,7 +1512,8 @@ const FlatGameVisualization = () => {
           <div style={{
             ...styles.helpTooltip,
             top: '40px',
-            right: '20px'
+            right: '20px',
+            zIndex: 15
           }}>
             {helpTexts.ecosystemStats}
             <div style={{
@@ -1828,7 +1932,7 @@ const FlatGameVisualization = () => {
           style={{
             padding: '6px 20px',
             backgroundColor: showLogs ? '#4caf50' : '#ECE9D8',
-            color: showLogs ? 'white' : '#2a8a43', // Changed to green
+            color: showLogs ? 'white' : '#2a8a43', // Fixed contrast issue
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '13px',
             fontWeight: 'bold',
@@ -1848,15 +1952,14 @@ const FlatGameVisualization = () => {
   
   // Click anywhere to close help tooltips
   useEffect(() => {
-    const handleClickOutside = () => {
-      if (showHelp) {
+    const handleClickOutside = (e) => {
+      // Only close if the click isn't on a help icon
+      if (showHelp && !e.target.closest('.help-icon')) {
         setShowHelp(null);
       }
     };
     
-    if (showHelp) {
-      document.addEventListener('click', handleClickOutside);
-    }
+    document.addEventListener('click', handleClickOutside);
     
     return () => {
       document.removeEventListener('click', handleClickOutside);
@@ -1869,7 +1972,8 @@ const FlatGameVisualization = () => {
       maxWidth: '1280px',
       margin: '0 auto',
       padding: '10px',
-      backgroundColor: '#ECE9D8'
+      backgroundColor: '#ECE9D8',
+      position: 'relative'
     }}>
       {/* Popups */}
       {renderIntroPopup()}
@@ -1933,6 +2037,7 @@ const FlatGameVisualization = () => {
                   </div>
                   
                   <div 
+                    className="help-icon"
                     style={styles.helpIcon}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -2028,7 +2133,9 @@ const FlatGameVisualization = () => {
                 position: 'relative'
               }}>
                 <div 
+                  className="help-icon"
                   style={{
+                    ...styles.helpIcon,
                     position: 'absolute',
                     top: '5px',
                     right: '28px',
@@ -2039,7 +2146,7 @@ const FlatGameVisualization = () => {
                     setShowHelp(showHelp === 'trees' ? null : 'trees');
                   }}
                 >
-                  <div style={styles.helpIcon}>?</div>
+                  ?
                 </div>
                 
                 {showHelp === 'trees' && (
@@ -2100,7 +2207,9 @@ const FlatGameVisualization = () => {
                 position: 'relative'
               }}>
                 <div 
+                  className="help-icon"
                   style={{
+                    ...styles.helpIcon,
                     position: 'absolute',
                     top: '5px',
                     right: '28px',
@@ -2111,7 +2220,7 @@ const FlatGameVisualization = () => {
                     setShowHelp(showHelp === 'deer' ? null : 'deer');
                   }}
                 >
-                  <div style={styles.helpIcon}>?</div>
+                  ?
                 </div>
                 
                 {showHelp === 'deer' && (
@@ -2172,7 +2281,9 @@ const FlatGameVisualization = () => {
                 position: 'relative'
               }}>
                 <div 
+                  className="help-icon"
                   style={{
+                    ...styles.helpIcon,
                     position: 'absolute',
                     top: '5px',
                     right: '28px',
@@ -2183,7 +2294,7 @@ const FlatGameVisualization = () => {
                     setShowHelp(showHelp === 'wolves' ? null : 'wolves');
                   }}
                 >
-                  <div style={styles.helpIcon}>?</div>
+                  ?
                 </div>
                 
                 {showHelp === 'wolves' && (

@@ -19,6 +19,7 @@ class DeerManager {
         this.starvationDeath = 0;
         this.predationDeath = 0;
         this.unknownDeath = 0;
+        this.huntImpact = 0; // Range 0-1, higher means more impact from hunting
         
         // Statistics tracking for enhanced UI
         this.migrationCount = 0;
@@ -428,33 +429,28 @@ class DeerManager {
           return;
         }
         
-        // Your existing code here...
         // Scale migration factor where 5 is "normal"
-        const scaledFactor = Math.pow(migrationFactor / 5.0, 1.8);
+        const packSizeBoost = this.getPopulationCount() < 3 ? 2.0 : 1.0;
         
-        // Check current population - if very low, boost migration significantly
-        const currentPopulation = this.getPopulationCount();
-        let populationBoost = 1.0;
+        // Apply hunting impact to reduce migration if hunting occurred recently
+        const huntingImpactReduction = 1 - this.huntImpact; // Reduce by hunt impact percentage
         
-        // If fewer than 5 deer, dramatically increase immigration
-        if (currentPopulation < 5) {
-          populationBoost = 3.0;
-        }
+        const scaledFactor = Math.pow(migrationFactor / 5.0, 1.8) * packSizeBoost * huntingImpactReduction;
         
         // Higher base migrant count (2-4) with population-based boost
         const baseMigrants = 2 + Math.floor(Math.random() * 3); // 2-4 deer
         
         // Final number of migrants adjusted by the factor and population boost
-        const migrantCount = Math.max(0, Math.round(baseMigrants * scaledFactor * populationBoost));
+        const migrantCount = Math.max(0, Math.round(baseMigrants * scaledFactor));
         
         if (migrantCount > 0) {
-            console.log(`REH: Migration - attempting to add ${migrantCount} deer`);
-            
-            let localSuccessfulMigrants = 0;
-            for (let i = 0; i < migrantCount; i++) {
-              let newPos = this.findEmptyPosition();
-              if (newPos === -1) {
-                break;
+          console.log(`REH: Migration - attempting to add ${migrantCount} deer (hunt impact: ${this.huntImpact.toFixed(2)})`);
+          
+          let localSuccessfulMigrants = 0;
+          for (let i = 0; i < migrantCount; i++) {
+            let newPos = this.findEmptyPosition();
+            if (newPos === -1) {
+              break;
             }
             
             // Create a mature deer with reasonable stats
@@ -477,9 +473,10 @@ class DeerManager {
             console.log(`REH: Total deer migrations this year: ${this.migrationCount}`);
           }
         }
-        return this.migrationCount || 0; // Return the count for easier debuggin
-    }
-    
+        
+        return this.migrationCount || 0; // Return the count for easier debugging
+      }
+
     /**
      * Hunt (shoot) a deer - user interaction method
      * @returns {boolean} whether a deer was successfully shot
