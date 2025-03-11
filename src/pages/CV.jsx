@@ -1,108 +1,54 @@
-// src/pages/CV.jsx - With improved timeline hover effects
-import React, { useState, useEffect } from 'react';
+// src/pages/CV.jsx - With complete text content
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClassicWindow from '../components/ui/ClassicWindow';
 import ClassicXPButton from '../components/ui/ClassicXPButton';
 import XPBackground from '../components/ui/XPBackground';
 import { useTheme } from '../components/ui/ThemeProvider';
 
-// Timeline data for each period
+// Timeline data with full text content
 const timelinePeriods = [
   {
-    years: '1998-2014',
-    title: 'Early Life',
-    items: [
-      'Born in Basel',
-      'Primary School in Basel',
-      'Secondary School with focus on sciences',
-      'First introduction to computers and technology'
-    ]
+    years: '2009-present',
+    title: '1. Youth: Embracing My Appearance',
+    content: `The very first process in which I tried expressing myself creatively was by adapting my appearance. Part of this was born out of necessity: as a child wearing braces, glasses, an eye patch, and fiery-red curly hair, I stood out from other kids—and I felt that keenly. For a long time, I hated feeling different and tried to blend into the crowd by keeping my hair very short or hiding under hats. Eventually, though, that started to shift. Little by little, I learned to accept those differences.
+
+That process continues to this day, as I gradually shape my outward self in ways that make me feel comfortable—without worrying if others find it strange. These days, adjusting my appearance is a form of communication that shows people something about who I am. If I feel good in my body, I might wear a crop top, glittery jewelry, or dye my mustache to highlight my red hair. On days when I'm not feeling my best, I might pull on big baggy clothes and a hoodie to avoid having anyone notice me—or my hair, which sometimes looks more like a bird's nest than a hairstyle. And if I really want to show someone that a meeting or event is special to me, I'll plan a more eye-catching outfit, groom myself carefully, and make sure my hair is on point.
+
+Back when I was younger, this "being different" really hurt. Today, I'm actually a bit grateful for it, because it taught me a lot about self-acceptance. Who knows—maybe it was even a key factor in developing my creative outlook on life.
+
+I do want to add one important note here: this is just my personal experience of feeling different. I'm aware that there are people who face an entirely different level of pressure due to their skin color, sexuality, gender, or other physical or mental traits. I don't want to trivialize anyone else's experiences, nor do I want to imply that being different is always a good or empowering thing.`
   },
   {
-    years: '2014-2018',
-    title: 'Highschool & First Work',
-    items: [
-      'Technical Assistance at UKBB (Children\'s Hospital IT Support)',
-      'Gymnasium Kirschgarten',
-      'Matura with focus on Mathematics and Physics',
-      'Participation in science competitions and projects'
-    ]
+    years: '2015-present',
+    title: '2. Discovering Ecstasy: The Joy of Nonconformity',
+    content: `At some point along the way, I discovered "ecstasy" (in the broader sense)—the idea of spaces or moments that allow for more intense awareness of ourselves and one another. For me, the word "party" can mean many different states of mind and forms of experience: from exploring my sexuality, to extreme nature outings in the mountains or wilderness, to dancing and drug use. These states are often very intense and usually experienced alone, with a partner, or in small groups. They require a lot of trust among the people involved—trust that often comes, at first, from abiding by shared social norms.
+
+With the support of some wonderful people, I began noticing how in these extreme, ecstatic moments, certain social norms can become irrelevant as long as everyone involved consents. By stepping away from norms like gender roles or power dynamics in those moments, a huge creative freedom emerged. It felt like I could actively "design" these experiences, shaping them however I wanted. Realizing that I didn't have to be restricted by typical social expectations in such moments was incredibly liberating.
+
+In the beginning, this newfound freedom mostly applied to those intense experiences. At the same time, I was busy training to become an environmental engineer, trying to memorize two hundred different types of flood barriers and dams as fast as possible. That didn't leave me a lot of room to question myself or society on a deeper level. The overall attitude in my program was, "We have the technology and scientific know-how to save the world," and I noticed both professors and fellow students often shared this idea.
+
+As I neared the end of my bachelor's degree, dropping out no longer seemed like an option. I finished my bachelor's in winter 2023, determined to step back and gain some distance.`
   },
   {
-    years: '2018-2019',
-    title: 'Civil Service & Travel',
-    items: [
-      'Civil Service at Weizenkorn (support work with people with disabilities)',
-      'Traveling through several European countries',
-      'Volunteered on organic farms',
-      'Personal growth and exploration period'
-    ]
-  },
-  {
-    years: '2020-2023',
-    title: 'University Studies',
-    items: [
-      'Bachelor in Environmental Engineering Sciences at ETH Lausanne',
-      'Civil Service at Oekoskop (environmental protection work)',
-      'Research project on forest ecosystem simulation',
-      'Developed skills in Python, R, and environmental modeling'
-    ]
-  },
-  {
-    years: '2023-2025',
-    title: 'Professional Development',
-    items: [
-      'Robotics Course Instructor for primary school students',
-      'Logistics Staff at Intersport',
-      'Construction Work experience',
-      'Preparing for Masters program application'
-    ]
+    years: '2023-present',
+    title: '3. Reevaluating My Life: The Big Shift',
+    content: `That craving for distance brought me back to Basel after four years in Lausanne. Beyond wanting some space and time, I didn't have a concrete plan. My only commitment was my part-time work, which left me a lot of free hours. With so much open time on my hands, I started questioning many of the norms I had followed. What had once seemed limited to those intense, ecstatic moments now spread into my everyday life.
+
+Suddenly, all sorts of things were up for debate: my relationships, my past decisions, and the values I'd absorbed from my family, my environment, and society in general. I began asking myself how I wanted to live in the future, how I wanted to think about community, love, work, or even the possibility of having a family. With such open space, I felt a huge sense of freedom.
+
+I worked a lot of random but fascinating jobs—teaching robotics to children, renovating and transforming an attic, riding as a bicycle courier—and met many new people whose perspectives challenged me. Some had no interest in traditional nuclear families or suburban homes, while others lived in ways I'd never encountered before. Little by little, I realized I could shape my world in entirely new ways. I even sorted through and redecorated my entire bedroom, tossing out old belongings so there was space to let new ideas in.
+
+It sounds lovely when I put it that way, but it wasn't always easy. When you start questioning everything, you can find yourself falling into some big emotional voids. If you're able to pick apart the value of everything, it can start to feel like nothing matters. My bachelor's degree suddenly felt like nothing more than a piece of paper saying I can perform well under pressure. I began to see toxic masculine patterns in my older friendships and relationships, patterns that had been there all along. These things, for better or for worse, had shaped my identity. Watching them unravel all at once can be overwhelming.
+
+Sometimes I catch myself daydreaming about how simple life might have been if I'd stayed in that old "bubble"—married with kids, living in a quaint house, maybe working for some greenwashing environmental startup. But that thought never lasts long, because in truth I don't want to go back to that world. I'd much rather connect with people who are also ready to push against societal norms, who want to discuss and model new futures, and who are open to designing our world in fresh, unburdened ways. I have a strong feeling that studying design could be just that sort of space—one where we can take advantage of a wide creative freedom (even if it's partly theoretical) and learn how to use it in meaningful ways.`
   }
 ];
 
-// Skills data
-const skillsData = [
-  {
-    title: "Technical Skills",
-    items: [
-      "Python, R-Studio, SQL",
-      "Matlab and C",
-      "QGIS and Excel",
-      "Data visualization"
-    ]
-  },
-  {
-    title: "Languages",
-    items: [
-      "German - Native",
-      "English - Fluent (C1)",
-      "French - Fluent"
-    ]
-  }
-];
 
-// Additional content that appears when hovering over a period
-const expandedContent = {
-  '1998-2014': 'During my early years, I developed a curiosity for the natural world and technology. My time in primary and secondary school laid the foundation for my interest in science and mathematics, which would later influence my educational path. I began exploring computers and programming through small projects and games.',
-  '2014-2018': 'My high school years were formative for my academic interests. Working at the Children\'s Hospital IT Support gave me practical technology experience while I pursued a rigorous academic program. My Matura thesis explored environmental modeling, combining my interest in computing with environmental sciences.',
-  '2018-2019': 'This period of civil service and travel was essential for my personal growth. Working with people with disabilities at Weizenkoreople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eueople with disabilities at Weizenkorn taught me patience and a deeper understanding of diverse human experiences. My travels across Eun taught me patience and a deeper understanding of diverse human experiences. My travels across Europe and volunteering on organic farms connected me to sustainable practices and different cultures.',
-  '2020-2023': 'My bachelor studies at ETH Lausanne gave me a strong technical foundation in environmental engineering. I developed specialized skills in data analysis and modeling environmental systems. My work at Oekoskop further reinforced my commitment to environmental protection, working on projects to preserve Alpine ecosystems.',
-  '2023-2025': 'My recent professional experiences have diversified my skillset and prepared me for advanced studies. Teaching robotics to children has improved my communication and teaching abilities, while my logistics and construction roles have given me practical insights into resource management and physical systems.'
-};
 
 const CV = () => {
   const { setTheme } = useTheme();
-  const [expandedIndex, setExpandedIndex] = useState(null);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  
-  // Toggle expanded content when clicking the arrow
-  const toggleExpand = (index) => {
-    if (expandedIndex === index) {
-      setExpandedIndex(null);
-    } else {
-      setExpandedIndex(index);
-    }
-  };
   
   // Set theme to cv when component mounts
   useEffect(() => {
@@ -120,7 +66,7 @@ const CV = () => {
 
   return (
     <XPBackground>
-      <ClassicWindow title="My CV" width="80%" height="95%">
+      <ClassicWindow title="My Design Journey" width="80%" height="95%">
         <div style={{ 
           padding: '20px', 
           width: '100%',
@@ -168,208 +114,66 @@ const CV = () => {
               }}>
                 Oskar Wasmer
               </h1>
-              
-              <p style={{ 
-                fontFamily: 'Tahoma, Arial, sans-serif',
-                fontSize: '14px',
-                color: '#4a5568',
-                lineHeight: '1.6',
-                maxWidth: '600px'
-              }}>
-                Als ruhiger, aufgeschlossener Mensch schätze ich die Begegnungen mit
-                anderen und die Möglichkeit, im Austausch neue Blickwinkel zu entdecken.
-                Dabei suche ich meinen Weg in dieser Gesellschaft und möchte so
-                aufmerksam und respektvoll wie möglich mit Umwelt und Mitmenschen
-                umgehen.
-              </p>
             </div>
           </div>
           
-          {/* Timeline container */}
-                      <div style={{ 
-            display: 'flex',
-            width: '100%',
-            position: 'relative',
-            border: '2px solid #e9d8f4',
-            borderRadius: '10px',
-            overflow: 'hidden',
-            boxShadow: '0 3px 8px rgba(0,0,0,0.1)',
-            minHeight: '680px',
-            transition: 'all 0.3s ease',
-            padding: '0' // Removed padding to allow full extension
-          }}>
-            {/* Timeline Grid with two columns: years and content */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '140px 1fr',
-              width: '100%',
-              position: 'relative',
-              gridGap: '0', // Ensure no gap between columns
-              padding: '20px 0' // Add padding to the grid instead
+          {/* Timeline content */}
+          {timelinePeriods.map((period, index) => (
+            <div key={index} style={{
+              marginBottom: '40px',
+              background: '#f8f0fc',
+              border: '1px solid #9f7aea',
+              borderRadius: '8px',
+              padding: '20px',
+              boxShadow: '2px 2px 6px rgba(0,0,0,0.1)'
             }}>
-              {/* Left column background - continuous shading */}
               <div style={{
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                width: '140px',
-                background: 'linear-gradient(to right, #e9d8f4, #f8f0fc)',
-                zIndex: 0
-              }}></div>
+                display: 'flex',
+                alignItems: 'center',
+                gap: '15px',
+                marginBottom: '15px',
+                borderBottom: '1px solid #d8c1dd',
+                paddingBottom: '10px'
+              }}>
+                <div style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '16px',
+                  color: '#7d336a',
+                  backgroundColor: 'rgba(157, 50, 172, 0.1)',
+                  padding: '5px 10px',
+                  borderRadius: '4px',
+                  border: '1px solid #9f7aea',
+                  minWidth: '100px',
+                  textAlign: 'center'
+                }}>
+                  {period.years}
+                </div>
+                
+                <h2 style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '18px',
+                  color: '#7d336a',
+                  margin: 0
+                }}>
+                  {period.title}
+                </h2>
+              </div>
               
-              {/* Vertical purple timeline line - extended fully */}
               <div style={{
-                position: 'absolute',
-                top: '0',
-                bottom: '0',
-                left: '140px', // At the end of the years column
-                width: '2px',
-                background: '#7d336a',
-                zIndex: 1
-              }}></div>
-              
-              {/* Timeline entries */}
-              {timelinePeriods.map((period, index) => (
-                <React.Fragment key={index}>
-                  {/* Year column */}
-                  <div 
-                      style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        position: 'relative',
-                        height: 'auto',
-                        minHeight: '180px',
-                        transition: 'all 0.4s ease',
-                        cursor: 'pointer',
-                        backgroundColor: hoveredIndex === index ? 'rgba(157, 50, 172, 0.1)' : 'transparent',
-                        marginBottom: '40px',
-                        zIndex: 2,
-                        // Add these properties to fix the vertical fill:
-                        paddingTop: '0',
-                        paddingBottom: '0'
-                      }}
-                      onMouseEnter={() => setHoveredIndex(index)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                    >
-                    <div style={{
-                      fontFamily: 'Tahoma, Arial, sans-serif',
-                      fontWeight: 'bold',
-                      fontSize: '16px',
-                      color: hoveredIndex === index ? '#5d1b68' : '#7d336a',
-                      textShadow: '1px 1px 0 #fff',
-                      padding: '10px',
-                      textAlign: 'center',
-                      width: '100%',
-                      position: 'absolute',
-                      top: '35.5px', // Positioned 15.5px below the bullet point (30px + 15.5px)
-                      transition: 'color 0.3s ease'
-                    }}>
-                      {period.years}
-                    </div>
-                    
-                    {/* Purple dot marker aligned with content header */}
-                    <div style={{
-                      position: 'absolute',
-                      right: '-9px', // Position on the timeline
-                      top: '30px',
-                      width: hoveredIndex === index ? '20px' : '16px',
-                      height: hoveredIndex === index ? '20px' : '16px',
-                      borderRadius: '50%',
-                      background: hoveredIndex === index ? 
-                        'radial-gradient(circle at 35% 35%, #f8c6ff, #7d336a)' : 
-                        'radial-gradient(circle at 35% 35%, #d094ed, #7d336a)',
-                      border: '1px solid rgba(255, 255, 255, 0.8)',
-                      boxShadow: hoveredIndex === index ? 
-                        '0 0 8px rgba(125, 51, 106, 0.6), inset 0 0 4px rgba(255, 255, 255, 0.8)' : 
-                        '0 0 3px rgba(0, 0, 0, 0.3), inset 0 0 2px rgba(255, 255, 255, 0.8)',
-                      zIndex: 3,
-                      transition: 'all 0.3s ease'
-                    }}></div>
-                  </div>
-                  
-                  {/* Content column */}
-                  <div 
-                    style={{
-                      backgroundColor: 'rgba(248, 240, 252, 0.2)',
-                      padding: '0 20px 0 30px',
-                      height: hoveredIndex === index ? 'auto' : '180px', // Increased height
-                      minHeight: '180px',
-                      transition: 'all 0.4s ease',
-                      cursor: 'pointer',
-                      marginBottom: '45px', // Increased spacing between entries
-                      position: 'relative',
-                      zIndex: 2
-                    }}
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                  >
-                    {/* Content box */}
-                    <div style={{
-                      background: 'white',
-                      borderRadius: '8px',
-                      border: `1px solid ${hoveredIndex === index ? '#9a4cbc' : '#9f7aea'}`,
-                      overflow: 'hidden',
-                      boxShadow: hoveredIndex === index ? 
-                        '3px 3px 10px rgba(125, 51, 106, 0.3)' : 
-                        '2px 2px 6px rgba(0,0,0,0.1)',
-                      padding: '15px',
-                      height: '100%',
-                      transition: 'all 0.3s ease'
-                    }}>
-                      {/* Content title */}
-                      <div style={{
-                        fontFamily: 'Tahoma, Arial, sans-serif',
-                        fontSize: hoveredIndex === index ? '20px' : '18px',
-                        fontWeight: 'bold',
-                        color: hoveredIndex === index ? '#5d1b68' : '#7d336a',
-                        marginBottom: '12px',
-                        transition: 'all 0.3s ease'
-                      }}>
-                        {period.title}
-                      </div>
-                      
-                      {/* List items */}
-                      <ul style={{
-                        margin: '0',
-                        paddingLeft: '20px',
-                        color: hoveredIndex === index ? '#333' : '#4a5568',
-                        fontFamily: 'Tahoma, Arial, sans-serif',
-                        fontSize: hoveredIndex === index ? '15px' : '14px',
-                        lineHeight: '1.6',
-                        transition: 'all 0.3s ease'
-                      }}>
-                        {period.items.map((item, i) => (
-                          <li key={i}>{item}</li>
-                        ))}
-                      </ul>
-                      
-                      {/* Expanded content that appears when hovered */}
-                      {hoveredIndex === index && (
-                        <div style={{
-                          marginTop: '15px',
-                          padding: '10px',
-                          backgroundColor: 'rgba(248, 240, 252, 0.4)',
-                          borderRadius: '6px',
-                          border: '1px dashed #9f7aea',
-                          fontSize: '14px',
-                          lineHeight: '1.5',
-                          fontFamily: 'Tahoma, Arial, sans-serif',
-                          color: '#333',
-                          // Add a max-height with overflow to prevent large layout shifts
-                          maxHeight: '150px',
-                          overflowY: 'auto',
-                          animation: 'fadeIn 0.5s ease'
-                        }}>
-                          {expandedContent[period.years]}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </React.Fragment>
-              ))}
+                fontFamily: 'Tahoma, Arial, sans-serif',
+                fontSize: '14px',
+                lineHeight: '1.6',
+                color: '#333'
+              }}>
+                {period.content.split('\n\n').map((paragraph, idx) => (
+                  <p key={idx} style={{ marginBottom: '15px' }}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
           
           {/* Skills section */}
           <div style={{ 
@@ -391,53 +195,6 @@ const CV = () => {
               margin: '0 auto 20px',
               borderRadius: '1px'
             }}></div>
-            
-            {/* Skills are horizontally aligned */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              gap: '30px',
-              marginBottom: '20px'
-            }}>
-              {skillsData.map((skill, index) => (
-                <div key={index} style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #9f7aea',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
-                  width: '250px',
-                  textAlign: 'center'
-                }}>
-                  <div style={{
-                    fontFamily: 'Tahoma, Arial, sans-serif',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    color: '#7d336a',
-                    marginBottom: '8px',
-                    borderBottom: '1px solid #e9d8f4',
-                    paddingBottom: '4px'
-                  }}>
-                    {skill.title}
-                  </div>
-                  <ul style={{
-                    margin: '0',
-                    padding: '0',
-                    listStyle: 'none',
-                    color: '#4a5568',
-                    fontFamily: 'Tahoma, Arial, sans-serif',
-                    fontSize: '13px',
-                    lineHeight: '1.4',
-                    textAlign: 'center'
-                  }}>
-                    {skill.items.map((item, i) => (
-                      <li key={i} style={{ margin: '6px 0' }}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
             
             {/* Contact card */}
             <div style={{

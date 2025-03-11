@@ -41,26 +41,106 @@ const BehindWorks = () => {
             marginTop: '0',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            What Led to the Project
+            How Did I End Up at This Point?
           </h3>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            My interest in ecosystem dynamics began during my environmental engineering studies at ETH Lausanne. 
-            The complex interactions between species and their environment fascinated me, especially how small 
-            changes can lead to significant ecological shifts. I was particularly drawn to forest ecosystems 
-            because of their rich biodiversity and critical role in climate regulation.
+            When I first talked to someone about my desire to apply for a design program, it was clear from the start that I didn't have many physical objects to showcase. As I explain in my CV, most of my design processes took place on a non-physical level. Still, I knew I wanted to somehow present and summarize these processes, but I also wanted something concrete to show. Sure, I have a few random drawings I did out of boredom during school, and I could have presented some of the furniture I built. But those were spontaneous projects, never really planned or intended to be shown in a portfolio.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            Having worked in environmental conservation during my civil service at Oekoskop, I witnessed 
-            firsthand the delicate balance of natural systems. This simulation project emerged from my desire 
-            to visually demonstrate these principles and make ecological concepts more accessible to others.
+            Even in those first conversations, I kept thinking about one specific idea. In my bachelor's program (where I earned 180 credits), 174 of those credits involved assignments with almost no creative freedom. However, I earned six of those credits in a course called 
+            <em> Information Technology for Environmental Engineers</em>, which, at first glance, sounds like any other subject. But the professor basically just told us we needed to create a simulation by the end of the semester. Aside from having to use either C or Python, there weren't really any restrictions.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Of course, I was cutting it close with my simulation project and spent the last two weeks of the semester intensively coding. Even though it was a stressful time, I really enjoyed developing a project from scratch and shaping it entirely by myself. I decided to create an ecosystem of trees, deer, and wolves, because ecosystems have always fascinated me: they can be incredibly entangled and complex, with many different species interacting in a thousand ways. Over thousands of years, nature has found a balance that allows all these species to coexist.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            At the time, there was a big public discussion in Switzerland about whether wolves should be hunted or not. So I wanted to illustrate the value of wolves in a forest ecosystem in a simple, accessible way through a simulation. Although it was stressful to finish on time, I had a lot of fun with this project. Whenever someone asked me what I did in my degree, I'd excitedly tell them about this simulation.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            It felt important to me that my portfolio should feature something that ties back to my previous studies. I know I often talk negatively about my bachelor's degree, but I needed to show that, among all the things I had to force myself to learn, there were also interesting topics. In lectures like ecology, atmospheric science, flood science, and soil science, I gained plenty of fascinating knowledge and learned a lot about the intricate processes that govern this planet.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            That's why I decided to present this project. But there was a catch: the entire simulation was written in C—a very low-level programming language—and it wasn't exactly user-friendly for anyone else to try out. I wanted to make it accessible so nobody would need to download programs or install any programming languages just to see my simulation. The perfect solution, I realized, was to have it all on a website. Then I could just send people a link and voilà! The problem was, I hadn't written a single line of code since graduating (about two years ago), and I had never built a website before.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Still, the idea of sending a link as my "portfolio" felt so cool that I was determined to make it happen. It turned out that JavaScript was the most straightforward way to get my simulation running online. So I started translating a four-year-old C codebase into a new language I'd never used before, with no clue if it would take two days or three weeks.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            I quickly learned that my old code wasn't very solid; it was riddled with errors, and I had been lucky it ran at all. So I revised it bit by bit, fixing each function and mechanism. For about two weeks, my life revolved around my job as a bike courier and my code. I have no idea what your experience with programming is, so I'm not sure how much detail to go into. But let me say that diving deep into this project was, for the most part, a real joy. I'd get up early every day so I could spend as many hours as possible coding before my bike-shift, often forgetting the original reason behind all this as I got steadily closer to running the simulation on a website.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            This feeling—pouring my heart into a project, shaping it exactly the way I thought it should be, structuring it entirely from scratch—was completely new to me. While prepping the simulation for presentation, I also started designing the website. I wanted users to have a fun, interactive experience when visiting it. Over time, I got the idea to include a design-oriented CV and my cover letter on that same site, basically turning the website into my entire application.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            My project no longer revolved solely around the simulation; it also included the look and feel of the website and all its different elements. By now, I understand the entire site and the design concept behind it, including my CV and the simulation itself. But my first priority was to build the "shell" of the website. I figured I'd tackle the content part later.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            One important side note is that artificial intelligence was a huge help to me in this process! There's no way I could have built my first full website (with a working simulation) in such a short time without AI's assistance.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Because I was so immersed—often spending hours squashing tiny bugs—I nearly lost track of the deadline. Sure, I managed to get a decent-looking site up and running, but my CV, cover letter, and a proper description explaining how much effort went into this project were still missing. Although the final product looked somewhat presentable, I got anxious that it didn't truly show the energy, frustration, and love I poured into it.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            That's why I wanted to write this text: to capture the entire journey of getting the project to where it is today and to help explain why it ended up at this exact point.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            I would have loved to pour many more hours into improving the website and the simulation—unfortunately, I just didn't have the time. In the next section, I'll talk about the project's current status and everything I would have liked to include if I'd had the chance.
           </p>
         </>
       )
@@ -502,36 +582,148 @@ const BehindWorks = () => {
             marginTop: '0',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            What the Project Could Be
+            What Could the Future Hold?
           </h3>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            I envision expanding this simulation to include:
+            I've already mentioned where the project currently stands, so now I'd like to share how I would have continued if I'd had more time—especially regarding the simulation. I also would have loved to invest more effort in the website's design, making the visit even more interactive and personal. This includes refining the layout, creating a more unified look, and adding more effects and links to guide people smoothly through the content.
           </p>
-          <ul style={{ 
+          
+          <h4 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5',
-            paddingLeft: '20px'
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            <li>A more comprehensive educational tool with guided scenarios</li>
-            <li>Climate change simulation effects on the ecosystem</li>
-            <li>Additional species and more complex interaction webs</li>
-            <li>3D visualization of the forest environment</li>
-            <li>Interactive elements allowing users to actively manage the ecosystem</li>
-            <li>Research applications for testing ecological theories</li>
-          </ul>
+            Ideas for the Simulation
+          </h4>
+          
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            The ultimate goal would be to create a powerful yet accessible tool for both education and 
-            research in ecosystem dynamics and conservation management.
+            The part I would have loved to spend much more time on is the visualization. Currently, it shows a pixelated green area, along with health bars and graphs. With sufficient explanation, it's understandable—but my goal was for someone to see the simulation and immediately grasp what's happening, without needing any extra explanation. That's why I envisioned a 3D animation, viewed from above, showing how the forest evolves over time.
           </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            I've done a few sketches to outline these ideas, and one possibility would be using Blender or Three.js. If the user could see deer and wolves moving around, it would be easier and more intuitive to see their roles in the ecosystem. Since learning new tools takes a lot of time and energy, I decided to pause here for now—but I still think a fully 3D world would make the simulation feel much more alive.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            In a future, more scientific setting, it would also be possible to expand the ecosystem with additional species, or enrich existing populations with more functions, depending on the data needed. Generally, I would aim to simplify the interface and accessibility. I want people—on a playful level—to understand how important ecosystems are, and in this specific example, how vital wolves can be. The easier and clearer it is, the more quickly people can learn.
+          </p>
+          
+          <div style={{
+            backgroundColor: 'rgba(42, 138, 67, 0.05)',
+            border: '1px solid rgba(42, 138, 67, 0.2)',
+            borderRadius: '8px',
+            padding: '15px',
+            margin: '20px 0'
+          }}>
+            <h4 style={{ 
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              color: '#2a8a43',
+              fontSize: '16px',
+              margin: '0 0 10px 0'
+            }}>
+              Future Enhancement Ideas
+            </h4>
+            
+            <ul style={{ 
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              margin: '0',
+              paddingLeft: '20px'
+            }}>
+              <li><strong>Enhanced Visualization:</strong> 3D representation with animated animals and growing trees</li>
+              <li><strong>Additional Species:</strong> Include more animals like foxes, bears, and various bird species</li>
+              <li><strong>Climate Factors:</strong> Add weather patterns and climate change scenarios</li>
+              <li><strong>Human Interaction:</strong> Simulate human impacts like hunting, logging, and conservation</li>
+              <li><strong>Expanded Terrain:</strong> Different habitats (mountains, wetlands, etc.) in the same ecosystem</li>
+              <li><strong>Educational Scenarios:</strong> Preset scenarios showing different ecological concepts</li>
+              <li><strong>Data Export:</strong> Allow researchers to download simulation data for analysis</li>
+            </ul>
+          </div>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            I've heard of projects that create games or simulations for decision-makers, giving them a low-risk, playful environment that can guide them toward more sustainable choices—ones that benefit both humans and nature rather than just boosting someone's wallet. I could definitely imagine dedicating my time to something like that, whether in a master's program or somewhere else in my future.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            In fact, I can see myself working on different types of simulations. I've often wondered about simulating society and politics, then testing what kinds of protests or acts of resistance might be most constructive. Which forms of resistance would lead to a more positive outcome and which would actually strengthen certain negative trends, like the rise of extremism? I'm not sure how feasible that is, but it's the kind of next-level simulation that really excites me.
+          </p>
+          
+          <h4 style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
+          }}>
+            General Thoughts on the Website
+          </h4>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            I'll definitely keep the website in some shape or form and might expand it in the future. I really like the concept of applying for things with a "combined" website that features my CV, portfolio, and cover letter all in one place. It lets me tie different points together and offer a cohesive application. Plus, all I have to do is share a link, and everything's right there.
+          </p>
+          
+          <div style={{
+            backgroundColor: 'rgba(42, 138, 67, 0.1)',
+            border: '1px solid rgba(42, 138, 67, 0.3)',
+            borderRadius: '8px',
+            padding: '15px',
+            margin: '20px 0 10px 0'
+          }}>
+            <p style={{ 
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              fontWeight: 'bold',
+              color: '#2a8a43',
+              margin: '0 0 10px 0',
+              textAlign: 'center'
+            }}>
+              Final Reflection
+            </p>
+            
+            <p style={{ 
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              margin: '0',
+              fontStyle: 'italic'
+            }}>
+              This project has been a journey of discovery—not just about ecosystems and programming, but about my own creative process and how I approach problem-solving. While there's still so much I want to add and improve, I'm proud of what I've accomplished in the time I had. The blend of scientific knowledge, technical skills, and creative expression represented here feels like an authentic representation of who I am and what I hope to bring to a design program.
+            </p>
+          </div>
         </>
       )
     }
