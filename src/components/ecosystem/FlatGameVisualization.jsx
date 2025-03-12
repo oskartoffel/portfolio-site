@@ -108,9 +108,14 @@ const FlatGameVisualization = () => {
   
   const handleShootDeer = () => {
     if (simulationManager?.deerManager) {
+      // Get the current deer population before hunting
+      const initialDeerCount = simulationManager.deerManager.getPopulationCount();
+      
+      // Original hunting mechanism - try to shoot one deer
       const success = simulationManager.deerManager.huntDeer();
+      
       if (success) {
-        // Update stats
+        // Update stats for the player
         setUserStats(prev => ({
           ...prev,
           animalsKilled: prev.animalsKilled + 1,
@@ -119,8 +124,46 @@ const FlatGameVisualization = () => {
           // Small amount of money earned from deer meat
           moneyEarned: prev.moneyEarned + 150 // $150 per deer
         }));
+        
+        // Record the hunting event for migration effects
         setLastHuntYear(currentYear);
+        
+        // Log the basic hunting action
         addLog("User shot a deer. +$150, -15kg CO2", "system");
+        
+        // NEW: Deer population shock effect
+        // When a deer is shot, additional deer may flee the area
+        const fleeingEffect = Math.random(); // Random value 0-1
+        
+        // Stronger effect when deer population is smaller (more noticeable impact)
+        const populationFactor = Math.min(1, 15 / initialDeerCount);
+        const additionalFleeingDeer = Math.floor(fleeingEffect * 3 * populationFactor);
+        
+        // Kill additional deer to simulate fleeing (if the population can sustain it)
+        let extraDeerFled = 0;
+        for (let i = 0; i < additionalFleeingDeer; i++) {
+          // Only remove additional deer if there are enough left
+          if (simulationManager.deerManager.getPopulationCount() > 3) {
+            const fleeSuccess = simulationManager.deerManager.deerFled();
+            if (fleeSuccess) extraDeerFled++;
+          }
+        }
+        
+        if (extraDeerFled > 0) {
+          addLog(`Hunting caused ${extraDeerFled} additional deer to flee the area`, "system");
+        }
+        
+        // NEW: Apply stronger psychological impact on migration
+        // This hunting incident has a stronger effect on migration than just updating lastHuntYear
+        if (simulationManager.deerManager) {
+          // Set a higher hunt impact value directly (0-1 scale, higher means stronger impact)
+          simulationManager.deerManager.huntImpact = Math.min(1, simulationManager.deerManager.huntImpact + 0.4);
+          
+          // Also apply to wolves - they are sensitive to human activity
+          if (simulationManager.wolfManager) {
+            simulationManager.wolfManager.huntImpact = Math.min(1, simulationManager.wolfManager.huntImpact + 0.25);
+          }
+        }
       }
     }
   };
@@ -231,19 +274,55 @@ const FlatGameVisualization = () => {
       // Calculate years since last hunt
       const yearsSinceHunt = currentYear - lastHuntYear;
       
-      // If hunting occurred in the last 3 years, reduce migration
+      // Get current manager impacts for modification
+      let deerHuntImpact = simulationManager.deerManager?.huntImpact || 0;
+      let wolfHuntImpact = simulationManager.wolfManager?.huntImpact || 0;
+      
+      // If hunting occurred recently, maintain higher impact values
       if (yearsSinceHunt <= 3) {
         // The more recent the hunt, the stronger the effect
-        const huntImpact = 1 - (yearsSinceHunt / 4); // Impact from 0.75 to 0.25
+        // But decay the effect over time
         
-        // Modify deer manager migration
+        // Natural decay rate each year
+        const decayRate = 0.25; // 25% reduction per year
+        
+        // Apply decay based on years since hunt
+        deerHuntImpact = Math.max(0, deerHuntImpact - (decayRate * yearsSinceHunt));
+        wolfHuntImpact = Math.max(0, wolfHuntImpact - (decayRate * yearsSinceHunt));
+        
+        // Apply minimum hunt impact based on how recent the hunting was
+        // This creates a baseline that ensures recent hunting has an effect
+        const baseImpact = 1 - (yearsSinceHunt / 4); // Impact from 0.75 to 0.25
+        
+        // Use the higher of the decayed impact or the base minimum
+        deerHuntImpact = Math.max(deerHuntImpact, baseImpact);
+        wolfHuntImpact = Math.max(wolfHuntImpact, baseImpact * 0.8); // Wolves slightly less affected by baseline
+        
+        // Update the manager impacts
         if (simulationManager.deerManager) {
-          simulationManager.deerManager.huntImpact = huntImpact;
+          simulationManager.deerManager.huntImpact = deerHuntImpact;
         }
         
-        // Modify wolf manager migration
         if (simulationManager.wolfManager) {
-          simulationManager.wolfManager.huntImpact = huntImpact;
+          simulationManager.wolfManager.huntImpact = wolfHuntImpact;
+          
+          // NEW: Add starvation risk to wolves when deer population gets too low
+          // This creates a more direct link between deer hunting and wolf survival
+          const deerPopulation = simulationManager.deerManager?.getPopulationCount() || 0;
+          const wolfPopulation = simulationManager.wolfManager.getPopulationCount();
+          
+          // Calculate deer-to-wolf ratio (how many deer per wolf)
+          const deerPerWolf = wolfPopulation > 0 ? deerPopulation / wolfPopulation : 0;
+          
+          // If the ratio falls below a critical threshold, wolves face increased starvation risk
+          if (deerPerWolf < 3 && wolfPopulation > 0) {
+            // Apply an additional hunting-caused starvation factor to wolves
+            // This simulates the reduced prey availability after hunting
+            simulationManager.wolfManager.huntingStarvationFactor = 
+              0.5 * (1 - (deerPerWolf / 3)); // 0-0.5 scale based on how bad the ratio is
+          } else {
+            simulationManager.wolfManager.huntingStarvationFactor = 0;
+          }
         }
       } else {
         // Reset hunt impact after 3 years
@@ -252,6 +331,7 @@ const FlatGameVisualization = () => {
         }
         if (simulationManager.wolfManager) {
           simulationManager.wolfManager.huntImpact = 0;
+          simulationManager.wolfManager.huntingStarvationFactor = 0;
         }
       }
     }

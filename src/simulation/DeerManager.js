@@ -503,6 +503,26 @@ class DeerManager {
         return true;
     }
 
+    deerFled() {
+        // Find alive deer to flee
+        const aliveDeerIndices = this.deers
+          .map((deer, index) => deer.isAlive() ? index : -1)
+          .filter(index => index !== -1);
+        
+        if (aliveDeerIndices.length === 0) {
+          return false;
+        }
+        
+        // Randomly select a deer to flee
+        const randomIndex = Math.floor(Math.random() * aliveDeerIndices.length);
+        const deerIndex = aliveDeerIndices[randomIndex];
+        
+        // Kill the deer and mark as fleeing (not hunting)
+        this.killDeer(deerIndex, 'fled');
+        
+        return true;
+    }
+
     /**
      * Get current deer population count
      */
