@@ -148,22 +148,27 @@ const FlatGameVisualization = () => {
     if (simulationManager?.treeManager) {
       const harvestedTree = simulationManager.treeManager.harvestTree();
       if (harvestedTree) {
-        // Calculate earnings based on tree mass
-        const treeValue = Math.round(harvestedTree.mass * 5); // $5 per mass unit
+        // Calculate earnings based on tree mass - SIGNIFICANTLY REDUCED
+        // Original: const treeValue = Math.round(harvestedTree.mass * 5);
+        const treeValue = Math.round(harvestedTree.mass * 1.2); // Reduced by ~75%
+        
+        // Subtract harvesting costs (new)
+        const harvestingCost = Math.round(30 + (harvestedTree.mass * 0.3));
+        const netValue = Math.max(0, treeValue - harvestingCost);
         
         // Calculate carbon impact
         // Tree harvesting releases some stored carbon and machinery produces emissions
-        const carbonImpact = Math.round(-(harvestedTree.mass * 0.5)); // 50% of mass released as CO2
+        const carbonImpact = Math.round(-(harvestedTree.mass * 0.8)); // Increased to 80% released
         
         // Update stats
         setUserStats(prev => ({
           ...prev,
           treesHarvested: prev.treesHarvested + 1,
-          moneyEarned: prev.moneyEarned + treeValue,
+          moneyEarned: prev.moneyEarned + netValue,
           carbonCaptured: prev.carbonCaptured + carbonImpact
         }));
         
-        addLog(`User harvested a tree. +$${treeValue}, ${carbonImpact}kg CO2`, "system");
+        addLog(`User harvested a tree. +$${netValue} (after $${harvestingCost} costs), ${carbonImpact}kg CO2`, "system");
       }
     }
   };
@@ -796,25 +801,25 @@ const FlatGameVisualization = () => {
                   fontSize: '20px', 
                   marginBottom: '5px'
                 }}>
-                  🌿
+                  {userStats.carbonCaptured >= 0 ? '🌿' : '🏭'}
                 </div>
                 <div style={{
                   fontFamily: 'Tahoma, Arial, sans-serif',
                   fontSize: '12px',
                   color: '#666'
                 }}>
-                  Carbon Captured
+                  {userStats.carbonCaptured >= 0 ? 'Carbon Captured' : 'Carbon Emitted'}
                 </div>
                 <div style={{
                   fontFamily: 'Tahoma, Arial, sans-serif',
                   fontSize: '14px',
                   fontWeight: 'bold',
-                  color: '#333',
+                  color: userStats.carbonCaptured >= 0 ? '#2a8a43' : '#d32f2f',
                   marginTop: '5px'
                 }}>
-                  {userStats.carbonCaptured > 0 ? 
+                  {userStats.carbonCaptured >= 0 ? 
                     `+${userStats.carbonCaptured}kg` : 
-                    `${userStats.carbonCaptured}kg`}
+                    `${Math.abs(userStats.carbonCaptured)}kg`}
                 </div>
               </div>
               
@@ -1559,39 +1564,39 @@ const FlatGameVisualization = () => {
           gridTemplateColumns: 'repeat(2, 1fr)',
           gap: '8px'
         }}>
-          <div style={{
-            backgroundColor: 'rgba(255,255,255,0.7)',
-            border: '1px solid #D4E4F7',
-            borderRadius: '6px',
-            padding: '6px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
-          }}>
-            <div style={{ fontSize: '15px' }}>
-              🌿
-            </div>
-            <div style={{
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              fontSize: '9px',
-              color: '#666',
-              textTransform: 'capitalize'
-            }}>
-              Carbon Captured
-            </div>
-            <div style={{
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              color: '#333'
-            }}>
-              {userStats.carbonCaptured > 0 ? 
-                `+${userStats.carbonCaptured}kg` : 
-                `${userStats.carbonCaptured}kg`}
-            </div>
+        <div style={{
+          backgroundColor: 'rgba(255,255,255,0.7)',
+          border: '1px solid #D4E4F7',
+          borderRadius: '6px',
+          padding: '6px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '2px',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)'
+        }}>
+          <div style={{ fontSize: '15px' }}>
+            {userStats.carbonCaptured >= 0 ? '🌿' : '🏭'}
           </div>
+          <div style={{
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '9px',
+            color: '#666',
+            textTransform: 'capitalize'
+          }}>
+            {userStats.carbonCaptured >= 0 ? 'Carbon Captured' : 'Carbon Emitted'}
+          </div>
+          <div style={{
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            color: userStats.carbonCaptured >= 0 ? '#2a8a43' : '#d32f2f'
+          }}>
+            {userStats.carbonCaptured >= 0 ? 
+              `+${userStats.carbonCaptured}kg` : 
+              `${Math.abs(userStats.carbonCaptured)}kg`}
+          </div>
+        </div>
           
           <div style={{
             backgroundColor: 'rgba(255,255,255,0.7)',
