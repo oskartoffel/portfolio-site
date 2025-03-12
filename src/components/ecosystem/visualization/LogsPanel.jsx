@@ -1,7 +1,7 @@
 // src/components/ecosystem/visualization/LogsPanel.jsx
 import React from 'react';
 
-const LogsPanel = ({ logs, showLogs, onToggleLogs, onExportLogs }) => {
+const LogsPanel = ({ logs, showLogs, onToggleLogs }) => {
   const getLogColor = (type) => {
     switch (type) {
       case 'error': return '#f44336';
@@ -70,30 +70,7 @@ const LogsPanel = ({ logs, showLogs, onToggleLogs, onExportLogs }) => {
               Simulation Logs
             </h2>
             
-            {/* Log control buttons */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'flex-end', 
-              gap: '5px'
-            }}>
-              <button
-                onClick={onExportLogs}
-                disabled={logs.length === 0}
-                style={{
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  backgroundColor: logs.length === 0 ? '#e0e0e0' : '#2a8a43', // Fixed green color
-                  color: logs.length === 0 ? '#999' : 'white', // Fixed contrast
-                  border: '2px outset #ddd',
-                  borderRadius: '3px',
-                  cursor: logs.length === 0 ? 'default' : 'pointer',
-                  opacity: logs.length === 0 ? 0.7 : 1,
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                }}
-              >
-                Export Logs
-              </button>
-            </div>
+            {/* Export logs button removed per your request */}
           </div>
           
           {renderLogs()}

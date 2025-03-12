@@ -339,21 +339,23 @@ const FlatGameVisualization = () => {
     },
     playButton: {
       backgroundColor: '#3cb371',
-      color: '#FFFFFF',
+      color: '#FFFFFF', // Explicit white for contrast
       minWidth: '90px',
       padding: '5px 10px',
       borderRadius: '3px',
       boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.2)',
-      border: '1px solid #2a8a43'
+      border: '1px solid #2a8a43',
+      textShadow: '0 -1px 0 rgba(0,0,0,0.3)' // Text shadow for readability
     },
     pauseButton: {
       backgroundColor: '#cd5c5c',
-      color: '#FFFFFF',
+      color: '#FFFFFF', // Explicit white for contrast
       minWidth: '90px',
       padding: '5px 10px',
       borderRadius: '3px',
       boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.2)',
-      border: '1px solid #a04545'
+      border: '1px solid #a04545',
+      textShadow: '0 -1px 0 rgba(0,0,0,0.3)' // Text shadow for readability
     },
     
     // Action buttons
@@ -998,31 +1000,56 @@ const FlatGameVisualization = () => {
         <div style={styles.yearDisplay}>
           Year: {currentYear} / {simulationConfig.years}
         </div>
-        
         {isRunning ? (
-          <button 
-            onClick={stopSimulation}
-            style={{
-              ...styles.xpButton,
-              ...styles.pauseButton
-            }}
-          >
-            ⏸ Pause
-          </button>
-        ) : (
-          <button 
-            onClick={startSimulation}
-            disabled={!isInitialized || isStabilizing || isComplete}
-            style={{
-              ...styles.xpButton,
-              ...styles.playButton,
-              opacity: (!isInitialized || isStabilizing || isComplete) ? 0.7 : 1,
-              cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer',
-            }}
-          >
-            ▶ Resume
-          </button>
-        )}
+        <div 
+          onClick={stopSimulation}
+          style={{
+            display: 'inline-block',
+            // Classic XP Button primary style with portfolio green
+            backgroundColor: '#2a8a43',
+            color: '#ffffff !important',
+            minWidth: '90px',
+            padding: '6px 12px',
+            borderRadius: '3px',
+            boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+            border: '1px solid #267532',
+            fontWeight: 'bold',
+            textShadow: '0 -1px 0 rgba(0,0,0,0.3)',
+            cursor: 'pointer',
+            textAlign: 'center',
+            userSelect: 'none',
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '13px'
+          }}
+        >
+          <span style={{ color: '#ffffff !important' }}>⏸ Pause</span>
+        </div>
+      ) : (
+        <div 
+          onClick={!isInitialized || isStabilizing || isComplete ? null : startSimulation}
+          style={{
+            display: 'inline-block',
+            // Classic XP Button primary style with portfolio green
+            backgroundColor: '#2a8a43',
+            color: '#ffffff !important',
+            minWidth: '90px',
+            padding: '6px 12px',
+            borderRadius: '3px',
+            boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+            border: '1px solid #267532',
+            fontWeight: 'bold',
+            textShadow: '0 -1px 0 rgba(0,0,0,0.3)',
+            opacity: (!isInitialized || isStabilizing || isComplete) ? 0.7 : 1,
+            cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer',
+            textAlign: 'center',
+            userSelect: 'none',
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '13px'
+          }}
+        >
+          <span style={{ color: '#ffffff !important' }}>▶ Resume</span>
+        </div>
+      )}
         
         {renderSpeedControl()}
         
@@ -1854,12 +1881,17 @@ const FlatGameVisualization = () => {
   
   // Compact stats card component
   const renderCompactStatsCard = ({ title, stats, color, iconEmoji }) => {
+    // Ensure good text contrast against background color
+    // For wolf stats (gray color), we'll use a darker background
+    const adjustedColor = color === "#555" ? "#3A3A3A" : color; // Darker gray for wolves
+    const textColor = 'white'; // White text for all headers
+    
     return (
       <div style={{ width: '100%' }}>
-        {/* XP-style panel header */}
+        {/* XP-style panel header - with contrast fix */}
         <div style={{ 
-          backgroundImage: `linear-gradient(to bottom, ${color}, ${color}cc)`,
-          color: 'white', // Ensure title is visible on any color
+          backgroundImage: `linear-gradient(to bottom, ${adjustedColor}, ${adjustedColor}cc)`,
+          color: textColor, // White text for better contrast
           fontWeight: 'bold',
           padding: '4px 8px',
           fontSize: '12px',
@@ -1903,7 +1935,7 @@ const FlatGameVisualization = () => {
                   textAlign: 'right', 
                   fontWeight: key === 'total' ? 'bold' : 'normal', 
                   fontSize: '10px',
-                  color: key === 'total' ? color : '#333',
+                  color: key === 'total' ? adjustedColor : '#333',
                   textShadow: '0 1px 0 rgba(255,255,255,0.5)'
                 }}>
                   {typeof value === 'number' ? 
@@ -1927,28 +1959,36 @@ const FlatGameVisualization = () => {
         marginTop: '15px',
         marginBottom: '15px'
       }}>
-        <button
+        <div
           onClick={handleToggleLogs}
+          role="button"
+          aria-pressed={showLogs}
+          tabIndex={0}
           style={{
+            // Consistent styling for both states - using the "Show Details" (inactive) styling
             padding: '6px 20px',
-            backgroundColor: showLogs ? '#4caf50' : '#ECE9D8',
-            color: showLogs ? 'white' : '#2a8a43', // Fixed contrast issue
+            backgroundColor: '#ECE9D8',
+            color: '#1d6631 !important',
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '13px',
             fontWeight: 'bold',
-            border: showLogs ? '1px solid #388e3c' : '2px outset #f5f5f5',
+            border: '2px outset #f5f5f5',
             borderRadius: '5px',
             cursor: 'pointer',
-            boxShadow: showLogs ? 
-              'inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2)' : 
-              '0 1px 2px rgba(0,0,0,0.1)'
+            boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+            display: 'inline-block',
+            textAlign: 'center',
+            userSelect: 'none'
           }}
         >
-          {showLogs ? 'Hide Details' : 'Show Details'}
-        </button>
+          <span style={{ color: '#1d6631 !important' }}>
+            {showLogs ? 'Hide Details' : 'Show Details'}
+          </span>
+        </div>
       </div>
     );
   };
+  
   
   // Click anywhere to close help tooltips
   useEffect(() => {
