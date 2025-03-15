@@ -51,11 +51,14 @@ const Portfolio = () => {
             {/* Ecosystem Simulation Project Card */}
             <div style={{ 
               width: '300px', 
+              height: '200px',  // Fixed height for both cards
               backgroundColor: '#f5f5f5',
               border: '1px solid #ccc',
               borderRadius: '3px',
               overflow: 'hidden',
-              boxShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+              boxShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+              display: 'flex',
+              flexDirection: 'column'
             }}>
               <div style={{ 
                 backgroundColor: '#2a8a43', 
@@ -68,8 +71,19 @@ const Portfolio = () => {
                 Ecosystem Simulation
               </div>
               
-              <div style={{ padding: '15px' }}>
-                <p style={{ margin: '0 0 15px 0', fontSize: '13px', lineHeight: '1.4', fontFamily: 'Tahoma, Arial, sans-serif' }}>
+              <div style={{ 
+                padding: '15px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                flexGrow: 1
+              }}>
+                <p style={{ 
+                  margin: '0 0 15px 0', 
+                  fontSize: '13px', 
+                  lineHeight: '1.4', 
+                  fontFamily: 'Tahoma, Arial, sans-serif' 
+                }}>
                   An interactive simulation of a forest ecosystem with trees, deer, and wolves.
                   Observe how these species interact and affect each other over time.
                 </p>
@@ -87,11 +101,14 @@ const Portfolio = () => {
             {/* Behind My Works Card */}
             <div style={{ 
               width: '300px', 
+              height: '200px',  // Fixed height for both cards
               backgroundColor: '#f5f5f5',
               border: '1px solid #ccc',
               borderRadius: '3px',
               overflow: 'hidden',
-              boxShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+              boxShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+              display: 'flex',
+              flexDirection: 'column'
             }}>
               <div style={{ 
                 backgroundColor: '#2a8a43', 
@@ -104,9 +121,20 @@ const Portfolio = () => {
                 Behind My Works
               </div>
               
-              <div style={{ padding: '15px' }}>
-                <p style={{ margin: '0 0 15px 0', fontSize: '13px', lineHeight: '1.4', fontFamily: 'Tahoma, Arial, sans-serif' }}>
-                  Learn about the inspiration, developdgsgsdgdsgsdgdsgsdegsdsdgsdgsdgsdgsdgsdment journey, and future vision behind my ecosystem simulation project.
+              <div style={{ 
+                padding: '15px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                flexGrow: 1
+              }}>
+                <p style={{ 
+                  margin: '0 0 15px 0', 
+                  fontSize: '13px', 
+                  lineHeight: '1.4', 
+                  fontFamily: 'Tahoma, Arial, sans-serif' 
+                }}>
+                  Learn about the inspiration, development journey, and future vision behind my ecosystem simulation project.
                 </p>
                 
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -120,7 +148,7 @@ const Portfolio = () => {
             </div>
           </div>
           
-          <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
             <Link to="/">
               <ClassicXPButton>
                 Back to Home
