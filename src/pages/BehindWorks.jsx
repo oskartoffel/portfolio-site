@@ -9,6 +9,7 @@ import { useTheme } from '../components/ui/ThemeProvider';
 const BehindWorks = () => {
   const { setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState(0);
+  const [showSketch, setShowSketch] = useState(false);
   
   // Force portfolio theme when component mounts and when navigating to this page
   useEffect(() => {
@@ -24,6 +25,23 @@ const BehindWorks = () => {
       // No cleanup needed since we'll handle theme changes globally
     };
   }, [setTheme]);
+
+  // Close sketch modal when clicking outside
+  useEffect(() => {
+    if (showSketch) {
+      const handleClickOutside = (e) => {
+        if (!e.target.closest('.sketch-image')) {
+          setShowSketch(false);
+        }
+      };
+      
+      document.addEventListener('click', handleClickOutside);
+      
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [showSketch]);
 
   // Tab content
   const tabContent = [
@@ -41,7 +59,7 @@ const BehindWorks = () => {
             marginTop: '0',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            How Did I End Up at This Point?
+            What Led to the Project
           </h3>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -118,14 +136,14 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            That sense of motivation—pouring myself into a project nobody specifically asked for, shaping it according to my own ideas—was new to me. While preparing the simulation, I also started designing the website itself. I wanted visitors to have a fun, interactive experience. Over time, I decided to include a design-oriented CV and my cover letter on the same site, effectively making it my full application.
+            That sense of motivation—pouring myself into a project nobody specifically asked for, shaping it according to my own ideas—was new to me. While preparing the simulation, I also started designing the website itself. I wanted visitors to have a fun, interactive experience. 
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            My project was no longer only about the simulation; it now involved the site's overall look and vibe, in addition to the the different elements in the simulation. At this point, I understand the website and the design concept behind it, including my CV and the simulation, as parts of my overall portfolio.
+            My project was no longer only about the simulation; it now involved the site's overall look and vibe, in addition to the the different elements in the simulation. At this point, I understand the website and the concept behind it as parts of my overall portfolio.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -208,16 +226,19 @@ const BehindWorks = () => {
             marginTop: '0',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            What the Project Is Now
+            What the Project is Now
           </h3>
           
-          <p style={{ 
+          <h4 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
             Website & Its Components
-          </p>
+          </h4>
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -226,29 +247,48 @@ const BehindWorks = () => {
           }}>
             At this stage, my project takes the form of a single website that weaves together all parts of my application: a CV, a Cover Letter, and the Portfolio work. My goal is to offer an experience that feels personal, interactive, and straightforward to navigate, so visitors can get an authentic sense of who I am, what motivates me and what I could contribute to the masters program. If you run into any issues with any section, I suggest closing your browser, reopening it, and reloading the page. Unfortunately, for the moment the website isn't compiling properly via mobile and should therefore be visited from your desktop browser.
           </p>
+      
+          
+          <h4 style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
+          }}>
+            <Link to="/cover-letter" style={{ textDecoration: 'none', color: '#2a8a43' }}>
+              Cover Letter [LINK]
+            </Link>
+          </h4>
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            <strong>CV [LINK]</strong> A standard CV is included in my submission to meet the formal application requirements—this version briefly sums up my academic, professional, and personal background. This is a more alternative CV more based on personal, creative processes in my life.
+            This text draws out the main themes from my overall portfolio: my personal journey, my enthusiasm and experiences for designing processes and the technical skills I've developed along the way. Although the Cover Letter can stand on its own, it feels more coherent placed here among the other elements that inspired and led to it.
           </p>
           
-          <p style={{ 
+          <h4 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            <strong>Cover Letter [LINK]</strong> This text draws out the main themes from my overall portfolio: my personal journey, my enthusiasm and experiences for designing processes and the technical skills I've developed along the way. Although the Cover Letter can stand on its own, it feels more coherent placed here among the other elements that inspired and led to it.
-          </p>
+            <Link to="/ecosystem-simulation" style={{ textDecoration: 'none', color: '#2a8a43' }}>
+              Portfolio ("Simulation" Branch) [LINK]
+            </Link>
+          </h4>
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            <strong>Portfolio ("Simulation" Branch) [LINK]</strong> The Portfolio section showcases the whole website project and breaks down the story in three steps:
+            The Portfolio section showcases the whole website project and breaks down the story in three steps:
           </p>
           
           <ol style={{ 
@@ -270,16 +310,16 @@ const BehindWorks = () => {
             By providing not just the website on its own, but also the motivations and emotions behind it, I want to give you a deeper sense of how this project took shape. The simulation itself aims to simplify the complex interplay between trees, deer, and wolves in a forest ecosystem—ideally, people exploring it will come away with fresh insights into how and why the different species interact play a and how human interference can impact woodland balance.
           </p>
           
-          <h4 style={{ 
+          <h5 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             color: '#2a8a43',
-            fontSize: '16px',
+            fontSize: '15px',
             paddingBottom: '3px',
             marginTop: '20px',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
             Underlying Mechanisms
-          </h4>
+          </h5>
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -386,16 +426,48 @@ const BehindWorks = () => {
             </ul>
           </div>
           
-          <h4 style={{ 
+          <h5 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             color: '#2a8a43',
-            fontSize: '16px',
+            fontSize: '15px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
+          }}>
+            Simulation Components
+          </h5>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            While the mechanisms define what happens in the background, I also aimed to make the simulation intuitive, interactive and fun to use:
+          </p>
+          
+          <ul style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            paddingLeft: '25px'
+          }}>
+            <li><strong>Visual Grid:</strong> Represents forest density, with greener squares indicating heavier tree cover, on the contrary browner squares indicating sparse areas.</li>
+            <li><strong>Health Bars/Population Bars:</strong> Show the current state of trees, deer, and wolves. If the bar is near its maximum, that species is at or beyond capacity.</li>
+            <li><strong>Buttons:</strong> Let you alter the ecosystem—for example, you might choose to "Harvest Trees", "Plant Saplings", "Shoot Deer", or "Shoot Wolves". All of those decisions affect the ecosystem and may have big consequences in the long term.</li>
+            <li><strong>Graphs & Stats:</strong> Offer a quick overview of how populations change over time—useful for spotting booms, crashes, or recoveries.</li>
+            <li><strong>Code References:</strong> Specific interactions or the code in general can be found under the following link [GIT HUB LINK].</li>
+          </ul>
+          
+          <h5 style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            color: '#2a8a43',
+            fontSize: '15px',
             paddingBottom: '3px',
             marginTop: '20px',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
             Anchoring in Real-World Ecology
-          </h4>
+          </h5>
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -456,38 +528,6 @@ const BehindWorks = () => {
           }}>
             In particular, Ripple and Beschta emphasize how higher-level predators reduce overgrazing by keeping herbivore populations in check, which aligns with this simulation's wolf-deer-tree balance. Côté et al. demonstrate that deer can quickly exceed an ecosystem's carrying capacity, mirroring the population crashes you might see if you remove all wolf predation here. Fortin et al. further illustrate how even subtle changes in predator numbers can reshape herbivore feeding patterns, while Oliver and Larson highlight the importance of seedling survival and stand competition, which is reflected in the young sapling stage of the simulation. By weaving in these findings, I hope to show how smaller-scale models can capture key feedback loops that shape real-world forests.
           </p>
-          
-          <h4 style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            color: '#2a8a43',
-            fontSize: '16px',
-            paddingBottom: '3px',
-            marginTop: '20px',
-            textShadow: '1px 1px 0 rgba(255,255,255,1)'
-          }}>
-            Simulation Components
-          </h4>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            While the mechanisms define what happens in the background, I also aimed to make the simulation intuitive, interactive and fun to use:
-          </p>
-          
-          <ul style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5',
-            paddingLeft: '25px'
-          }}>
-            <li><strong>Visual Grid:</strong> Represents forest density, with greener squares indicating heavier tree cover, on the contrary browner squares indicating sparse areas.</li>
-            <li><strong>Health Bars/Population Bars:</strong> Show the current state of trees, deer, and wolves. If the bar is near its maximum, that species is at or beyond capacity.</li>
-            <li><strong>Buttons:</strong> Let you alter the ecosystem—for example, you might choose to "Harvest Trees", "Plant Saplings", "Shoot Deer", or "Shoot Wolves". All of those decisions affect the ecosystem and may have big consequences in the long term.</li>
-            <li><strong>Graphs & Stats:</strong> Offer a quick overview of how populations change over time—useful for spotting booms, crashes, or recoveries.</li>
-            <li><strong>Code References:</strong> Specific interactions or the code in general can be found under the following link [GIT HUB LINK].</li>
-          </ul>
           
           <div style={{
             borderTop: '1px solid #e0e0e0',
@@ -563,16 +603,8 @@ const BehindWorks = () => {
             marginTop: '20px',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            Ideas for the Simulation
+            Enhancing the Simulation
           </h4>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            <strong>Enhancing the Simulation</strong>
-          </p>
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -585,10 +617,99 @@ const BehindWorks = () => {
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
-            lineHeight: '1.5'
+            lineHeight: '1.5',
+            position: 'relative',
+            display: 'inline-block'
           }}>
-            I've created a [LINK] sketch outlining these further ideas, which I would have most probably developed with the help from softwares like Blender or Three.js. If users could see a 3D forest—possibly with deer and wolves moving around—it would be easier and more intuitive to understand their different roles in the ecosystem. However, since Blender and Three.js were completely new tools for me, the time investment to implement them would have been out of proportion.
+            I've created a <span 
+              onClick={() => setShowSketch(true)}
+              style={{
+                color: '#2a8a43',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                display: 'inline-block',
+                position: 'relative'
+              }}
+            >
+              sketch
+              <span style={{
+                display: 'inline-block',
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                backgroundColor: '#2a8a43',
+                color: 'white',
+                textAlign: 'center',
+                lineHeight: '16px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                marginLeft: '5px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                position: 'relative',
+                top: '-1px'
+              }}>
+                ?
+              </span>
+            </span> outlining these further ideas, which I would have most probably developed with the help from softwares like Blender or Three.js. If users could see a 3D forest—possibly with deer and wolves moving around—it would be easier and more intuitive to understand their different roles in the ecosystem. However, since Blender and Three.js were completely new tools for me, the time investment to implement them would have been out of proportion.
           </p>
+          
+          {showSketch && (
+            <div style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 2000
+            }}>
+              <div className="sketch-image" style={{
+                backgroundColor: 'white',
+                padding: '10px',
+                borderRadius: '5px',
+                maxWidth: '80%',
+                maxHeight: '80%',
+                position: 'relative'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '5px',
+                  right: '10px',
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  color: '#2a8a43'
+                }} onClick={(e) => {
+                  e.stopPropagation();
+                  setShowSketch(false);
+                }}>
+                  ×
+                </div>
+                <img 
+                  src="/sketch-image.jpg" 
+                  alt="Sketch of enhanced simulation" 
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '70vh'
+                  }}
+                />
+                <p style={{
+                  fontFamily: 'Tahoma, Arial, sans-serif',
+                  fontSize: '12px',
+                  textAlign: 'center',
+                  marginTop: '10px',
+                  color: '#666'
+                }}>
+                  My sketch for an enhanced 3D visualization of the forest ecosystem
+                </p>
+              </div>
+            </div>
+          )}
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -624,39 +745,6 @@ const BehindWorks = () => {
           }}>
             In a more scientific setting that focuses on results and numbers rather than visualization, it would also be possible to expand the ecosystem with additional species or enrich existing populations with further functions, depending on the data needed.
           </p>
-          
-          <div style={{
-            backgroundColor: 'rgba(42, 138, 67, 0.05)',
-            border: '1px solid rgba(42, 138, 67, 0.2)',
-            borderRadius: '8px',
-            padding: '15px',
-            margin: '20px 0'
-          }}>
-            <h4 style={{ 
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              color: '#2a8a43',
-              fontSize: '16px',
-              margin: '0 0 10px 0'
-            }}>
-              Future Enhancement Ideas
-            </h4>
-            
-            <ul style={{ 
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              margin: '0',
-              paddingLeft: '20px'
-            }}>
-              <li><strong>Enhanced Visualization:</strong> 3D representation with animated animals and growing trees</li>
-              <li><strong>Additional Species:</strong> Include more animals like foxes, bears, and various bird species</li>
-              <li><strong>Climate Factors:</strong> Add weather patterns and climate change scenarios</li>
-              <li><strong>Human Interaction:</strong> Simulate human impacts like hunting, logging, and conservation</li>
-              <li><strong>Expanded Terrain:</strong> Different habitats (mountains, wetlands, etc.) in the same ecosystem</li>
-              <li><strong>Educational Scenarios:</strong> Preset scenarios showing different ecological concepts</li>
-              <li><strong>Data Export:</strong> Allow researchers to download simulation data for analysis</li>
-            </ul>
-          </div>
           
           <h4 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -712,45 +800,35 @@ const BehindWorks = () => {
             Another idea came up recently during my civil service in Wallis, where I am working on a biotope care program. Because this weeks site is so difficult to access, a helicopter had to transport all of our heavy gear. My group discussed whether the helicopter's carbon emissions are justified by the biodiversity benefits of caring for this remote biotope. Of course, it is not only an ecological but also an ethical question. Maybe a simulation could offer interesting insights by weighing factors like habitat improvement, species protection, and carbon costs.
           </p>
           
-          <div style={{
-            backgroundColor: 'rgba(42, 138, 67, 0.1)',
-            border: '1px solid rgba(42, 138, 67, 0.3)',
-            borderRadius: '8px',
-            padding: '15px',
-            margin: '20px 0 10px 0'
+          <h4 style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            <p style={{ 
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              fontWeight: 'bold',
-              color: '#2a8a43',
-              margin: '0 0 10px 0',
-              textAlign: 'center'
-            }}>
-              Conclusion
-            </p>
-            
-            <p style={{ 
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              margin: '0',
-              fontStyle: 'italic'
-            }}>
-              Yes, I really enjoyed the work and the process of this project. And as described here, I could very well imagine continuing to work on this or similar projects.
-            </p>
-            
-            <p style={{ 
-              fontFamily: 'Tahoma, Arial, sans-serif',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              margin: '10px 0 0 0',
-              fontStyle: 'italic'
-            }}>
-              But I could also imagine working on all kinds of other projects in the future, be they of a conceptual, artisanal, digital or some hybrid nature.
-            </p>
-          </div>
+            Conclusion
+          </h4>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            fontStyle: 'italic'
+          }}>
+            Yes, I really enjoyed the work and the process of this project. And as described here, I could very well imagine continuing to work on this or similar projects.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            fontStyle: 'italic',
+            marginTop: '10px'
+          }}>
+            But I could also imagine working on all kinds of other projects in the future, be they of a conceptual, artisanal, digital or some hybrid nature.
+          </p>
         </>
       )
     }
@@ -760,16 +838,6 @@ const BehindWorks = () => {
     <XPBackground>
       <ClassicWindow title="Behind My Works">
         <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-          <h1 style={{ 
-            fontFamily: 'Popstar, Tahoma, Arial, sans-serif',
-            color: '#2a8a43',
-            fontSize: '26px',
-            marginBottom: '25px',
-            textAlign: 'center'
-          }}>
-            Behind My Works
-          </h1>
-          
           {/* Y2K/XP-style Tab Navigation - Now Centered and Width-Filling */}
           <div style={{
             display: 'flex',
