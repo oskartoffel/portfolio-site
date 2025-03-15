@@ -30,8 +30,8 @@ const Portfolio = () => {
             <ClassicXPButton onClick={() => {
               // Create a link to download the PDF
               const link = document.createElement('a');
-              link.href = '/documents/portfolio-oskar-wasmer.pdf';
-              link.setAttribute('download', 'portfolio-oskar-wasmer.pdf');
+              link.href = '/documents/Portfolio.pdf';
+              link.setAttribute('download', 'Portfolio.pdf');
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);

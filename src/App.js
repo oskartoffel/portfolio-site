@@ -17,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cover-letter" element={<CoverLetter />} />
+          <Route path="/cv" element={<CoverLetter />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/behind-works" element={<BehindWorks />} />
           <Route path="/ecosystem-simulation" element={<EcosystemSimulation />} />

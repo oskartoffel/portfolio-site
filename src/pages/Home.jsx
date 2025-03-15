@@ -26,21 +26,11 @@ const Home = () => {
             marginTop: '10px',
             color: 'var(--home-primary)',
             fontFamily: 'Popstar, Tahoma, Arial, sans-serif',
-            fontSize: '28px'
+            fontSize: '28px',
+            marginBottom: '30px'
           }}>
-            Hi, welcome to my portfolio!
+            My Portfolio
           </h1>
-          
-          <p style={{ 
-            color: '#333',
-            lineHeight: '1.5',
-            fontSize: '15px',
-            marginBottom: '30px',
-            fontFamily: 'Tahoma, Arial, sans-serif'
-          }}>
-            Please feel free to explore my work, learn about my background, or check out my 
-            forest ecosystem simulation project. Enjoy your stay!
-          </p>
           
           <div style={{ 
             display: 'flex', 
@@ -52,7 +42,7 @@ const Home = () => {
             
             <Link to="/cover-letter" style={{ textDecoration: 'none' }}>
               <ClassicXPButton size="large">
-                Cover Letter
+                Cover Letter & CV
               </ClassicXPButton>
             </Link>
             
