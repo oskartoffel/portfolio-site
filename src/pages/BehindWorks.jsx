@@ -48,99 +48,147 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            When I first talked to someone about my desire to apply for a design program, it was clear from the start that I didn't have many physical objects to showcase. As I explain in my CV, most of my design processes took place on a non-physical level. Still, I knew I wanted to somehow present and summarize these processes, but I also wanted something concrete to show. Sure, I have a few random drawings I did out of boredom during school, and I could have presented some of the furniture I built. But those were spontaneous projects, never really planned or intended to be shown in a portfolio.
+            When I first talked to people about my plans to apply for a design program, I quickly realized that I did not have a wide range of creative projects to share. Even though a collection of drawings from my school days, some additions I tinkered for my room, or "brand-busting" practice on Illustrator exist, all of these seemed too spontaneous and lacked a clear, presentable concept or process that I felt comfortable sharing with an audience.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            Even in those first conversations, I kept thinking about one specific idea. In my bachelor's program (where I earned 180 credits), 174 of those credits involved assignments with almost no creative freedom. However, I earned six of those credits in a course called 
-            <em> Information Technology for Environmental Engineers</em>, which, at first glance, sounds like any other subject. But the professor basically just told us we needed to create a simulation by the end of the semester. Aside from having to use either C or Python, there weren't really any restrictions.
+            However, the perspective provided in the study's description of the term "design"—one that is not strictly bound to physical, object-oriented processes—gave me a new outlook on experiences I have had in my life. I reflected on certain times when design, in a broader sense, played a major role during several processes in my life. On three of these reflections I gave a deeper insight in the design related CV, because I felt I could be an interesting addition to the conventional CV in my application.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            Of course, I was cutting it close with my simulation project and spent the last two weeks of the semester intensively coding. Even though it was a stressful time, I really enjoyed developing a project from scratch and shaping it entirely by myself. I decided to create an ecosystem of trees, deer, and wolves, because ecosystems have always fascinated me: they can be incredibly entangled and complex, with many different species interacting in a thousand ways. Over thousands of years, nature has found a balance that allows all these species to coexist.
+            Still I wanted to share something physical and tangible that would give a distinct insight into my approach, which led me to a project I have had a take on a few years ago.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            At the time, there was a big public discussion in Switzerland about whether wolves should be hunted or not. So I wanted to illustrate the value of wolves in a forest ecosystem in a simple, accessible way through a simulation. Although it was stressful to finish on time, I had a lot of fun with this project. Whenever someone asked me what I did in my degree, I'd excitedly tell them about this simulation.
+            In my bachelor program's 180 credits, 174 of those credits were tied to assignments with almost no creative freedom. However, the remaining six credits came from a course called <em>Information Technology for Environmental Engineers</em>, which at first glance sounds like any other course in my bachelor's curriculum. But in this course, the professor basically told us we needed to create any kind of simulation by the end of the semester. Aside from having to use either C or Python, there were no real restrictions. I decided to simulate an ecosystem, as they have always fascinated me through their complexity and the countless interaction between different species and their coexistence. Also this finely balance that has been naturally created over thousands of years to allow these systems to work has intrigued me. Especially the ways we as human interact with it. The way we profit from these systems and at the same completely deprive their basis.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            It felt important to me that my portfolio should feature something that ties back to my previous studies. I know I often talk negatively about my bachelor's degree, but I needed to show that, among all the things I had to force myself to learn, there were also interesting topics. In lectures like ecology, atmospheric science, flood science, and soil science, I gained plenty of fascinating knowledge and learned a lot about the intricate processes that govern this planet.
+            Already back then, there was a big public debate in Switzerland about whether wolves should be shot down, mainly to protect herds of sheep and goats. So I wanted to illustrate the value of wolves can have in a forest ecosystem in a simple, accessible way through a simulation. So I chose a simulation that focused around the interactions between trees, deer and wolves.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            That's why I decided to present this project. But there was a catch: the entire simulation was written in C—a very low-level programming language—and it wasn't exactly user-friendly for anyone else to try out. I wanted to make it accessible so nobody would need to download programs or install any programming languages just to see my simulation. The perfect solution, I realized, was to have it all on a website. Then I could just send people a link and voilà! The problem was, I hadn't written a single line of code since graduating (about two years ago), and I had never built a website before.
+            As I was cutting it close with my coding, I spent the last two weeks of the semester intensively working on it. Even though it was stressful, I truly enjoyed building a project from scratch and shaping it on my own terms. Whenever someone asked me what I did in my bachelor's program, I always mentioned this simulation first.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            Still, the idea of sending a link as my "portfolio" felt so cool that I was determined to make it happen. It turned out that JavaScript was the most straightforward way to get my simulation running online. So I started translating a four-year-old C codebase into a new language I'd never used before, with no clue if it would take two days or three weeks.
+            It was important to me that my portfolio somehow connects back to my previous studies. In other points in my application, I often sound negative about my bachelor's degree, but I also learned a lot about topics that genuinely fascinate me—like ecology, atmospheric science, flood science, and soil science—and discovered how intricate the planet's processes can be.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            I quickly learned that my old code wasn't very solid; it was riddled with errors, and I had been lucky it ran at all. So I revised it bit by bit, fixing each function and mechanism. For about two weeks, my life revolved around my job as a bike courier and my code. I have no idea what your experience with programming is, so I'm not sure how much detail to go into. But let me say that diving deep into this project was, for the most part, a real joy. I'd get up early every day so I could spend as many hours as possible coding before my bike-shift, often forgetting the original reason behind all this as I got steadily closer to running the simulation on a website.
+            Remembering how much I have enjoyed working on that project, I decided to develop further and share it in my portfolio. But there was a catch: the entire simulation was written in C, a very low-level programming language that isn't very user-friendly. I wanted to make it more accessible, so nobody would have to download special programs or install additional languages. The perfect solution, I realized, was to host it on a website. This enables me to simply send you a link and letting you explore the project without any hurdles.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            This feeling—pouring my heart into a project, shaping it exactly the way I thought it should be, structuring it entirely from scratch—was completely new to me. While prepping the simulation for presentation, I also started designing the website. I wanted users to have a fun, interactive experience when visiting it. Over time, I got the idea to include a design-oriented CV and my cover letter on that same site, basically turning the website into my entire application.
+            The fact that I hadn't written a single line of code since my graduation two years ago nor have I ever created a website felt quite challenging. Nevertheless the idea of using a link as my portfolio felt so right that I was motivated to make it happen. It turned out JavaScript was the most straightforward way to get the simulation online. So I started translating a four-year-old C codebase into a new language I'd never touched before and without knowing, whether it would take me two days or three weeks.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            My project no longer revolved solely around the simulation; it also included the look and feel of the website and all its different elements. By now, I understand the entire site and the design concept behind it, including my CV and the simulation itself. But my first priority was to build the "shell" of the website. I figured I'd tackle the content part later.
+            I soon realized my old code wasn't very robust—it was full of errors, and I have been lucky it had worked at all. So I revised it step by step, fixing each function and mechanism. For about two weeks, my life revolved around the coding of this simulation and my bike courier job. Most of the time, I genuinely enjoyed it; I dove in deep and felt a strong drive to make this simulation run.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            One important side note is that artificial intelligence was a huge help to me in this process! There's no way I could have built my first full website (with a working simulation) in such a short time without AI's assistance.
+            That sense of motivation—pouring myself into a project nobody specifically asked for, shaping it according to my own ideas—was new to me. While preparing the simulation, I also started designing the website itself. I wanted visitors to have a fun, interactive experience. Over time, I decided to include a design-oriented CV and my cover letter on the same site, effectively making it my full application.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            Because I was so immersed—often spending hours squashing tiny bugs—I nearly lost track of the deadline. Sure, I managed to get a decent-looking site up and running, but my CV, cover letter, and a proper description explaining how much effort went into this project were still missing. Although the final product looked somewhat presentable, I got anxious that it didn't truly show the energy, frustration, and love I poured into it.
+            My project was no longer only about the simulation; it now involved the site's overall look and vibe, in addition to the the different elements in the simulation. At this point, I understand the website and the design concept behind it, including my CV and the simulation, as parts of my overall portfolio.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            That's why I wanted to write this text: to capture the entire journey of getting the project to where it is today and to help explain why it ended up at this exact point.
+            It's also worth noting that artificial intelligence played an important role in helping me throughout this process. There is no way I could have built my first full website with a functioning simulation in a language that was initially new to me in such a short time without AI's assistance.
           </p>
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            I would have loved to pour many more hours into improving the website and the simulation—unfortunately, I just didn't have the time. In the next section, I'll talk about the project's current status and everything I would have liked to include if I'd had the chance.
+            Because I got so immersed, I sometimes lost sight of what I was doing it all for, spending hours on tiny bugs that really weren't noticeable to an outside viewer. Not taking an early inventory of what still needed to be done or what was most essential meant the final push became quite stressful as the deadline approached.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            During this time, I also discovered the downsides of creative freedom. On the one hand, I've described how wonderful it can be to do things exactly the way you think they should be done. But on the other hand—precisely because I made all the decisions myself—everything feels very personal, since could not push it onto anyone else. That leaves you quite vulnerable. This vulnerability is felt especially strongly in moments of stress, when you start thinking about potential criticism or rejection.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Eventually, the simulation and the website were presentable enough while all the written elements were missing. That made me anxious—it was not obvious that someone visiting the website or checking out the simulation would understand the amount of joy, frustration, energy, and thought I'd put into this work.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            As a consequence I wanted to write this text: to emphasize the entire journey that led the project to where it is now and to explain how it reached this point. In the next sections, I'll talk about its current status and everything I would have loved to include if I'd had the time and resources.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            In summary, now that I'm almost finished with everything, I can say that the entire process—regardless of whether the application is successful—has been very enriching. One thing I've learned is how much I enjoy working on projects that allow for creative freedom, and I realized that no matter what my future looks like—educationally, professionally, or personally—I want to make sure I have space in my life that allows any kind projects with creative freedom.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Another key takeaway is how challenging the process can get. Especially toward the end, when time pressure kicked in, my insecurity and anxiety increased.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            On the one hand, it showed me just how valuable healthy time and capacity management can be; on the other hand, those stressful moments showed me—clearly and unfiltered—how crucial it is to maintain a supportive environment, so there are people who can be there for you when you need them.
+          </p>
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Thanks to these experiences I gained during the process, I'm really glad I created this portfolio—regardless of whether things ultimately work out or not.
           </p>
         </>
       )
@@ -160,7 +208,7 @@ const BehindWorks = () => {
             marginTop: '0',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            What the Project is Now
+            What the Project Is Now
           </h3>
           
           <p style={{ 
@@ -168,7 +216,58 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            In this section, I'll present the project including the website with all its components and particularly the simulation in more detail.
+            Website & Its Components
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            At this stage, my project takes the form of a single website that weaves together all parts of my application: a CV, a Cover Letter, and the Portfolio work. My goal is to offer an experience that feels personal, interactive, and straightforward to navigate, so visitors can get an authentic sense of who I am, what motivates me and what I could contribute to the masters program. If you run into any issues with any section, I suggest closing your browser, reopening it, and reloading the page. Unfortunately, for the moment the website isn't compiling properly via mobile and should therefore be visited from your desktop browser.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            <strong>CV [LINK]</strong> A standard CV is included in my submission to meet the formal application requirements—this version briefly sums up my academic, professional, and personal background. This is a more alternative CV more based on personal, creative processes in my life.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            <strong>Cover Letter [LINK]</strong> This text draws out the main themes from my overall portfolio: my personal journey, my enthusiasm and experiences for designing processes and the technical skills I've developed along the way. Although the Cover Letter can stand on its own, it feels more coherent placed here among the other elements that inspired and led to it.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            <strong>Portfolio ("Simulation" Branch) [LINK]</strong> The Portfolio section showcases the whole website project and breaks down the story in three steps:
+          </p>
+          
+          <ol style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            paddingLeft: '30px'
+          }}>
+            <li>What led me to do this?</li>
+            <li>What does the project look like right now?</li>
+            <li>What might be possible in the future?</li>
+          </ol>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            By providing not just the website on its own, but also the motivations and emotions behind it, I want to give you a deeper sense of how this project took shape. The simulation itself aims to simplify the complex interplay between trees, deer, and wolves in a forest ecosystem—ideally, people exploring it will come away with fresh insights into how and why the different species interact play a and how human interference can impact woodland balance.
           </p>
           
           <h4 style={{ 
@@ -179,7 +278,7 @@ const BehindWorks = () => {
             marginTop: '20px',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            The Website
+            Underlying Mechanisms
           </h4>
           
           <p style={{ 
@@ -187,147 +286,7 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            The project in its current state comprises a website with three main components: CV, Cover Letter, and the Portfolio work. The website provides simple and interactive access to the three main parts of my application. I decided to include the CV and Cover Letter as they are essential components of my application process.
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            Navigation on the website is possible using the labeled buttons. If you encounter any issues with a component, I recommend closing the browser, restarting it, and reloading the page.
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            For now, the site is optimized for desktop viewing. I would have liked to create a mobile version as well, but unfortunately, time constraints didn't allow for this.
-          </p>
-          
-          <h4 style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            color: '#2a8a43',
-            fontSize: '16px',
-            paddingBottom: '3px',
-            marginTop: '20px',
-            textShadow: '1px 1px 0 rgba(255,255,255,1)'
-          }}>
-            CV
-          </h4>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            The CV available on the website and submitted with the portfolio is the same as my official one. To meet application requirements, I created a conventional resume that briefly summarizes my educational and professional background as well as other skills in bullet points.
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            However, since I'm applying for a design-oriented master's program, I felt it was important to highlight and share the phases in my life where design processes were particularly significant. I believe these phases and processes play an important role in understanding how an environmental engineer on a career ladder decides to apply for a design-oriented master's program.
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            Therefore, I created an alternative, non-conventional resume that feels more relevant to this application.
-          </p>
-          
-          <h4 style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            color: '#2a8a43',
-            fontSize: '16px',
-            paddingBottom: '3px',
-            marginTop: '20px',
-            textShadow: '1px 1px 0 rgba(255,255,255,1)'
-          }}>
-            Cover Letter
-          </h4>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            The entire portfolio including CV, simulation, and these texts here, is intended to demonstrate my motivation for the program. The Cover Letter is the essence of the other components that show my story, my enthusiasm for processes and design, and my technical skills.
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            While the Cover Letter can be read and understood on its own, it was important for me to integrate it here as well, as it feels more coherent when embedded within the other components.
-          </p>
-          
-          <h4 style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            color: '#2a8a43',
-            fontSize: '16px',
-            paddingBottom: '3px',
-            marginTop: '20px',
-            textShadow: '1px 1px 0 rgba(255,255,255,1)'
-          }}>
-            Portfolio
-          </h4>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            The Portfolio branch offers both the presentation of my simulation and the background of the work process in three steps: What led to this work? What is the work now? And what else would have been possible?
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            This text and illustrations aim to illustrate the process and show which thoughts led to this form of application. This creates not only a superficial product but a deeper level of understanding of the thoughts and feelings that led to this point.
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            The goal of the simulation in its current state is to present complex interactions between populations of trees, deer, and wolves in an ecosystem as simply as possible. Ideally, the user should learn in a playful way how forests suffer through the pursuit of monetary interests and what, for example, wolves can contribute to an ecosystem.
-          </p>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            While the mechanisms on which the simulation is based are meant to represent reality to a certain extent, many real-world processes had to be simplified. For example, the simulation is limited to 3 populations, and the mobility of deer and wolves is neglected as it doesn't play a role in this simulation.
-          </p>
-          
-          <h4 style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            color: '#2a8a43',
-            fontSize: '16px',
-            paddingBottom: '3px',
-            marginTop: '20px',
-            textShadow: '1px 1px 0 rgba(255,255,255,1)'
-          }}>
-            Simulation Mechanics
-          </h4>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            The ecosystem simulation models the interactions between three key species:
+            While the mechanisms on which the simulation is based are meant to represent reality, many real-world processes had to be simplified. For example, the simulation is limited to three different populations; trees, deer and wolves. The mobility of deer and wolves is neglected as it does not play a role in this particular version.
           </p>
           
           <div style={{
@@ -354,10 +313,9 @@ const BehindWorks = () => {
               margin: '0 0 12px 0',
               paddingLeft: '25px'
             }}>
-              <li>Growth cycle that increases age, height, and mass yearly</li>
-              <li>Natural mortality based on age and environmental stress</li>
-              <li>Reproduction capacity dependent on maturity and forest density</li>
-              <li>Vulnerability to consumption by deer, particularly young trees</li>
+              <li>Growth & Aging: Each tree goes through a cycle of growing taller and heavier every year.</li>
+              <li><strong>Reproduction:</strong> Once mature, a tree can spread seeds, because of concurrence success depends partly on forest density.</li>
+              <li><strong>Mortality:</strong> Trees can die of old age, environmental stress factors or especially young saplings (which are more vulnerable) can get eaten by deer.</li>
             </ul>
             
             <p style={{ 
@@ -377,11 +335,9 @@ const BehindWorks = () => {
               margin: '0 0 12px 0',
               paddingLeft: '25px'
             }}>
-              <li>Growth and aging system with corresponding physical attributes</li>
-              <li>Foraging behavior that targets young, edible trees</li>
-              <li>Reproduction rates affected by population density and environmental factors</li>
-              <li>Natural mortality from age, predation, and starvation</li>
-              <li>Migration mechanics bringing new deer into the ecosystem</li>
+              <li>Population Growth: Deer reproduce at a rate that depends on factors like food availability and herd density.</li>
+              <li><strong>Foraging:</strong> Deer feed on young, edible saplings, which can stall the forest's regrowth. If the forest thins out, it becomes harder for deer to find food, leading to starvation.</li>
+              <li><strong>Mortality & Migration:</strong> Deer can die of old age, starvation, or predation by wolves. Occasionally, new deer migrate into the forest, reflecting how real populations expand into suitable habitats.</li>
             </ul>
             
             <p style={{ 
@@ -401,11 +357,9 @@ const BehindWorks = () => {
               margin: '0 0 12px 0',
               paddingLeft: '25px'
             }}>
-              <li>Hunting behavior targeting deer as their primary food source</li>
-              <li>Pack dynamics that improve hunting success</li>
-              <li>Age-based mortality and starvation risks</li>
-              <li>Reproduction rates linked to food availability and pack size</li>
-              <li>Migration patterns bringing new wolves when populations are low</li>
+              <li>Predation: Wolves rely on deer as their food source, hunting in packs for higher success rates.</li>
+              <li><strong>Reproduction & Mortality:</strong> Wolves also can die of old age, starve if deer numbers drop too low and may even migrate away if resources dwindle.</li>
+              <li><strong>Trophic Impact:</strong> By preying on deer, they indirectly support tree growth (a classic top-down effect).</li>
             </ul>
             
             <p style={{ 
@@ -416,7 +370,7 @@ const BehindWorks = () => {
               color: '#2a8a43',
               margin: '12px 0 8px 0'
             }}>
-              Inter-species Dynamics:
+              Inter-Species Dynamics:
             </p>
             <ul style={{ 
               fontFamily: 'Tahoma, Arial, sans-serif',
@@ -425,20 +379,12 @@ const BehindWorks = () => {
               margin: '0',
               paddingLeft: '25px'
             }}>
-              <li>Trees provide food for deer, creating a producer-consumer relationship</li>
-              <li>Deer populations are controlled by wolf predation, forming a predator-prey dynamic</li>
-              <li>Wolves indirectly protect forests by controlling deer populations</li>
-              <li>A balanced ecosystem emerges when all three populations reach sustainable levels</li>
+              <li>Trees are the foundational producers, supplying nutrients for deer.</li>
+              <li>Deer, in turn, can limit tree growth if their numbers explode.</li>
+              <li>Wolves keep deer populations in check, allowing the forest to regenerate.</li>
+              <li>Striking a balance among these three groups leads to a more stable ecosystem over time.</li>
             </ul>
           </div>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
-          }}>
-            These mechanics create a simplified but representative model of trophic cascades in forest ecosystems, where predators indirectly benefit plant life by controlling herbivore populations.
-          </p>
           
           <h4 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -448,7 +394,7 @@ const BehindWorks = () => {
             marginTop: '20px',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            Scientific Context
+            Anchoring in Real-World Ecology
           </h4>
           
           <p style={{ 
@@ -456,7 +402,7 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            The simulation draws from established ecological principles:
+            Although the simulation is simplified, some fundamental mechanisms of the simulation can be found in established ecological concepts:
           </p>
           
           <div style={{
@@ -472,7 +418,7 @@ const BehindWorks = () => {
               lineHeight: '1.5',
               margin: '0 0 12px 0'
             }}>
-              <strong>Trophic Cascades:</strong> Research by Ripple and Beschta (2012)<sup>1</sup> demonstrates how predators like wolves create cascading effects through ecosystems by controlling herbivore populations, which in turn affects vegetation structure and density.
+              <strong>Trophic Cascades:</strong> As discussed by Ripple and Beschta (2012)<sup>1</sup>, predators like wolves trigger broad ecosystem changes by controlling herbivores.
             </p>
             
             <p style={{ 
@@ -481,7 +427,7 @@ const BehindWorks = () => {
               lineHeight: '1.5',
               margin: '0 0 12px 0'
             }}>
-              <strong>Carrying Capacity:</strong> The model incorporates principles described by Côté et al. (2004)<sup>2</sup> regarding how deer populations can exceed the environment's carrying capacity in the absence of predators, leading to forest degradation.
+              <strong>Carrying Capacity:</strong> Côté et al. (2004)<sup>2</sup> highlight how unmanaged deer can overpopulate, damaging forests.
             </p>
             
             <p style={{ 
@@ -490,7 +436,7 @@ const BehindWorks = () => {
               lineHeight: '1.5',
               margin: '0 0 12px 0'
             }}>
-              <strong>Wolf Reintroduction Benefits:</strong> Studies from Yellowstone National Park by Fortin et al. (2005)<sup>3</sup> show how wolf reintroduction altered elk behavior and distribution, allowing for regeneration of aspen and willow communities.
+              <strong>Wolf Reintroduction:</strong> Studies from Yellowstone National Park (Fortin et al., 2005)<sup>3</sup> show how bringing back wolves altered elk patterns and fostered new plant growth.
             </p>
             
             <p style={{ 
@@ -499,9 +445,17 @@ const BehindWorks = () => {
               lineHeight: '1.5',
               margin: '0'
             }}>
-              <strong>Forest Regeneration Cycles:</strong> The tree growth and reproduction mechanics are based on forestry models that account for seedling establishment, competition for resources, and stand dynamics as described by Oliver and Larson (1996)<sup>4</sup>.
+              <strong>Forest Stand Dynamics:</strong> Oliver and Larson (1996)<sup>4</sup> describe how sapling establishment and stand competition shape forest regeneration cycles.
             </p>
           </div>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            In particular, Ripple and Beschta emphasize how higher-level predators reduce overgrazing by keeping herbivore populations in check, which aligns with this simulation's wolf-deer-tree balance. Côté et al. demonstrate that deer can quickly exceed an ecosystem's carrying capacity, mirroring the population crashes you might see if you remove all wolf predation here. Fortin et al. further illustrate how even subtle changes in predator numbers can reshape herbivore feeding patterns, while Oliver and Larson highlight the importance of seedling survival and stand competition, which is reflected in the young sapling stage of the simulation. By weaving in these findings, I hope to show how smaller-scale models can capture key feedback loops that shape real-world forests.
+          </p>
           
           <h4 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
@@ -519,7 +473,7 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            The interface provides several ways to interact with and observe the ecosystem:
+            While the mechanisms define what happens in the background, I also aimed to make the simulation intuitive, interactive and fun to use:
           </p>
           
           <ul style={{ 
@@ -528,22 +482,12 @@ const BehindWorks = () => {
             lineHeight: '1.5',
             paddingLeft: '25px'
           }}>
-            <li><strong>Population Bars:</strong> Visual indicators showing current population levels of trees, deer, and wolves relative to their maximum sustainable numbers.</li>
-            <li><strong>Forest Visualization:</strong> A color-coded grid representing tree density across the forest ecosystem, with darker greens indicating denser forest areas.</li>
-            <li><strong>Action Buttons:</strong> Allow users to directly interact with the ecosystem through hunting (deer/wolves) and forest management (planting/harvesting trees).</li>
-            <li><strong>Population Graphs:</strong> Track changes in each species population over time, helping visualize long-term trends and relationships.</li>
-            <li><strong>Statistics Cards:</strong> Provide detailed information about each species, including population size, average age, reproduction rates, and causes of mortality.</li>
-            <li><strong>Speed Controls:</strong> Allow users to adjust simulation speed to observe short-term interactions or long-term ecosystem evolution.</li>
+            <li><strong>Visual Grid:</strong> Represents forest density, with greener squares indicating heavier tree cover, on the contrary browner squares indicating sparse areas.</li>
+            <li><strong>Health Bars/Population Bars:</strong> Show the current state of trees, deer, and wolves. If the bar is near its maximum, that species is at or beyond capacity.</li>
+            <li><strong>Buttons:</strong> Let you alter the ecosystem—for example, you might choose to "Harvest Trees", "Plant Saplings", "Shoot Deer", or "Shoot Wolves". All of those decisions affect the ecosystem and may have big consequences in the long term.</li>
+            <li><strong>Graphs & Stats:</strong> Offer a quick overview of how populations change over time—useful for spotting booms, crashes, or recoveries.</li>
+            <li><strong>Code References:</strong> Specific interactions or the code in general can be found under the following link [GIT HUB LINK].</li>
           </ul>
-          
-          <p style={{ 
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5',
-            marginTop: '15px'
-          }}>
-            The simulation runs for 100 simulated years, allowing users to observe complete cycles of ecosystem dynamics, including stabilization periods, population booms and crashes, and potential recovery phases.
-          </p>
           
           <div style={{
             borderTop: '1px solid #e0e0e0',
@@ -589,7 +533,26 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            I've already mentioned where the project currently stands, so now I'd like to share how I would have continued if I'd had more time—especially regarding the simulation. I also would have loved to invest more effort in the website's design, making the visit even more interactive and personal. This includes refining the layout, creating a more unified look, and adding more effects and links to guide people smoothly through the content.
+            After describing where the project currently stands, I would additionally like to share the potentials of further development regarding the simulation. In regard to the website I would have loved to refine the design and some of the mechanisms. This includes elevating the layout, creating a more unified look and adding more effects and links to guide visitors smoothly through the content.
+          </p>
+          
+          <h4 style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
+          }}>
+            General Thoughts on the Website
+          </h4>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            I plan to keep the website in some shape or form with the idea to potentially expand it in the future. The concept using website that features my CV, portfolio, and cover letter really appeals to me. It lets me tie different points together and offer a cohesive application.
           </p>
           
           <h4 style={{ 
@@ -608,7 +571,7 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            The part I would have loved to spend much more time on is the visualization. Currently, it shows a pixelated green area, along with health bars and graphs. With sufficient explanation, it's understandable—but my goal was for someone to see the simulation and immediately grasp what's happening, without needing any extra explanation. That's why I envisioned a 3D animation, viewed from above, showing how the forest evolves over time.
+            <strong>Enhancing the Simulation</strong>
           </p>
           
           <p style={{ 
@@ -616,7 +579,7 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            I've done a few sketches to outline these ideas, and one possibility would be using Blender or Three.js. If the user could see deer and wolves moving around, it would be easier and more intuitive to see their roles in the ecosystem. Since learning new tools takes a lot of time and energy, I decided to pause here for now—but I still think a fully 3D world would make the simulation feel much more alive.
+            The visualization is an aspect that I would have loved to spend much more time on. Currently it shows a pixelated green area along with health bars and graphs to illustrate the populations' current states. With an introduction and some instructions the simulation becomes understandable—but my goal was for visitors to see the simulation and immediately grasp what is happening. Especially with the depth of information on population dynamics, there is a potential to show more detailed visuals. One thing I considered was a 3D animation, viewed from above, showing how the forest evolves over time.
           </p>
           
           <p style={{ 
@@ -624,7 +587,42 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            In a future, more scientific setting, it would also be possible to expand the ecosystem with additional species, or enrich existing populations with more functions, depending on the data needed. Generally, I would aim to simplify the interface and accessibility. I want people—on a playful level—to understand how important ecosystems are, and in this specific example, how vital wolves can be. The easier and clearer it is, the more quickly people can learn.
+            I've created a [LINK] sketch outlining these further ideas, which I would have most probably developed with the help from softwares like Blender or Three.js. If users could see a 3D forest—possibly with deer and wolves moving around—it would be easier and more intuitive to understand their different roles in the ecosystem. However, since Blender and Three.js were completely new tools for me, the time investment to implement them would have been out of proportion.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Another way to incorporate real-life phenomena in an intuitive manner would have been to offer different starting conditions. Visitors could choose from preset scenarios like "pest invasion," "severe weather conditions," "climate shift," or "intense forestry."
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            And then after the simulation has finished, give the visitor a feedback on how they did. I thought about giving them a more detailed ethical, environmental and financial feedback based on the decisions they made.
+          </p>
+          
+          <h4 style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
+          }}>
+            Scientific Models
+          </h4>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            In a more scientific setting that focuses on results and numbers rather than visualization, it would also be possible to expand the ecosystem with additional species or enrich existing populations with further functions, depending on the data needed.
           </p>
           
           <div style={{
@@ -660,20 +658,23 @@ const BehindWorks = () => {
             </ul>
           </div>
           
-          <p style={{ 
+          <h4 style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5'
+            color: '#2a8a43',
+            fontSize: '16px',
+            paddingBottom: '3px',
+            marginTop: '20px',
+            textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            I've heard of projects that create games or simulations for decision-makers, giving them a low-risk, playful environment that can guide them toward more sustainable choices—ones that benefit both humans and nature rather than just boosting someone's wallet. I could definitely imagine dedicating my time to something like that, whether in a master's program or somewhere else in my future.
-          </p>
+            Games for Decision Makers
+          </h4>
           
           <p style={{ 
             fontFamily: 'Tahoma, Arial, sans-serif',
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            In fact, I can see myself working on different types of simulations. I've often wondered about simulating society and politics, then testing what kinds of protests or acts of resistance might be most constructive. Which forms of resistance would lead to a more positive outcome and which would actually strengthen certain negative trends, like the rise of extremism? I'm not sure how feasible that is, but it's the kind of next-level simulation that really excites me.
+            I have heard of projects that create games or simulations for decision-makers, giving them a low-risk, playful environment to guide them toward choices, that benefit humans and nature rather than their own privileges and financial interests. The development and use of accessible games to highlight global issues and subtly propose more sustainable and ethical choices are very interesting to me.
           </p>
           
           <h4 style={{ 
@@ -684,7 +685,7 @@ const BehindWorks = () => {
             marginTop: '20px',
             textShadow: '1px 1px 0 rgba(255,255,255,1)'
           }}>
-            General Thoughts on the Website
+            Other Simulations
           </h4>
           
           <p style={{ 
@@ -692,7 +693,23 @@ const BehindWorks = () => {
             fontSize: '14px',
             lineHeight: '1.5'
           }}>
-            I'll definitely keep the website in some shape or form and might expand it in the future. I really like the concept of applying for things with a "combined" website that features my CV, portfolio, and cover letter all in one place. It lets me tie different points together and offer a cohesive application. Plus, all I have to do is share a link, and everything's right there.
+            Working on this portfolio led to further thoughts about potential simulations. For example, I have often imagined a simulation including different aspects of society and politics and testing which forms of protest or resistance could be most effective in driving specific social or political change. This would enable to grasp an idea of developments and effects of different forms of protests. I am really curious about the feasibility of such a simulation.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            In general, all forms of sociological dynamics seem very tempting to model. To model does not necessarily imply to calculate and predict different potential scenarios, but also illustrate social phenomena in a playful, interactive and intuitive way.
+          </p>
+          
+          <p style={{ 
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.5'
+          }}>
+            Another idea came up recently during my civil service in Wallis, where I am working on a biotope care program. Because this weeks site is so difficult to access, a helicopter had to transport all of our heavy gear. My group discussed whether the helicopter's carbon emissions are justified by the biodiversity benefits of caring for this remote biotope. Of course, it is not only an ecological but also an ethical question. Maybe a simulation could offer interesting insights by weighing factors like habitat improvement, species protection, and carbon costs.
           </p>
           
           <div style={{
@@ -711,7 +728,7 @@ const BehindWorks = () => {
               margin: '0 0 10px 0',
               textAlign: 'center'
             }}>
-              Final Reflection
+              Conclusion
             </p>
             
             <p style={{ 
@@ -721,7 +738,17 @@ const BehindWorks = () => {
               margin: '0',
               fontStyle: 'italic'
             }}>
-              This project has been a journey of discovery—not just about ecosystems and programming, but about my own creative process and how I approach problem-solving. While there's still so much I want to add and improve, I'm proud of what I've accomplished in the time I had. The blend of scientific knowledge, technical skills, and creative expression represented here feels like an authentic representation of who I am and what I hope to bring to a design program.
+              Yes, I really enjoyed the work and the process of this project. And as described here, I could very well imagine continuing to work on this or similar projects.
+            </p>
+            
+            <p style={{ 
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              margin: '10px 0 0 0',
+              fontStyle: 'italic'
+            }}>
+              But I could also imagine working on all kinds of other projects in the future, be they of a conceptual, artisanal, digital or some hybrid nature.
             </p>
           </div>
         </>

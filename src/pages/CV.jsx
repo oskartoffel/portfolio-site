@@ -1,51 +1,10 @@
-// src/pages/CV.jsx - With complete text content
+// src/pages/CV.jsx
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClassicWindow from '../components/ui/ClassicWindow';
 import ClassicXPButton from '../components/ui/ClassicXPButton';
 import XPBackground from '../components/ui/XPBackground';
 import { useTheme } from '../components/ui/ThemeProvider';
-
-// Timeline data with full text content
-const timelinePeriods = [
-  {
-    years: '2009-present',
-    title: '1. Youth: Embracing My Appearance',
-    content: `The very first process in which I tried expressing myself creatively was by adapting my appearance. Part of this was born out of necessity: as a child wearing braces, glasses, an eye patch, and fiery-red curly hair, I stood out from other kids—and I felt that keenly. For a long time, I hated feeling different and tried to blend into the crowd by keeping my hair very short or hiding under hats. Eventually, though, that started to shift. Little by little, I learned to accept those differences.
-
-That process continues to this day, as I gradually shape my outward self in ways that make me feel comfortable—without worrying if others find it strange. These days, adjusting my appearance is a form of communication that shows people something about who I am. If I feel good in my body, I might wear a crop top, glittery jewelry, or dye my mustache to highlight my red hair. On days when I'm not feeling my best, I might pull on big baggy clothes and a hoodie to avoid having anyone notice me—or my hair, which sometimes looks more like a bird's nest than a hairstyle. And if I really want to show someone that a meeting or event is special to me, I'll plan a more eye-catching outfit, groom myself carefully, and make sure my hair is on point.
-
-Back when I was younger, this "being different" really hurt. Today, I'm actually a bit grateful for it, because it taught me a lot about self-acceptance. Who knows—maybe it was even a key factor in developing my creative outlook on life.
-
-I do want to add one important note here: this is just my personal experience of feeling different. I'm aware that there are people who face an entirely different level of pressure due to their skin color, sexuality, gender, or other physical or mental traits. I don't want to trivialize anyone else's experiences, nor do I want to imply that being different is always a good or empowering thing.`
-  },
-  {
-    years: '2015-present',
-    title: '2. Discovering Ecstasy: The Joy of Nonconformity',
-    content: `At some point along the way, I discovered "ecstasy" (in the broader sense)—the idea of spaces or moments that allow for more intense awareness of ourselves and one another. For me, the word "party" can mean many different states of mind and forms of experience: from exploring my sexuality, to extreme nature outings in the mountains or wilderness, to dancing and drug use. These states are often very intense and usually experienced alone, with a partner, or in small groups. They require a lot of trust among the people involved—trust that often comes, at first, from abiding by shared social norms.
-
-With the support of some wonderful people, I began noticing how in these extreme, ecstatic moments, certain social norms can become irrelevant as long as everyone involved consents. By stepping away from norms like gender roles or power dynamics in those moments, a huge creative freedom emerged. It felt like I could actively "design" these experiences, shaping them however I wanted. Realizing that I didn't have to be restricted by typical social expectations in such moments was incredibly liberating.
-
-In the beginning, this newfound freedom mostly applied to those intense experiences. At the same time, I was busy training to become an environmental engineer, trying to memorize two hundred different types of flood barriers and dams as fast as possible. That didn't leave me a lot of room to question myself or society on a deeper level. The overall attitude in my program was, "We have the technology and scientific know-how to save the world," and I noticed both professors and fellow students often shared this idea.
-
-As I neared the end of my bachelor's degree, dropping out no longer seemed like an option. I finished my bachelor's in winter 2023, determined to step back and gain some distance.`
-  },
-  {
-    years: '2023-present',
-    title: '3. Reevaluating My Life: The Big Shift',
-    content: `That craving for distance brought me back to Basel after four years in Lausanne. Beyond wanting some space and time, I didn't have a concrete plan. My only commitment was my part-time work, which left me a lot of free hours. With so much open time on my hands, I started questioning many of the norms I had followed. What had once seemed limited to those intense, ecstatic moments now spread into my everyday life.
-
-Suddenly, all sorts of things were up for debate: my relationships, my past decisions, and the values I'd absorbed from my family, my environment, and society in general. I began asking myself how I wanted to live in the future, how I wanted to think about community, love, work, or even the possibility of having a family. With such open space, I felt a huge sense of freedom.
-
-I worked a lot of random but fascinating jobs—teaching robotics to children, renovating and transforming an attic, riding as a bicycle courier—and met many new people whose perspectives challenged me. Some had no interest in traditional nuclear families or suburban homes, while others lived in ways I'd never encountered before. Little by little, I realized I could shape my world in entirely new ways. I even sorted through and redecorated my entire bedroom, tossing out old belongings so there was space to let new ideas in.
-
-It sounds lovely when I put it that way, but it wasn't always easy. When you start questioning everything, you can find yourself falling into some big emotional voids. If you're able to pick apart the value of everything, it can start to feel like nothing matters. My bachelor's degree suddenly felt like nothing more than a piece of paper saying I can perform well under pressure. I began to see toxic masculine patterns in my older friendships and relationships, patterns that had been there all along. These things, for better or for worse, had shaped my identity. Watching them unravel all at once can be overwhelming.
-
-Sometimes I catch myself daydreaming about how simple life might have been if I'd stayed in that old "bubble"—married with kids, living in a quaint house, maybe working for some greenwashing environmental startup. But that thought never lasts long, because in truth I don't want to go back to that world. I'd much rather connect with people who are also ready to push against societal norms, who want to discuss and model new futures, and who are open to designing our world in fresh, unburdened ways. I have a strong feeling that studying design could be just that sort of space—one where we can take advantage of a wide creative freedom (even if it's partly theoretical) and learn how to use it in meaningful ways.`
-  }
-];
-
-
 
 const CV = () => {
   const { setTheme } = useTheme();
@@ -114,68 +73,156 @@ const CV = () => {
               }}>
                 Oskar Wasmer
               </h1>
+              <p style={{
+                fontFamily: 'Tahoma, Arial, sans-serif',
+                fontSize: '14px',
+                color: '#4a5568',
+                lineHeight: '1.4'
+              }}>
+                Designer and environmental engineer looking to combine technical knowledge with creative thinking to address complex challenges.
+              </p>
             </div>
           </div>
           
-          {/* Timeline content */}
-          {timelinePeriods.map((period, index) => (
-            <div key={index} style={{
-              marginBottom: '40px',
-              background: '#f8f0fc',
-              border: '1px solid #9f7aea',
-              borderRadius: '8px',
-              padding: '20px',
-              boxShadow: '2px 2px 6px rgba(0,0,0,0.1)'
+          {/* Timeline content without years, only titles and content */}
+          {/* Section 1 */}
+          <div style={{
+            marginBottom: '40px',
+            background: '#f8f0fc',
+            border: '1px solid #9f7aea',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '2px 2px 6px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              marginBottom: '15px',
+              borderBottom: '1px solid #d8c1dd',
+              paddingBottom: '10px'
             }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '15px',
-                marginBottom: '15px',
-                borderBottom: '1px solid #d8c1dd',
-                paddingBottom: '10px'
-              }}>
-                <div style={{
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontWeight: 'bold',
-                  fontSize: '16px',
-                  color: '#7d336a',
-                  backgroundColor: 'rgba(157, 50, 172, 0.1)',
-                  padding: '5px 10px',
-                  borderRadius: '4px',
-                  border: '1px solid #9f7aea',
-                  minWidth: '100px',
-                  textAlign: 'center'
-                }}>
-                  {period.years}
-                </div>
-                
-                <h2 style={{
-                  fontFamily: 'Tahoma, Arial, sans-serif',
-                  fontSize: '18px',
-                  color: '#7d336a',
-                  margin: 0
-                }}>
-                  {period.title}
-                </h2>
-              </div>
-              
-              <div style={{
+              <h2 style={{
                 fontFamily: 'Tahoma, Arial, sans-serif',
-                fontSize: '14px',
-                lineHeight: '1.6',
-                color: '#333'
+                fontSize: '18px',
+                color: '#7d336a',
+                margin: 0
               }}>
-                {period.content.split('\n\n').map((paragraph, idx) => (
-                  <p key={idx} style={{ marginBottom: '15px' }}>
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+                1. Youth: Embracing My Appearance
+              </h2>
             </div>
-          ))}
+            
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.6',
+              color: '#333'
+            }}>
+              <p>The first process that came to mind—where I used a creative approach—was thinking about my appearance. Part of this was out of necessity: as a child with braces, glasses, an eye patch, and fiery-red curly hair, I felt like standing out from other kids. For a long time, I hated feeling to be different and tried to blend in by wearing my hair very short or hiding under hats. Through my clothing choices, I tried to communicate, that I'm just the same as others. Somehow, in my teens, this started to shift. Step by step, I learned to accept those differences. For example, I began choosing glasses I actually liked, instead of ones I hoped nobody would notice. By highlighting certain "different" things about myself, I started gaining acceptance for who I was. This process of hiding or highlighting remains a fluid dynamic to this day.</p>
+              
+              <p>If I feel good in my body, I might wear a crop top, glittery jewelry, or dye my mustache to bring out my red hair. On days when I'm not feeling my best, I might pull on baggy clothes and a hoodie to avoid anyone noticing me—or my hair, which at times resembles a bird's nest. If I really want to show someone that a meeting or event is special to me, I'll plan a more thought-through outfit, groom myself carefully, and make sure my hair is on point.</p>
+              
+              <p>For me, the way I present myself is a form of communication for others It also helped me begin the process of accepting myself and who I am. When I was younger, I never wanted to "be different." Today, I'm actually somewhat grateful for it, because it taught me a lot about self-acceptance and might represent my very first creative designing approach.</p>
+              
+              <p>I do want to add one important note: this is just my personal experience of feeling different. I'm aware that many people face an entirely different level of pressure due to skin color, sexuality, gender, or other physical or mental traits. I don't want to trivialize anyone else's experiences, nor do I want to imply that being different is always good or empowering.</p>
+            </div>
+          </div>
           
-          {/* Skills section */}
+          {/* Section 2 */}
+          <div style={{
+            marginBottom: '40px',
+            background: '#f8f0fc',
+            border: '1px solid #9f7aea',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '2px 2px 6px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              marginBottom: '15px',
+              borderBottom: '1px solid #d8c1dd',
+              paddingBottom: '10px'
+            }}>
+              <h2 style={{
+                fontFamily: 'Tahoma, Arial, sans-serif',
+                fontSize: '18px',
+                color: '#7d336a',
+                margin: 0
+              }}>
+                2. Discovering Ecstasy: The Joy of Nonconformity
+              </h2>
+            </div>
+            
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.6',
+              color: '#333'
+            }}>
+              <p>At some point, I discovered "ecstasy" in a broader sense—spaces or moments that allow for more intense awareness of ourselves and each other. For me, "ecstasy" can refer to a wide range of states and experiences: exploring my sexuality, extreme nature outings in the mountains or wilderness, dancing, and drug use. These states are often very intense, bringing heightened feelings of love, joy, fear, sadness, or freedom. They're usually experienced alone, with a partner, or in small groups. Such moments require a lot of trust among those involved—trust initially based on following shared social norms.</p>
+              
+              <p>With the support of wonderful people, I began noticing how in these intense, ecstatic moments, certain social norms become irrelevant as long as everyone consents. By stepping away from norms like gender roles or power dynamics, a massive creative freedom emerged. It felt like I (or we) could actively "design" these experiences, shaping them however those involved wanted. Realizing you didn't have to be bound by typical social expectations in these moments was incredibly liberating.</p>
+              
+              <p>In the beginning, this newfound freedom applied mostly to those extreme experiences. Meanwhile, I was studying to become an environmental engineer—memorizing hundreds of flood barriers and dam types as fast as possible. We had to work hard, leaving little space to rethink ourselves or society on a deeper level. So, for a while, my discovery of these thinking processes and behaviors stayed confined to my ecstatic moments.</p>
+              
+              <p>As I neared the end of my bachelor's degree, though, some of my rigid worldviews started to wobble, and I began questioning my studies. But since I was so close to graduating, dropping out didn't seem like an option anymore. So I finished my bachelor's in winter 2023, determined to take a step back and gain some distance.</p>
+            </div>
+          </div>
+          
+          {/* Section 3 */}
+          <div style={{
+            marginBottom: '40px',
+            background: '#f8f0fc',
+            border: '1px solid #9f7aea',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '2px 2px 6px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              marginBottom: '15px',
+              borderBottom: '1px solid #d8c1dd',
+              paddingBottom: '10px'
+            }}>
+              <h2 style={{
+                fontFamily: 'Tahoma, Arial, sans-serif',
+                fontSize: '18px',
+                color: '#7d336a',
+                margin: 0
+              }}>
+                3. Reevaluating My Life: The Big Shift
+              </h2>
+            </div>
+            
+            <div style={{
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.6',
+              color: '#333'
+            }}>
+              <p>That craving for distance took me back to Basel after four years in Lausanne. Beyond wanting space and time, I didn't have a concrete plan. My only commitment was my part-time job, which left me plenty of free hours. With so much time on my hands, I could now rethink and reflect, and what had once been limited to intense, ecstatic moments began to spread into my everyday life.</p>
+              
+              <p>Suddenly, everything was up for debate: my relationships, how I thought about love and happiness, my future plans, and my views on how power is distributed on this planet. I tried putting each element into the context of influences from my family, my environment, and society at large. I started asking how I wanted to live in the future, how I wanted to think about community, love, work, or even the idea of having a family. By not restricting myself to social norms, these questions opened up a huge creative freedom—where before, things had felt very binary and straightforward.</p>
+              
+              <p>During this time, I was lucky to explore many different jobs: teaching robotics to children, renovating and transforming an attic, or riding as a bicycle courier. I especially enjoyed working on the construction site; we were a small, supportive group, and I learned a lot about how a house is built.</p>
+              
+              <p>Along the way, I also met new people, and together we started to envision long-term lifestyles without nuclear families and suburban houses. Bit by bit, my old ideas about life, existence, and the world started to fade away, making space for fresh perspectives.</p>
+              
+              <p>It might sound lovely when described this way, but it wasn't always easy. When you start questioning everything, huge voids can appear. If you begin to dissect the value of everything, sometimes it feels like nothing matters. My bachelor's degree suddenly felt like nothing more than proof I could perform under pressure. I started noticing toxic masculine patterns in my older friendships and relationships—patterns that had always been there. My studies and my friendships, for better or worse, shaped my identity, so watching them unravel can be overwhelming.</p>
+              
+              <p>Sometimes, I caught myself daydreaming about how simple life might have been if I'd stayed in that old "bubble": living in a monogamous relationship with kids, in a quaint house, maybe working for an environmental startup that helps me greenwash my soul. But these thoughts are short-lived.</p>
+              
+              <p>On a personal level, things can indeed be more complicated or exhausting because of this creative freedom—especially when I think about how many times I've had to explain to my parents why I no longer want to continue my academic career. But in return, I feel that decisions are now much more tangible and meaningful, because it truly seems like they matter. I value this newfound empowerment over my own life a lot.</p>
+              
+              <p>From a societal perspective, I also believe it's important for individuals to examine the norms and power structures they've experienced, and to question their own role in capitalist, patriarchal, and imperialist mechanisms. Precisely because of this responsibility, I'd be thrilled to meet more people who are also eager to break away from norms and bring their own experiences, perspectives, and stories into the mix.</p>
+            </div>
+          </div>
+          
+          {/* Contact card */}
           <div style={{ 
             marginTop: '30px', 
             background: 'linear-gradient(to bottom, #d8c1dd, #f8f0fc)',
