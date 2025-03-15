@@ -11,7 +11,6 @@ const ThemeContext = createContext({
 // Theme mapping based on route paths
 const routeThemeMap = {
   '/': 'home',
-  '/cv': 'cv',
   '/cover-letter': 'coverletter',
   '/portfolio': 'portfolio',
   '/ecosystem-simulation': 'portfolio',

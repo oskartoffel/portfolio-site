@@ -49,11 +49,6 @@ const Home = () => {
             marginTop: '25px',
             flexWrap: 'wrap'
           }}>
-            <Link to="/cv" style={{ textDecoration: 'none' }}>
-              <ClassicXPButton size="large">
-                My CV
-              </ClassicXPButton>
-            </Link>
             
             <Link to="/cover-letter" style={{ textDecoration: 'none' }}>
               <ClassicXPButton size="large">

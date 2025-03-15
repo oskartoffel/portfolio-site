@@ -3,7 +3,6 @@ import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ui/ThemeProvider';
 import Home from './pages/Home';
-import CV from './pages/CV';
 import CoverLetter from './pages/CoverLetter';
 import Portfolio from './pages/Portfolio';
 import BehindWorks from './pages/BehindWorks';
@@ -17,7 +16,6 @@ function App() {
       <ThemeProvider>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/cv" element={<CV />} />
           <Route path="/cover-letter" element={<CoverLetter />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/behind-works" element={<BehindWorks />} />
