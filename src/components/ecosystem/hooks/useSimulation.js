@@ -11,7 +11,7 @@ const useSimulation = (config) => {
   const [isComplete, setIsComplete] = useState(false);
   const [currentYear, setCurrentYear] = useState(0);
   const [stabilizationProgress, setStabilizationProgress] = useState(0);
-  const [simulationSpeed, setSimulationSpeed] = useState(500);
+  const [simulationSpeed, setSimulationSpeed] = useState(800);
   
   // Stats for display
   const [stats, setStats] = useState({

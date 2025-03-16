@@ -17,7 +17,7 @@ const Portfolio = () => {
     <XPBackground>
       <ClassicWindow title="My Portfolio">
         <div style={{ padding: '10px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+          <div style={{ marginBottom: '20px' }}>
             <h1 style={{ 
               fontFamily: 'Popstar, Tahoma, Arial, sans-serif',
               color: '#2a8a43',
@@ -26,18 +26,6 @@ const Portfolio = () => {
             }}>
               Portfolio Projects
             </h1>
-            
-            <ClassicXPButton onClick={() => {
-              // Create a link to download the PDF
-              const link = document.createElement('a');
-              link.href = '/documents/Portfolio.pdf';
-              link.setAttribute('download', 'Portfolio.pdf');
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }}>
-              Download Portfolio PDF
-            </ClassicXPButton>
           </div>
           
           {/* Projects section */}

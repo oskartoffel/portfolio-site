@@ -42,7 +42,7 @@ const Home = () => {
             
             <Link to="/cover-letter" style={{ textDecoration: 'none' }}>
               <ClassicXPButton size="large">
-                Cover Letter & CV
+                Cover Letter
               </ClassicXPButton>
             </Link>
             

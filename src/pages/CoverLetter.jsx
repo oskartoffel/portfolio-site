@@ -14,26 +14,6 @@ const CoverLetter = () => {
     setTheme('coverletter');
   }, [setTheme]);
 
-  const handleDownloadCoverLetter = () => {
-    // Create a link to download the PDF
-    const link = document.createElement('a');
-    link.href = '/documents/CoverLetter.pdf';
-    link.setAttribute('download', 'CoverLetter.pdf');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownloadCV = () => {
-    // Create a link to download the PDF
-    const link = document.createElement('a');
-    link.href = '/documents/CV.pdf';
-    link.setAttribute('download', 'CV.pdf');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <XPBackground>
       <ClassicWindow title="Cover Letter & CV">
@@ -77,23 +57,6 @@ const CoverLetter = () => {
 
             <p>Sincerely,<br/>
             Oskar Wasmer</p>
-          </div>
-          
-          {/* Document download buttons */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            gap: '20px',
-            marginTop: '25px',
-            marginBottom: '40px'
-          }}>
-            <ClassicXPButton onClick={handleDownloadCoverLetter}>
-              Download Cover Letter (PDF)
-            </ClassicXPButton>
-            
-            <ClassicXPButton onClick={handleDownloadCV}>
-              Download CV (PDF)
-            </ClassicXPButton>
           </div>
           
           {/* Navigation button */}

@@ -81,7 +81,7 @@ const FlatGameVisualization = () => {
     setShowInitialization(false);
     setSimulationStarted(true);
     // Auto-start the simulation with 1x speed (1000ms)
-    setSpeed(1000);
+    setSpeed(2);
     startSimulation();
   };
   
@@ -853,7 +853,7 @@ const FlatGameVisualization = () => {
           
           <div style={{ padding: '20px' }}>
             <h2 style={{
-              fontFamily: 'Husky Stash, Tahoma, Arial, sans-serif',
+              fontFamily: ' Tahoma, Arial, sans-serif',
               color: '#2a8a43',
               fontSize: '20px',
               marginTop: 0,
@@ -1085,58 +1085,82 @@ const FlatGameVisualization = () => {
         <div style={styles.yearDisplay}>
           Year: {currentYear} / {simulationConfig.years}
         </div>
-        {isRunning ? (
-        <div 
-          onClick={stopSimulation}
-          style={{
-            display: 'inline-block',
-            // Classic XP Button primary style with portfolio green
-            backgroundColor: '#2a8a43',
-            color: '#ffffff !important',
-            minWidth: '90px',
-            padding: '6px 12px',
-            borderRadius: '3px',
-            boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
-            border: '1px solid #267532',
-            fontWeight: 'bold',
-            textShadow: '0 -1px 0 rgba(0,0,0,0.3)',
-            cursor: 'pointer',
-            textAlign: 'center',
-            userSelect: 'none',
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '13px'
-          }}
-        >
-          <span style={{ color: '#ffffff !important' }}>⏸ Pause</span>
-        </div>
-      ) : (
-        <div 
-          onClick={!isInitialized || isStabilizing || isComplete ? null : startSimulation}
-          style={{
-            display: 'inline-block',
-            // Classic XP Button primary style with portfolio green
-            backgroundColor: '#2a8a43',
-            color: '#ffffff !important',
-            minWidth: '90px',
-            padding: '6px 12px',
-            borderRadius: '3px',
-            boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
-            border: '1px solid #267532',
-            fontWeight: 'bold',
-            textShadow: '0 -1px 0 rgba(0,0,0,0.3)',
-            opacity: (!isInitialized || isStabilizing || isComplete) ? 0.7 : 1,
-            cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer',
-            textAlign: 'center',
-            userSelect: 'none',
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: '13px'
-          }}
-        >
-          <span style={{ color: '#ffffff !important' }}>▶ Resume</span>
-        </div>
-      )}
         
-        {renderSpeedControl()}
+        {isRunning ? (
+          <div 
+            onClick={stopSimulation}
+            style={{
+              display: 'inline-block',
+              // Classic XP Button primary style with portfolio green
+              backgroundColor: '#2a8a43',
+              color: '#ffffff !important',
+              minWidth: '90px',
+              padding: '6px 12px',
+              borderRadius: '3px',
+              boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+              border: '1px solid #267532',
+              fontWeight: 'bold',
+              textShadow: '0 -1px 0 rgba(0,0,0,0.3)',
+              cursor: 'pointer',
+              textAlign: 'center',
+              userSelect: 'none',
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '13px'
+            }}
+          >
+            <span style={{ color: '#ffffff !important' }}>⏸ Pause</span>
+          </div>
+        ) : (
+          <div 
+            onClick={!isInitialized || isStabilizing || isComplete ? null : startSimulation}
+            style={{
+              display: 'inline-block',
+              // Classic XP Button primary style with portfolio green
+              backgroundColor: '#2a8a43',
+              color: '#ffffff !important',
+              minWidth: '90px',
+              padding: '6px 12px',
+              borderRadius: '3px',
+              boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+              border: '1px solid #267532',
+              fontWeight: 'bold',
+              textShadow: '0 -1px 0 rgba(0,0,0,0.3)',
+              opacity: (!isInitialized || isStabilizing || isComplete) ? 0.7 : 1,
+              cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer',
+              textAlign: 'center',
+              userSelect: 'none',
+              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontSize: '13px'
+            }}
+          >
+            <span style={{ color: '#ffffff !important' }}>▶ Resume</span>
+          </div>
+        )}
+        
+        {/* Skip Year Button - NEW */}
+        <div 
+  onClick={(!isInitialized || isStabilizing || isComplete) ? null : stepSimulation}
+  style={{
+    display: 'inline-block',
+    backgroundColor: '#2a8a43', // Changed to green
+    color: '#ffffff !important',
+    minWidth: '90px',
+    padding: '6px 12px',
+    borderRadius: '3px',
+    boxShadow: 'inset 0 1px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+    border: '1px solid #267532', // Changed to match green
+    fontWeight: 'bold',
+    textShadow: '0 -1px 0 rgba(0,0,0,0.3)',
+    opacity: (!isInitialized || isStabilizing || isComplete) ? 0.7 : 1,
+    cursor: (!isInitialized || isStabilizing || isComplete) ? 'default' : 'pointer',
+    textAlign: 'center',
+    userSelect: 'none',
+    fontFamily: 'Tahoma, Arial, sans-serif',
+    fontSize: '13px'
+  }}
+>
+  <span style={{ color: '#ffffff !important' }}>⏭ Skip Year</span>
+</div>
         
         <div 
           style={styles.helpIcon}
@@ -1173,11 +1197,11 @@ const FlatGameVisualization = () => {
   // Speed control dropdown
   const renderSpeedControl = () => {
     const options = [
-      { label: "0.5×", value: 2000 },
-      { label: "1×", value: 1000 },
-      { label: "2×", value: 500 },
-      { label: "3×", value: 333 },
-      { label: "5×", value: 200 }
+      { label: "0.125×", value: 1600000 },  // Very slow
+      { label: "0.25×", value: 8000 },   // Slow
+      { label: "0.5×", value: 1000 },    // Medium
+      { label: "1×", value: 500 },      // Original "normal" speed 
+      { label: "2×", value: 250 }        // Fast option
     ];
     
     const currentOption = options.find(opt => opt.value === simulationSpeed) || options[1];
